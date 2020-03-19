@@ -3,7 +3,6 @@ let Discord = require('discord.js');
 const client = new Discord.Client();
 const axios = require('axios');
 let httpBuildQuery = require('http-build-query');
-require('dotenv').config();
 let router = express.Router();
 let baseUrl =  "https://etu.utt.fr";
 
@@ -107,7 +106,7 @@ router.get("/attribuerrole", function(req, res, next) {
 
 client.on('ready', () => {
   client.user.setActivity("mettre les gens à leur place", {
-    type: "PLAYING",
+    type: "STREAMING",
     url: process.env.BOT_URL
   }).catch(console.error);
 });
