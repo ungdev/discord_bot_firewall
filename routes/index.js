@@ -120,33 +120,60 @@ client.on("guildMemberAdd", (member) => {
 client.on('message', msg => {
   if (msg.content.startsWith(process.env.BOT_PREFIX) && msg.channel.id === process.env.CHANNEL_ADMIN_ID) {
     let parametres = msg.content.split(" ");
-    if(parametres.length !== 3 || !msg.mentions.roles.first())
+    if(parametres.length > 1)
+      if (parametres[1] === "addUE") {
+        if(parametres.length !== 4 || !msg.mentions.roles.first())
+        {
+          msg.reply(":warning:  Erreur. La syntaxe est `"+process.env.BOT_PREFIX+" addUE @RoleUE <categoryID>`. La catégorie et le rôle doivent déjà exister.").catch(console.error);
+        }
+        else
+        {
+          client.guilds.cache.get(process.env.SERVER_ID).channels.create(msg.mentions.roles.first().name.toLowerCase(), {parent: parametres[3], permissionOverwrites:[
+              {
+                id: msg.guild.roles.everyone,
+                deny: 2147483127
+              },
+              {
+                id: msg.mentions.roles.first().id,
+                allow: 36961344
+              }
+            ]}).catch(console.error);
+          client.guilds.cache.get(process.env.SERVER_ID).channels.create(msg.mentions.roles.first().name.toLowerCase()+" - vocal", {parent: parametres[3], type: "voice", permissionOverwrites:[
+              {
+                id: msg.guild.roles.everyone,
+                deny: 2147483127
+              },
+              {
+                id: msg.mentions.roles.first().id,
+                allow: 36961344
+              }
+            ]}).catch(console.error);
+          msg.channel.send(":white_check_mark: Si la catégorie existe, c'est fait !").catch(console.error);
+        }
+      }
+    if(parametres[1] === "delUE")
     {
-      msg.reply("Erreur. La syntaxe est `"+process.env.BOT_PREFIX+" @RoleUE <categoryID>`. La catégorie et le rôle doivent déjà exister.").catch(console.error);
+      if(parametres.length !== 3 || !msg.mentions.channels.first())
+      {
+        msg.reply(":warning: Erreur. La syntaxe est `"+process.env.BOT_PREFIX+" delUE #ueASupprimer`. Vous devez tagguer le channel texte de l'UE !").catch(console.error);
+      }
+      else
+      {
+        client.guilds.cache.get(process.env.SERVER_ID).channels.cache.find(channel => channel.name.toLowerCase().includes(msg.mentions.channels.first().name.toLowerCase()) && channel.type === "voice").delete("Demandé par "+msg.author.tag+" "+msg.author.username).catch(console.error);
+        msg.mentions.channels.first().delete("Demandé par "+msg.author.tag+" "+msg.author.username).catch(console.error);
+        client.guilds.cache.get(process.env.SERVER_ID).roles.cache.find(role => role.name.toUpperCase() === msg.mentions.channels.first().name.toUpperCase()).delete("Demandé par "+msg.author.tag+" "+msg.author.username).catch(console.error);
+        msg.channel.send(":white_check_mark: Les deux channels texte et voix ainsi que le rôle ont été effacés pour "+msg.mentions.channels.first().name+" !").catch(console.error);
+      }
     }
     else
     {
-      client.guilds.cache.get(process.env.SERVER_ID).channels.create(msg.mentions.roles.first().name.toLowerCase(), {parent: parametres[2], permissionOverwrites:[
-          {
-            id: msg.guild.roles.everyone,
-            deny: 2147483127
-          },
-          {
-            id: msg.mentions.roles.first().id,
-            allow: 36961344
-          }
-        ]}).catch(console.error);
-      client.guilds.cache.get(process.env.SERVER_ID).channels.create(msg.mentions.roles.first().name.toLowerCase()+" - vocal", {parent: parametres[2], type: "voice", permissionOverwrites:[
-          {
-            id: msg.guild.roles.everyone,
-            deny: 2147483127
-          },
-          {
-            id: msg.mentions.roles.first().id,
-            allow: 36961344
-          }
-        ]}).catch(console.error);
-      msg.reply("Si la catégorie existe, c'est fait !").catch(console.error);
+      parametres[1] = "help";
+    }
+    if(parametres.length === 1 || parametres[1] === "help")
+    {
+      msg.channel.send(":tools: Plusieurs fonctions accessibles"+
+      "\n\n`"+process.env.BOT_PREFIX+" addUE @RoleUE <categoryID>`. Permet de créer les channels texte et voix d'un rôle existant avec les permissions correctes. La catégorie et le rôle doivent déjà exister."+
+          "\n`"+process.env.BOT_PREFIX+" delUE #ueASupprimer`. Supprime les channels texte et voix de l'UE et le rôle. Vous devez tagguer le channel texte de l'UE !").catch(console.error);
     }
   }
 });
