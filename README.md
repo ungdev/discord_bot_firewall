@@ -23,6 +23,7 @@ Egalement, gestion (création/suppression) des rôles et channels correspondant 
     * ``PREFIX getNb @ROLE`` qui affiche le nombre de personnes dans le role correspondant.
     * ``PREFIX getRoles NombrePersonne`` qui affiche la liste des rôle ne contenant que le nombre de personnes demandé
     * ``PREFIX getZeroOne`` qui affiche la liste des rôle ne contenant que 0 ou 1 personne.
+    * ``PREFIX getUrl`` Affiche les url du serveur web du bot, le lien d'invitation discord
     
 ## Installation
 

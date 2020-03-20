@@ -194,6 +194,9 @@ client.on('message', msg => {
     else if (parametres[1] === "author") {
       msg.channel.send("Le créateur de ce bot est Ivann LARUELLE, ivann.laruelle@gmail.com").catch(console.error);
       }
+    else if (parametres[1] === "getUrl") {
+        msg.channel.send("Url de connexion (à transmettre): "+process.env.BOT_URL+"\n\nLe lien d'invitation direct (peu recommandé) : "+process.env.LIEN_INVITATION_DISCORD).catch(console.error);
+      }
     else
     {
       parametres[1] = "help";
@@ -205,7 +208,8 @@ client.on('message', msg => {
           "\n`"+process.env.BOT_PREFIX+" delUE #ueASupprimer`. Supprime les channels texte et voix de l'UE et le rôle. Vous devez tagguer le channel texte de l'UE !"+
           "\n`"+process.env.BOT_PREFIX+" getNb @ROLE`. Récupère le nombre de personnes dans le rôle. Le rôle doit exister."+
           "\n`"+process.env.BOT_PREFIX+" getRoles NombrePersonne`. Affiche la liste des rôles ne contenant que le nombre de personnes demandé."+
-          "\n`"+process.env.BOT_PREFIX+" getZeroOne`. Affiche les rôles ayant soit 0 ou 1 personne dedans.").catch(console.error);
+          "\n`"+process.env.BOT_PREFIX+" getZeroOne`. Affiche les rôles ayant soit 0 ou 1 personne dedans."+
+          "\n`"+process.env.BOT_PREFIX+" getUrl`. Affiche les url du serveur web du bot, le lien d'invitation discord").catch(console.error);
     }
   }
 });
