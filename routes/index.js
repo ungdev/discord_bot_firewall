@@ -105,8 +105,8 @@ router.get("/attribuerrole", function(req, res, next) {
 });
 
 client.on('ready', () => {
-  client.user.setActivity("mettre les gens à leur place", {
-    type: "STREAMING",
+  client.user.setActivity("gérer le serveur", {
+    type: "PLAYING",
     url: process.env.BOT_URL
   }).catch(console.error);
   client.channels.cache.get(process.env.CHANNEL_ADMIN_ID).send("Je suis en ligne. Je viens d'être (re)démarré. Cela signifie qu'il y a soit eu un bug, soit que j'ai été mis à jour, soit qu'on m'a redémarré manuellement. La gestion des amphis a été remise à zéro (je gère pas ceux déjà existant)");
