@@ -218,9 +218,7 @@ let tableauAmphi = [];
 client.on('voiceStateUpdate', (oldState, newState ) => {
   if(newState.channelID === process.env.CHANNEL_CREATION_AMPHI)
   {
-    let nomChannel = "";
-    console.log(newState.member.nickname);
-    console.log(newState.member.user.username);
+    let nomChannel = "amphi";
     if(!newState.member.nickname)
       nomChannel = newState.member.user.username;
     else
