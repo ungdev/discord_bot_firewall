@@ -109,12 +109,13 @@ client.on('ready', () => {
     type: "STREAMING",
     url: process.env.BOT_URL
   }).catch(console.error);
+  client.channels.cache.get(process.env.CHANNEL_ADMIN_ID).send("Je suis en ligne. Je viens d'être (re)démarré. Cela signifie qu'il y a soit eu un bug, soit que j'ai été mis à jour, soit qu'on m'a redémarré manuellement. La gestion des amphis a été remise à zéro (je gère pas ceux déjà existant)");
 });
 
 client.on("guildMemberAdd", (member) => {
   member.send("Bienvenue sur le serveur Discord des étudiants de l'UTT." +
       "\nCeci n'étant pas une zone de non droit, vous devez vous identifier en cliquant ici : "+process.env.BOT_URL+
-      "\nVous devez également lire les règles dans le channel `accueil`"+"\n\nEn cas de problème, contacte l'un des administrateurs, visibles en haut à droite.")
+      "\nVous devez également lire les règles dans le channel `accueil`"+"\n\nEn cas de problème, contacte l'un des administrateurs, visibles en haut à droite.").catch(console.error)
 });
 
 client.on('message', msg => {
@@ -151,7 +152,7 @@ client.on('message', msg => {
           msg.channel.send(":white_check_mark: Si la catégorie existe, c'est fait !").catch(console.error);
         }
       }
-    if(parametres[1] === "delUE")
+    else if(parametres[1] === "delUE")
     {
       if(parametres.length !== 3 || !msg.mentions.channels.first())
       {
@@ -165,6 +166,31 @@ client.on('message', msg => {
         msg.channel.send(":white_check_mark: Les deux channels texte et voix ainsi que le rôle ont été effacés pour "+msg.mentions.channels.first().name+" !").catch(console.error);
       }
     }
+    else if (parametres[1] === "getNb") {
+        if (parametres.length !== 3 || !msg.mentions.roles.first()) {
+          msg.reply(":warning:  Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " getNb @RoleUE`. Le rôle doit exister.").catch(console.error);
+        } else {
+          msg.channel.send(":white_check_mark: Il y a "+msg.mentions.roles.first().members.size+" utilisateur(s) dans le rôle "+msg.mentions.roles.first().name).catch(console.error);
+        }
+      }
+    else if (parametres[1] === "getRoles") {
+        if (parametres.length !== 3) {
+          msg.reply(":warning:  Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " getRoles NombreDePersonnes`.").catch(console.error);
+        } else {
+          msg.guild.roles.cache.forEach(role => {
+            if(role.members.size.toString() === parametres[2].toString()) {
+              msg.channel.send("Le rôle "+role.name+" a "+ role.members.size + " utilisateur(s).").catch(console.error);
+            }
+          });
+        }
+      }
+    else if (parametres[1] === "getZeroOne") {
+        msg.guild.roles.cache.forEach(role => {
+          if(role.members.size === 0 || role.members.size === 1) {
+            msg.channel.send("Le rôle "+role.name+" a "+ role.members.size + " utilisateur.").catch(console.error);
+          }
+        });
+      }
     else
     {
       parametres[1] = "help";
@@ -173,7 +199,47 @@ client.on('message', msg => {
     {
       msg.channel.send(":tools: Plusieurs fonctions accessibles"+
       "\n\n`"+process.env.BOT_PREFIX+" addUE @RoleUE <categoryID>`. Permet de créer les channels texte et voix d'un rôle existant avec les permissions correctes. La catégorie et le rôle doivent déjà exister."+
-          "\n`"+process.env.BOT_PREFIX+" delUE #ueASupprimer`. Supprime les channels texte et voix de l'UE et le rôle. Vous devez tagguer le channel texte de l'UE !").catch(console.error);
+          "\n`"+process.env.BOT_PREFIX+" delUE #ueASupprimer`. Supprime les channels texte et voix de l'UE et le rôle. Vous devez tagguer le channel texte de l'UE !"+
+          "\n`"+process.env.BOT_PREFIX+" getNb @ROLE`. Récupère le nombre de personnes dans le rôle. Le rôle doit exister."+
+          "\n`"+process.env.BOT_PREFIX+" getRoles NombrePersonne`. Affiche la liste des rôles ne contenant que le nombre de personnes demandé."+
+          "\n`"+process.env.BOT_PREFIX+" getZeroOne`. Affiche les rôles ayant soit 0 ou 1 personne dedans.").catch(console.error);
+    }
+  }
+});
+
+let tableauAmphi = [];
+client.on('voiceStateUpdate', (oldState, newState ) => {
+  if(newState.channelID === process.env.CHANNEL_CREATION_AMPHI)
+  {
+    client.guilds.cache.get(process.env.SERVER_ID).channels.create(newState.member.nickname+" - vocal", {parent: process.env.CATEGORY_AMPHI, type: "voice"})
+        .then(function (channel) {
+          if(!(newState.member.id in tableauAmphi))
+            tableauAmphi[newState.member.id] = [];
+          tableauAmphi[newState.member.id].push(channel.id);
+          newState.member.voice.setChannel(channel.id).catch(console.error);
+        })
+        .catch(console.error);
+    client.guilds.cache.get(process.env.SERVER_ID).channels.create(newState.member.nickname, {parent: process.env.CATEGORY_AMPHI})
+        .then(function (channel) {
+          if(!(newState.member.id in tableauAmphi))
+            tableauAmphi[newState.member.id] = [];
+          tableauAmphi[newState.member.id].push(channel.id);
+          client.channels.cache.get(channel.id).send("<@"+newState.member.id+"> Votre amphi vient d'être créé. Il sera effacé dès que vous quitterez le vocal.");
+        })
+        .catch(console.error);
+  }
+  if(oldState.channelID && oldState.channelID !== newState.channelID && oldState.channelID !== process.env.CHANNEL_CREATION_AMPHI && oldState.member.id in tableauAmphi && tableauAmphi[oldState.member.id].includes(oldState.channelID)) {
+    if(oldState.channel.members.keyArray().length > 0)
+    {
+      if(!(oldState.channel.members.first().id in tableauAmphi))
+        tableauAmphi[oldState.channel.members.first().id] = [];
+      tableauAmphi[oldState.channel.members.first().id] = tableauAmphi[oldState.member.id].slice();
+      delete tableauAmphi[oldState.member.id];
+    }
+    else
+    {
+      tableauAmphi[oldState.member.id].forEach(id => client.guilds.cache.get(process.env.SERVER_ID).channels.cache.get(id).delete("fin d'amphi").catch(console.error));
+      delete tableauAmphi[oldState.member.id];
     }
   }
 });
