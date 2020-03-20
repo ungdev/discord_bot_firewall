@@ -114,8 +114,8 @@ client.on('ready', () => {
 
 client.on("guildMemberAdd", (member) => {
   member.send("Bienvenue sur le serveur Discord des étudiants de l'UTT." +
-      "\nCeci n'étant pas une zone de non droit, vous devez vous identifier en cliquant ici : "+process.env.BOT_URL+
-      "\nVous devez également lire les règles dans le channel `accueil`"+"\n\nEn cas de problème, contacte l'un des administrateurs, visibles en haut à droite.").catch(console.error)
+      "\nCeci n'étant pas une zone de non droit, vous devez vous identifier en cliquant ici (que vous soyez étudiant ou prof) : "+process.env.BOT_URL+
+      "\nVous devez également lire les règles dans le channel `accueil`"+"\n\nEn cas de problème, contactez l'un des administrateurs, visibles en haut à droite.").catch(console.error)
 });
 
 client.on('message', msg => {
@@ -195,7 +195,7 @@ client.on('message', msg => {
       msg.channel.send("Le créateur de ce bot est Ivann LARUELLE, ivann.laruelle@gmail.com").catch(console.error);
       }
     else if (parametres[1] === "getUrl") {
-        msg.channel.send("Url de connexion (à transmettre): "+process.env.BOT_URL+"\n\nLe lien d'invitation direct (peu recommandé) : "+process.env.LIEN_INVITATION_DISCORD).catch(console.error);
+        msg.channel.send("URL de connexion (à transmettre) : "+process.env.BOT_URL+"\n\nLe lien d'invitation direct (peu recommandé) : "+process.env.LIEN_INVITATION_DISCORD).catch(console.error);
       }
     else
     {
@@ -218,7 +218,14 @@ let tableauAmphi = [];
 client.on('voiceStateUpdate', (oldState, newState ) => {
   if(newState.channelID === process.env.CHANNEL_CREATION_AMPHI)
   {
-    client.guilds.cache.get(process.env.SERVER_ID).channels.create(newState.member.nickname+" - vocal", {parent: process.env.CATEGORY_AMPHI, type: "voice"})
+    let nomChannel = "";
+    console.log(newState.member.nickname);
+    console.log(newState.member.user.username);
+    if(!newState.member.nickname)
+      nomChannel = newState.member.user.username;
+    else
+      nomChannel = newState.member.nickname;
+    client.guilds.cache.get(process.env.SERVER_ID).channels.create(nomChannel +" - vocal", {parent: process.env.CATEGORY_AMPHI, type: "voice"})
         .then(function (channel) {
           if(!(newState.member.id in tableauAmphi))
             tableauAmphi[newState.member.id] = [];
@@ -226,12 +233,21 @@ client.on('voiceStateUpdate', (oldState, newState ) => {
           newState.member.voice.setChannel(channel.id).catch(console.error);
         })
         .catch(console.error);
-    client.guilds.cache.get(process.env.SERVER_ID).channels.create(newState.member.nickname, {parent: process.env.CATEGORY_AMPHI})
+    client.guilds.cache.get(process.env.SERVER_ID).channels.create(nomChannel, {parent: process.env.CATEGORY_AMPHI})
         .then(function (channel) {
           if(!(newState.member.id in tableauAmphi))
             tableauAmphi[newState.member.id] = [];
           tableauAmphi[newState.member.id].push(channel.id);
-          client.channels.cache.get(channel.id).send("<@"+newState.member.id+"> Votre amphi vient d'être créé. Il sera effacé dès que vous quitterez le vocal.");
+          client.channels.cache.get(channel.id).send(":speaking_head: <@"+newState.member.id+"> Votre amphi vient d'être créé. Vous disposez d'un canal textuel (celui que vous regardez, visible à gauche et qui commence par #), et d'un canal vocal où vous pouvez parler jusqu'à 100 personnes, et 50 maximum si vous partagez votre écran.j"+
+              "\n:wastebasket: **Les canaux voix et texte seront effacés dès que vous quitterez le vocal.**"+
+              "\n\n:loudspeaker: Dites à vos étudiants que vous êtes là en tapant dans ce canal '@NOMUE' (en majuscule)."+
+              "\n\n:writing_hand: Si vous souhaitez conserver le tchat, pensez à le sauvegarder avant de vous déconnecter du vocal via cet outil : https://github.com/Tyrrrz/DiscordChatExporter/releases/tag/2.18 (à installer sur votre poste, il génére un fichier HTML contenant tout la conversation du tchat textuel que l'on peut ouvrir dans un navigateur web)"+
+              "\n\n:tools: Vous pouvez renommer vos salons sur la gauche qui portent votre nom pour leur donner le nom de l'UE par exemple (clic-droit sur le salon à gauche, modifier le salon puis enregistrer les changements)"+
+              "\n\n:toolbox: En bas à gauche, à côté de voix connectée, vous disposez de 5 boutons."+
+              "\nLes deux boutons au dessus permettent de diffuser votre écran (bouton flèche dans l'écran) ou de mettre fin à la communication (bouton téléphone avec la croix)."+
+              "\nLes trois boutons du bas permettent de couper votre micro (ne plus parler), ou votre casque (ne plus entendre), et d'accéder aux paramètres du logiciels grâce à la roue crantée."+
+              "\n\n:grey_question: N'hésitez pas à envoyer un message à la modération (tapez '@ Modération' sans espace) ou l'administration (@ Administrateur) en cas de souci."+
+              "\n\n:school: Bon cours !\n\n");
         })
         .catch(console.error);
   }
