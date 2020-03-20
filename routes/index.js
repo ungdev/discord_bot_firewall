@@ -159,7 +159,7 @@ client.on('message', msg => {
       }
       else
       {
-        client.guilds.cache.get(process.env.SERVER_ID).channels.cache.find(channel => channel.name.toLowerCase().includes(msg.mentions.channels.first().name.toLowerCase()) && channel.type === "voice").delete("Demandé par "+msg.author.tag+" "+msg.author.username).catch(console.error);
+        client.guilds.cache.get(process.env.SERVER_ID).channels.cache.find(channel => (channel.name.toLowerCase().includes(" "+msg.mentions.channels.first().name.toLowerCase()) || channel.name.toLowerCase().includes(msg.mentions.channels.first().name.toLowerCase()+" ")) && channel.type === "voice").delete("Demandé par "+msg.author.tag+" "+msg.author.username).catch(console.error);
         msg.mentions.channels.first().delete("Demandé par "+msg.author.tag+" "+msg.author.username).catch(console.error);
         client.guilds.cache.get(process.env.SERVER_ID).roles.cache.find(role => role.name.toUpperCase() === msg.mentions.channels.first().name.toUpperCase()).delete("Demandé par "+msg.author.tag+" "+msg.author.username).catch(console.error);
         msg.channel.send(":white_check_mark: Les deux channels texte et voix ainsi que le rôle ont été effacés pour "+msg.mentions.channels.first().name+" !").catch(console.error);
