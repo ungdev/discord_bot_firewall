@@ -191,13 +191,16 @@ client.on('message', msg => {
           }
         });
       }
+    else if (parametres[1] === "author") {
+      msg.channel.send("Le créateur de ce bot est Ivann LARUELLE, ivann.laruelle@gmail.com").catch(console.error);
+      }
     else
     {
       parametres[1] = "help";
     }
     if(parametres.length === 1 || parametres[1] === "help")
     {
-      msg.channel.send(":tools: Plusieurs fonctions accessibles"+
+      msg.channel.send(":tools: Plusieurs fonctions accessibles. Contacter Ivann LARUELLE, ivann.laruelle@gmail.com en cas de problème"+
       "\n\n`"+process.env.BOT_PREFIX+" addUE @RoleUE <categoryID>`. Permet de créer les channels texte et voix d'un rôle existant avec les permissions correctes. La catégorie et le rôle doivent déjà exister."+
           "\n`"+process.env.BOT_PREFIX+" delUE #ueASupprimer`. Supprime les channels texte et voix de l'UE et le rôle. Vous devez tagguer le channel texte de l'UE !"+
           "\n`"+process.env.BOT_PREFIX+" getNb @ROLE`. Récupère le nombre de personnes dans le rôle. Le rôle doit exister."+
