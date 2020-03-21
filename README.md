@@ -6,6 +6,8 @@ Nécessité de gérer les rôles des membres sur le discord, via une connexion e
 
 Egalement, gestion (création/suppression) des rôles et channels correspondant aux cours des étudiants, ainsi que création d'amphi à la volée.
 
+Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel en html, via [https://github.com/Tyrrrz/DiscordChatExporter](https://github.com/Tyrrrz/DiscordChatExporter) qui génère le html et wget/zip génèrent la version offline (600 messages max).
+
 
 ## Fonctionnalités
 
@@ -24,6 +26,7 @@ Egalement, gestion (création/suppression) des rôles et channels correspondant 
     * ``PREFIX getRoles NombrePersonne`` qui affiche la liste des rôle ne contenant que le nombre de personnes demandé
     * ``PREFIX getZeroOne`` qui affiche la liste des rôle ne contenant que 0 ou 1 personne.
     * ``PREFIX getUrl`` Affiche les url du serveur web du bot, le lien d'invitation discord
+    * ``PREFIX export``. Exporte tout le channel dans laquelle la commande est tapée, dans un html lisible offline. Tout ceux ayant un rôle >= Enseignant peuvent taper cette commande n'importe où.
     
 ## Installation
 

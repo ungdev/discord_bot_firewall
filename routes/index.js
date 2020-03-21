@@ -1,5 +1,6 @@
 let express = require('express');
 let Discord = require('discord.js');
+let shell = require('shelljs');
 const client = new Discord.Client();
 const axios = require('axios');
 let httpBuildQuery = require('http-build-query');
@@ -109,7 +110,7 @@ client.on('ready', () => {
     type: "PLAYING",
     url: process.env.BOT_URL
   }).catch(console.error);
-  client.channels.cache.get(process.env.CHANNEL_ADMIN_ID).send("Je suis en ligne. Je viens d'être (re)démarré. Cela signifie qu'il y a soit eu un bug, soit que j'ai été mis à jour, soit qu'on m'a redémarré manuellement. La gestion des amphis a été remise à zéro (je gère pas ceux déjà existant)");
+  client.channels.cache.get(process.env.CHANNEL_ADMIN_ID).send("Je suis en ligne. Je viens d'être (re)démarré. Cela signifie qu'il y a soit eu un bug, soit que j'ai été mis à jour, soit qu'on m'a redémarré manuellement. La gestion des amphis a été remise à zéro (je gère plus ceux déjà créés).");
 });
 
 client.on("guildMemberAdd", (member) => {
@@ -125,7 +126,7 @@ client.on('message', msg => {
       if (parametres[1] === "addUE") {
         if(parametres.length !== 4 || !msg.mentions.roles.first())
         {
-          msg.reply(":warning:  Erreur. La syntaxe est `"+process.env.BOT_PREFIX+" addUE @RoleUE <categoryID>`. La catégorie et le rôle doivent déjà exister.").catch(console.error);
+          msg.reply(" :warning:  Erreur. La syntaxe est `"+process.env.BOT_PREFIX+" addUE @RoleUE <categoryID>`. La catégorie et le rôle doivent déjà exister.").catch(console.error);
         }
         else
         {
@@ -156,7 +157,7 @@ client.on('message', msg => {
     {
       if(parametres.length !== 3 || !msg.mentions.channels.first())
       {
-        msg.reply(":warning: Erreur. La syntaxe est `"+process.env.BOT_PREFIX+" delUE #ueASupprimer`. Vous devez tagguer le channel texte de l'UE !").catch(console.error);
+        msg.reply(" :warning: Erreur. La syntaxe est `"+process.env.BOT_PREFIX+" delUE #ueASupprimer`. Vous devez tagguer le channel texte de l'UE !").catch(console.error);
       }
       else
       {
@@ -168,36 +169,46 @@ client.on('message', msg => {
     }
     else if (parametres[1] === "getNb") {
         if (parametres.length !== 3 || !msg.mentions.roles.first()) {
-          msg.reply(":warning:  Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " getNb @RoleUE`. Le rôle doit exister.").catch(console.error);
+          msg.reply(" :warning:  Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " getNb @RoleUE`. Le rôle doit exister.").catch(console.error);
         } else {
           msg.channel.send(":white_check_mark: Il y a "+msg.mentions.roles.first().members.size+" utilisateur(s) dans le rôle "+msg.mentions.roles.first().name).catch(console.error);
         }
       }
     else if (parametres[1] === "getRoles") {
         if (parametres.length !== 3) {
-          msg.reply(":warning:  Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " getRoles NombreDePersonnes`.").catch(console.error);
+          msg.reply(" :warning:  Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " getRoles NombreDePersonnes`.").catch(console.error);
         } else {
-          msg.guild.roles.cache.forEach(role => {
-            if(role.members.size.toString() === parametres[2].toString()) {
-              msg.channel.send("Le rôle "+role.name+" a "+ role.members.size + " utilisateur(s).").catch(console.error);
-            }
-          });
+          msg.channel.send(":clock1: Cette commande peut être longue, elle affichera un message pour signaler sa fin. Si elle ne le fait pas, contacter un administrateur.").then(function (message) {
+            let compteur = 0;
+            msg.guild.roles.cache.forEach(role => {
+              if(role.members.size.toString() === parametres[2].toString()) {
+                msg.channel.send("Le rôle "+role.name+" a "+ role.members.size + " utilisateur(s).").catch(console.error);
+                compteur = compteur + 1;
+              }
+            });
+            msg.channel.send(":white_check_mark: Commande terminée, "+compteur+" roles ont été identifiés.").catch(console.error);
+          }).catch(console.error);
         }
       }
     else if (parametres[1] === "getZeroOne") {
-        msg.guild.roles.cache.forEach(role => {
-          if(role.members.size === 0 || role.members.size === 1) {
-            msg.channel.send("Le rôle "+role.name+" a "+ role.members.size + " utilisateur.").catch(console.error);
-          }
-        });
+        msg.channel.send(":clock1: Cette commande peut être longue, elle affichera un message pour signaler sa fin. Si elle ne le fait pas, contacter un administrateur.").then(function (message) {
+          let compteur = 0;
+          msg.guild.roles.cache.forEach(role => {
+            if(role.members.size === 0 || role.members.size === 1) {
+              msg.channel.send("Le rôle "+role.name+" a "+ role.members.size + " utilisateur.").catch(console.error);
+              compteur = compteur + 1;
+            }
+          });
+          msg.channel.send(":white_check_mark: Commande terminée, "+compteur+" roles ont été identifiés.").catch(console.error);
+        }).catch(console.error);
       }
     else if (parametres[1] === "author") {
-      msg.channel.send("Le créateur de ce bot est Ivann LARUELLE, ivann.laruelle@gmail.com").catch(console.error);
+      msg.channel.send("Le créateur de ce bot est Ivann LARUELLE, ivann.laruelle@gmail.com\nLe créateur du système d'export est ici : https://github.com/Tyrrrz").catch(console.error);
       }
     else if (parametres[1] === "getUrl") {
         msg.channel.send("URL de connexion (à transmettre) : "+process.env.BOT_URL+"\n\nLe lien d'invitation direct (peu recommandé) : "+process.env.LIEN_INVITATION_DISCORD).catch(console.error);
       }
-    else
+    else if (parametres[1] !== "export")
     {
       parametres[1] = "help";
     }
@@ -207,9 +218,48 @@ client.on('message', msg => {
       "\n\n`"+process.env.BOT_PREFIX+" addUE @RoleUE <categoryID>`. Permet de créer les channels texte et voix d'un rôle existant avec les permissions correctes. La catégorie et le rôle doivent déjà exister."+
           "\n`"+process.env.BOT_PREFIX+" delUE #ueASupprimer`. Supprime les channels texte et voix de l'UE et le rôle. Vous devez tagguer le channel texte de l'UE !"+
           "\n`"+process.env.BOT_PREFIX+" getNb @ROLE`. Récupère le nombre de personnes dans le rôle. Le rôle doit exister."+
-          "\n`"+process.env.BOT_PREFIX+" getRoles NombrePersonne`. Affiche la liste des rôles ne contenant que le nombre de personnes demandé."+
-          "\n`"+process.env.BOT_PREFIX+" getZeroOne`. Affiche les rôles ayant soit 0 ou 1 personne dedans."+
-          "\n`"+process.env.BOT_PREFIX+" getUrl`. Affiche les url du serveur web du bot, le lien d'invitation discord").catch(console.error);
+          "\n`"+process.env.BOT_PREFIX+" getRoles NombrePersonne`. Affiche la liste des rôles ne contenant que le nombre de personnes demandé. :clock1: Cette commande peut être longue."+
+          "\n`"+process.env.BOT_PREFIX+" getZeroOne`. Affiche les rôles ayant soit 0 ou 1 personne dedans. :clock1: Cette commande peut être longue."+
+          "\n`"+process.env.BOT_PREFIX+" getUrl`. Affiche les url du serveur web du bot, le lien d'invitation discord"+
+          "\n`"+process.env.BOT_PREFIX+" export`. Exporte tout le channel (maximum 600 messages) dans laquelle la commande est tapée, dans un html lisible offline. Tout ceux ayant un rôle >= Enseignant peuvent taper cette commande n'importe où." +
+          "").catch(console.error);
+    }
+  }
+  if (msg.content.startsWith(process.env.BOT_PREFIX))
+  {
+    let parametres = msg.content.split(" ");
+    if(parametres.length === 2 && parametres[1] === "export")
+    {
+      if(msg.member.roles.highest.comparePositionTo(process.env.ROLE_ENSEIGNANT_ID) >= 0)
+      {
+        function remove_non_ascii(str) {
+
+          if ((str===null) || (str===''))
+            return false;
+          else
+            str = str.toString();
+
+          return str.replace(/[^\x20-\x7E]/g, '');
+        }
+        let nomChannel = remove_non_ascii(msg.channel.name);
+        msg.channel.send("Lancement de l'export pour maximum 600 messages. Cette commande peut prendre un certain temps (2 minutes max, notifier un administrateur en cas de délai plus long !)").then(function (message) {
+          shell.exec("dotnet "+process.env.DISCORD_CHAT_EXPORTER_EXE_PATH + " export -t "+process.env.BOT_TOKEN+" -b -c "+msg.channel.id+" -f HtmlDark -o "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+".html 2>&1");
+          shell.exec("wget --mirror --restrict-file-names=windows --page-requisites --adjust-extension --convert-links --execute robots=off --span-hosts -Dlocalhost,cdn.discordapp.com,cdnjs.cloudflare.com -P " +process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+" --user-agent mozilla http://localhost:8000/"+nomChannel+".html 2>&1 | grep -i 'failed\\|error'");
+          shell.exec("touch "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+"/Ouvrez_le_dossier_localhost_et_ouvrez_le_fichier_html_dans_navigateur_web");
+          shell.exec("cd "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+" && zip -q -r "+nomChannel+".zip *");
+          msg.channel.send("Voici l'export. Vous devez extraire les fichiers du fichier zip, et ensuite ouvrir le fichier html du dossier localhost. La personne à l'origine de la commande l'a également reçu en message privé.").catch(console.error);
+          msg.channel.send(new Discord.MessageAttachment(process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+"/"+nomChannel+".zip")).catch(console.error);
+          msg.author.send("Voici l'export. Vous devez extraire les fichiers du fichier zip, et ensuite ouvrir le fichier html du dossier localhost.").catch(console.error);
+          msg.author.send(new Discord.MessageAttachment(process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+"/"+nomChannel+".zip")).then(function (message) {
+            shell.exec("rm -rf "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+"*");
+            //Windows : shell.exec("del "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+".html");
+          }).catch(console.error);
+        }).catch(console.error);
+      }
+      else
+      {
+        msg.reply(" :octagonal_sign: Action non autorisée ! Seul un enseignant ou une personne ayant un rôle supérieur peut lancer cette commande.").catch(console.error);
+      }
     }
   }
 });
@@ -236,18 +286,19 @@ client.on('voiceStateUpdate', (oldState, newState ) => {
           if(!(newState.member.id in tableauAmphi))
             tableauAmphi[newState.member.id] = [];
           tableauAmphi[newState.member.id].push(channel.id);
-          client.channels.cache.get(channel.id).send(":speaking_head: <@"+newState.member.id+"> Votre amphi vient d'être créé. Vous disposez d'un canal textuel (celui que vous regardez, visible à gauche et qui commence par #), et d'un canal vocal où vous pouvez parler jusqu'à 100 personnes, et 50 maximum si vous partagez votre écran.j"+
+          client.channels.cache.get(channel.id).send(":speaking_head: <@"+newState.member.id+"> Votre amphi vient d'être créé. Vous disposez d'un canal textuel (celui que vous regardez, visible à gauche et qui commence par #), et d'un canal vocal où vous pouvez parler jusqu'à 100 personnes, et 50 maximum si vous partagez votre écran."+
               "\n:wastebasket: **Les canaux voix et texte seront effacés dès que vous quitterez le vocal.**"+
-              "\n\n:loudspeaker: Dites à vos étudiants que vous êtes là en tapant dans ce canal '@NOMUE' (en majuscule)."+
-              "\n\n:writing_hand: Si vous souhaitez conserver le tchat, pensez à le sauvegarder avant de vous déconnecter du vocal via cet outil : https://github.com/Tyrrrz/DiscordChatExporter/releases/tag/2.18 (à installer sur votre poste, il génére un fichier HTML contenant tout la conversation du tchat textuel que l'on peut ouvrir dans un navigateur web)"+
+              "\n\n:loudspeaker: Dites à vos étudiants que vous êtes là en tapant dans ce canal `@ NOM_UE` (en majuscule, sans espace entre @ et le nom de l'UE)."+
+              "\n\n:writing_hand: Si vous souhaitez conserver le tchat, pensez à taper commande `/ UE export`, **sans l'espace entre / et UE**. Seul un enseignant ou un modérateur/administrateur peut utiliser cette commande qui génére un fichier zip contenant tout la conversation du tchat textuel utilisable dans un navigateur web, même hors ligne. :warning: Au delà de 600 messages (il faut y arriver !), la sauvegarde n'est pas garantie."+
               "\n\n:tools: Vous pouvez renommer vos salons sur la gauche qui portent votre nom pour leur donner le nom de l'UE par exemple (clic-droit sur le salon à gauche, modifier le salon puis enregistrer les changements)"+
               "\n\n:toolbox: En bas à gauche, à côté de voix connectée, vous disposez de 5 boutons."+
               "\nLes deux boutons au dessus permettent de diffuser votre écran (bouton flèche dans l'écran) ou de mettre fin à la communication (bouton téléphone avec la croix)."+
               "\nLes trois boutons du bas permettent de couper votre micro (ne plus parler), ou votre casque (ne plus entendre), et d'accéder aux paramètres du logiciels grâce à la roue crantée."+
-              "\n\n:grey_question: N'hésitez pas à envoyer un message à la modération (tapez '@ Modération' sans espace) ou l'administration (@ Administrateur) en cas de souci."+
-              "\n\n:school: Bon cours !\n\n");
-        })
-        .catch(console.error);
+              "\n\n:grey_question: N'hésitez pas à envoyer un message à la modération (tapez `@ Modération` sans espace) ou l'administration (`@ Administrateur`, sans espace) du serveur en cas de souci."+
+              "\n\n:school: Bon cours !\n\n").then(function (message) {
+                message.pin().catch(console.error);
+              });
+        }).catch(console.error);
   }
   if(oldState.channelID && oldState.channelID !== newState.channelID && oldState.channelID !== process.env.CHANNEL_CREATION_AMPHI && oldState.member.id in tableauAmphi && tableauAmphi[oldState.member.id].includes(oldState.channelID)) {
     if(oldState.channel.members.keyArray().length > 0)
@@ -266,4 +317,4 @@ client.on('voiceStateUpdate', (oldState, newState ) => {
 });
 
 module.exports = router;
-client.login(process.env.BOT_ID).catch(console.error);
+client.login(process.env.BOT_TOKEN).catch(console.error);
