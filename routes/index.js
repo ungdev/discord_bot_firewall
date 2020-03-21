@@ -307,7 +307,7 @@ client.on('message', msg => {
           return str.replace(/[^\x20-\x7E]/g, '');
         }
         let nomChannel = remove_non_ascii(msg.channel.name);
-        msg.channel.send("Lancement de l'export pour maximum 600 messages. Cette commande peut prendre un certain temps (2 minutes max, notifier un administrateur en cas de délai plus long !)").then(function (message) {
+        msg.channel.send("Lancement de l'export pour maximum 600 messages. Cette commande peut prendre un certain temps (2 minutes max, notifier un administrateur en cas de délai plus long !)").then(function () {
           shell.exec("dotnet "+process.env.DISCORD_CHAT_EXPORTER_EXE_PATH + " export -t "+process.env.BOT_TOKEN+" -b -c "+msg.channel.id+" -f HtmlDark -o "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+".html 2>&1");
           shell.exec("wget --mirror --restrict-file-names=windows --page-requisites --adjust-extension --convert-links --execute robots=off --span-hosts -Dlocalhost,cdn.discordapp.com,cdnjs.cloudflare.com -P " +process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+" --user-agent mozilla http://localhost:8000/"+nomChannel+".html 2>&1 | grep -i 'failed\\|error'");
           shell.exec("touch "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+"/Ouvrez_le_dossier_localhost_et_ouvrez_le_fichier_html_dans_navigateur_web");
@@ -333,9 +333,9 @@ client.on('message', msg => {
       if(!msg.mentions.roles.first())
         msg.reply(" :warning: Erreur ! Vous devez spécifier le role de votre UE. `"+ process.env.BOT_PREFIX +" dynVocal @NOM_UE`").catch(console.error);
       else if(!msg.member.voice.channelID)
-        msg.reply(" :warning: Erreur ! Vous devez déjà être dans un canal vocal pour exécuter cette commande !").catch(console.log).catch(console.error);
+        msg.reply(" :warning: Erreur ! Vous devez déjà être dans un canal vocal pour exécuter cette commande !").catch(console.error);
       else if(!msg.channel.parentID)
-        msg.reply(" :warning: Erreur ! Vous devez taper cette commande dans un channel texte dans une catégorie.").catch(console.log).catch(console.error);
+        msg.reply(" :warning: Erreur ! Vous devez taper cette commande dans un channel texte dans une catégorie.").catch(console.error);
       else
       {
         if(!client.guilds.cache.get(process.env.SERVER_ID).channels.cache.find(channel => (channel.name.toLowerCase().includes(msg.mentions.roles.first().name.toLowerCase()+" - vocal") && channel.type === "voice")))
@@ -391,7 +391,7 @@ client.on('message', msg => {
 client.on('voiceStateUpdate', (oldState, newState ) => {
   if(newState.channelID === process.env.CHANNEL_CREATION_AMPHI)
   {
-    let nomChannel = "amphi";
+    let nomChannel = "vocal";
     if(!newState.member.nickname)
       nomChannel = newState.member.user.username;
     else
