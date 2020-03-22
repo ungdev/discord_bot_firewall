@@ -291,7 +291,7 @@ client.on('message', msg => {
           "\n\n`"+process.env.BOT_PREFIX+" author` Affiche des informations diverses sur l'auteur de ce bot").catch(console.error);
     }
   }
-  if (msg.content.toLowerCase().startsWith(process.env.BOT_PREFIX.toLowerCase()))
+  if (msg.content.toLowerCase().startsWith(process.env.BOT_PREFIX.toLowerCase() && msg.channel.type !== "dm"))
   {
     let parametres = msg.content.split(" ");
     if(parametres.length < 2)
@@ -470,6 +470,11 @@ client.on('message', msg => {
           "\n`"+process.env.BOT_PREFIX+" joinVocal`. Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les étudiants de l'UE. Les channels créés par cette commandes sont effacés lorsque plus personne n'est dans le vocal créé."+
           "\n\n`"+process.env.BOT_PREFIX+" author` Affiche des informations diverses sur l'auteur de ce bot").catch(console.error)
     }
+  }
+  else if(msg.content.toLowerCase().startsWith(process.env.BOT_PREFIX.toLowerCase()) && msg.channel.type === "dm")
+  {
+    msg.reply(" Je ne prends aucune commande en MP.").catch(console.error);
+    msg.channel.send("Le créateur de ce bot est Ivann LARUELLE, ivann.laruelle@gmail.com\nJ'aime l'OpenSource : https://github.com/larueli/discord_bot_firewall / https://hub.docker.com/repository/docker/larueli/discord_bot_firewall\n\n\nLe créateur du système d'export est ici : https://github.com/Tyrrrz").catch(console.error);
   }
 });
 
