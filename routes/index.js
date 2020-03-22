@@ -113,7 +113,6 @@ router.get("/attribuerrole", function(req, res) {
               /** On applique le pseudo sur le compte */
               membreDiscord.setNickname(pseudo).catch(console.error);
               /** On applique les rôles */
-              console.log(rolesAAttribuer);
               membreDiscord.roles.set(rolesAAttribuer).catch(console.error);
               /** On affiche un message */
               res.send("Vos rôles ont été affectés. Si d'ici quelques heures rien ne change dans votre compte, merci de nous contacter.<br><br><b>Vous pouvez maintenant fermer cette fenêtre et retourner sur Discord.</b>");
@@ -368,7 +367,7 @@ client.on('message', msg => {
           }).catch(console.error);
         }
         else
-          msg.member.voice.setChannel(tableauChannelTexteAChannelVocal[msg.channel.id]).catch(console.log);
+          msg.member.voice.setChannel(tableauChannelTexteAChannelVocal[msg.channel.id]).catch(console.error);
       }
       else if(msg.member.roles.cache.keyArray().includes(process.env.ROLE_ENSEIGNANT_ID)) {
         let nomChannel = "vocal";
