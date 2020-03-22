@@ -35,6 +35,61 @@ function remove_non_ascii(str) {
   return str.replace(/[^\x20-\x7E]/g, '');
 }
 
+/** Ci après des liste de permissions utilisées lors de la création de channels */
+/** https://discord.js.org/#/docs/main/stable/class/Permissions?scrollTo=s-FLAGS */
+let toutesPermissions = new Discord.Permissions([
+      'CREATE_INSTANT_INVITE', 'KICK_MEMBERS',
+      'BAN_MEMBERS',           'MANAGE_CHANNELS',
+      'MANAGE_GUILD',          'ADD_REACTIONS',
+      'VIEW_AUDIT_LOG',        'PRIORITY_SPEAKER',
+      'VIEW_CHANNEL',          'SEND_MESSAGES',
+      'SEND_TTS_MESSAGES',     'MANAGE_MESSAGES',
+      'EMBED_LINKS',           'ATTACH_FILES',
+      'READ_MESSAGE_HISTORY',  'MENTION_EVERYONE',
+      'USE_EXTERNAL_EMOJIS',   'CONNECT',
+      'SPEAK',                 'MUTE_MEMBERS',
+      'DEAFEN_MEMBERS',        'MOVE_MEMBERS',
+      'USE_VAD',               'CHANGE_NICKNAME',
+      'MANAGE_NICKNAMES',      'MANAGE_ROLES',
+      'MANAGE_WEBHOOKS',       'MANAGE_EMOJIS'
+    ]
+);
+
+let permissionsLireEcrireBasiques = new Discord.Permissions([
+      'ADD_REACTIONS',
+      'STREAM',
+      'VIEW_CHANNEL',
+      'SEND_MESSAGES',
+      'SEND_TTS_MESSAGES',
+      'EMBED_LINKS',
+      'ATTACH_FILES',
+      'READ_MESSAGE_HISTORY',
+      'MENTION_EVERYONE',
+      'CONNECT',
+      'SPEAK',
+      'USE_VAD'
+    ]
+);
+
+let permissionsLireEcrireProf = new Discord.Permissions([
+      'ADD_REACTIONS',
+      'PRIORITY_SPEAKER',
+      'STREAM',
+      'VIEW_CHANNEL',
+      'SEND_MESSAGES',
+      'SEND_TTS_MESSAGES',
+      'MANAGE_MESSAGES',
+      'EMBED_LINKS',
+      'ATTACH_FILES',
+      'READ_MESSAGE_HISTORY',
+      'MENTION_EVERYONE',
+      'CONNECT',
+      'SPEAK',
+      'USE_VAD',
+      'MANAGE_ROLES'
+    ]
+);
+
 /** Merci StackOverflow */
 function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
@@ -147,8 +202,10 @@ router.get("/attribuerrole", function(req, res) {
                 tableauChainesToRoles.push(membreSiteEtu.branch);
 
                 /** Pour tous les noms de rôle on récupère l'id du rôle et on l'ajoute à la liste des id de rôles à attribuer */
-                for (const chaine of tableauChainesToRoles)
+                for (let chaine of tableauChainesToRoles)
                 {
+                  if(chaine === "")
+                    chaine="vide";
                   let role = roles.find(role => role.name.toUpperCase() === chaine.toString().toUpperCase());
                   if(role)
                     rolesAAttribuer.push(role.id);
@@ -222,23 +279,23 @@ client.on('message', async (msg) => {
           /** S'il n'y a pas 3 paramètres dont la mention d'un role ni de ce qui doit être créé */
           if (parametres.length !== 5 ||
               !msg.mentions.roles.first() ||
-              !(["texte", "vocal", "lesDeux"].includes(parametres[4]))
+              !(["texte", "vocal", "lesdeux"].includes(parametres[4].toLowerCase()))
           ) {
             msg.reply(" :warning:  Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " addUE @RoleUE <categoryID> texte | vocal | lesDeux`. La catégorie et le rôle doivent déjà exister.").catch(console.error);
           }
           /** Si tout va bien */
           else {
             /** On crée le texte avec aucune permission pour @everyone et les permissions d'écrire pour le rôle concerné */
-            if (parametres[4].toLowerCase() === "texte" || parametres[4] === "lesDeux".toLowerCase()) {
+            if (parametres[4].toLowerCase() === "texte" || parametres[4].toLowerCase() === "lesdeux") {
               client.guilds.cache.get(process.env.SERVER_ID).channels.create(msg.mentions.roles.first().name.toLowerCase(), {
                 parent: parametres[3], permissionOverwrites: [
                   {
                     id: msg.guild.roles.everyone,
-                    deny: 2147483127
+                    deny: toutesPermissions
                   },
                   {
                     id: msg.mentions.roles.first().id,
-                    allow: 36961344
+                    allow: permissionsLireEcrireBasiques
                   }
                 ]
               }).then(function (channel) {
@@ -246,16 +303,16 @@ client.on('message', async (msg) => {
               }).catch(console.error);
             }
             /** On crée le vocal avec aucune permission pour @everyone et les permissions de parler/connecter pour le rôle concerné */
-            if (parametres[4].toLowerCase() === "vocal".toLowerCase() || parametres[4].toLowerCase() === "lesDeux".toLowerCase()) {
+            if (parametres[4].toLowerCase() === "vocal" || parametres[4].toLowerCase() === "lesdeux") {
               client.guilds.cache.get(process.env.SERVER_ID).channels.create(msg.mentions.roles.first().name.toLowerCase() + " - vocal", {
                 parent: parametres[3], type: "voice", permissionOverwrites: [
                   {
                     id: msg.guild.roles.everyone,
-                    deny: 2147483127
+                    deny: toutesPermissions
                   },
                   {
                     id: msg.mentions.roles.first().id,
-                    allow: 36961344
+                    allow: permissionsLireEcrireBasiques
                   }
                 ]
               }).catch(console.error);
@@ -268,9 +325,9 @@ client.on('message', async (msg) => {
           if (parametres.length !== 4 || !msg.mentions.channels.first() || !(["tout".toLowerCase(), "vocal".toLowerCase()].includes(parametres[3].toLowerCase()))) {
             msg.reply(" :warning: Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " delUE #ueASupprimer vocal | tout`. Vous devez tagguer le channel texte de l'UE !").catch(console.error);
           } else {
-            if (parametres[3].toLowerCase() === "tout".toLowerCase() || parametres[3].toLowerCase() === "vocal".toLowerCase())
+            if (parametres[3].toLowerCase() === "tout" || parametres[3].toLowerCase() === "vocal")
               client.channels.cache.find(channel => (channel.name.toLowerCase().includes(" " + msg.mentions.channels.first().name.toLowerCase()) || channel.name.toLowerCase().includes(msg.mentions.channels.first().name.toLowerCase() + " ")) && channel.type === "voice").delete("Demandé par " + msg.author.tag + " " + msg.author.username).catch(console.error);
-            if (parametres[3] === "tout") {
+            if (parametres[3].toLowerCase() === "tout") {
               msg.mentions.channels.first().delete("Demandé par " + msg.author.tag + " " + msg.author.username).catch(console.error);
               (await client.guilds.cache.get(process.env.SERVER_ID).roles.fetch()).cache.find(role => role.name.toUpperCase() === msg.mentions.channels.first().name.toUpperCase()).delete("Demandé par " + msg.author.tag + " " + msg.author.username).catch(console.error);
             }
@@ -348,11 +405,11 @@ client.on('message', async (msg) => {
             (await client.channels.fetch(process.env.CHANNEL_ADMIN_ID)).send("@everyone L'utilisateur "+msg.member.nickname + " / "+msg.author.tag+ " a été expulsé.");
           }
         }
-        else {
+        else if (!(["export","joinvocal","author"].includes(parametres[1].toLowerCase()))) {
           parametres[1] = "help";
         }
     }
-    if (msg.channel.id !== process.env.CHANNEL_ADMIN_ID && msg.channel.type !== "dm") {
+    if (msg.channel.type !== "dm") {
       if (parametres[1].toLowerCase() === "export") {
         if ((await msg.member.fetch()).roles.highest.comparePositionTo(process.env.ROLE_ENSEIGNANT_ID) >= 0) {
           let nomChannel = remove_non_ascii(msg.channel.name);
@@ -389,11 +446,11 @@ client.on('message', async (msg) => {
               parent: msg.channel.parentID, type: "voice", permissionOverwrites: [
                 {
                   id: msg.guild.roles.everyone,
-                  deny: 2147483127
+                  deny: toutesPermissions
                 },
                 {
                   id: (await client.guilds.cache.get(process.env.SERVER_ID).roles.fetch()).cache.find(role => role.name.toUpperCase() === msg.channel.name.toUpperCase()).id,
-                  allow: 36961344
+                  allow: permissionsLireEcrireBasiques
                 }
               ]
             }).then(function (channel) {
@@ -420,34 +477,34 @@ client.on('message', async (msg) => {
             Permissions = [
               {
                 id: msg.guild.roles.everyone,
-                deny: 2147483127
+                deny: toutesPermissions
               },
               {
                 id: msg.mentions.roles.first().id,
-                allow: 37223488
+                allow: permissionsLireEcrireBasiques
               },
               {
                 id: msg.author.id,
-                allow: 305659216
+                allow: permissionsLireEcrireProf
               }
             ];
           } else {
             Permissions = [
               {
                 id: msg.guild.roles.everyone,
-                deny: 2147483127
+                deny: toutesPermissions
               },
               {
                 id: process.env.ROLE_ENSEIGNANT_ID,
-                allow: 37223488
+                allow: permissionsLireEcrireBasiques
               },
               {
                 id: process.env.ROLE_ETUDIANT_ID,
-                allow: 37223488
+                allow: permissionsLireEcrireBasiques
               },
               {
                 id: msg.author.id,
-                allow: 305659216
+                allow: permissionsLireEcrireProf
               }
             ];
           }
@@ -493,7 +550,7 @@ client.on('message', async (msg) => {
           msg.reply("Vous n'êtes ni étudiant, ni enseignant. D'où venez-vous ?").catch(console.error);
           (await client.channels.fetch(process.env.CHANNEL_ADMIN_ID)).send(" :octagonal_sign: Alerte ! " + msg.author.tag + " / " + msg.member.nickname + " a tenté de lancer un vocal en n'étant ni enseignant ni étudiant.").catch(console.error);
         }
-      } else {
+      } else if (!(["delue","addue","kickall","getnb","getroles","getzeroone","geturl"].includes(parametres[1].toLowerCase()))) {
         parametres[1] = "help";
       }
     } else if (msg.channel.type === "dm") {
