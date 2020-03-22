@@ -27,7 +27,7 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
     * ``PREFIX getZeroOne`` qui affiche la liste des rôle ne contenant que 0 ou 1 personne.
     * ``PREFIX getUrl`` Affiche les url du serveur web du bot, le lien d'invitation discord
     * ``PREFIX export`` Exporte tout le channel dans laquelle la commande est tapée, dans un html lisible offline. Tout ceux ayant un rôle >= Enseignant peuvent taper cette commande n'importe où.
-    * ``PREFIX joinVocal`` Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les étudiants de l'UE. Les channels créés par cette commandes sont effacés lorsque plus personne n'est dans le vocal créé. 
+    * ``PREFIX joinVocal`` Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les personnes de votre choix. Les channels créés par cette commandes sont effacés lorsque plus personne n'est dans le vocal créé. 
     
 ## Installation
 
