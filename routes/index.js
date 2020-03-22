@@ -136,7 +136,7 @@ router.get('/', function(req, res) {
   res.redirect(baseUrl+"/api/oauth/authorize?"+httpBuildQuery(donnees));
 });
 
-let texteBug = "Nous n'avons pas pu vous authentifier. Cela peut être du à bug momentané. <a href='/'>Revenir au départ et recommencer !</a>"
+let texteBug = "Nous n'avons pas pu vous authentifier. Cela peut être du à bug momentané. <a href='/'>Revenir au départ et recommencer !</a>";
 
 router.get('/connexion', function(req, res) {
   /** S'il y a bien un token dans la requete, on continue */
