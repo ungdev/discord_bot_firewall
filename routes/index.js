@@ -467,7 +467,7 @@ client.on('message', msg => {
     {
       msg.channel.send(":tools: Plusieurs fonctions accessibles. Contacter Ivann LARUELLE, ivann.laruelle@gmail.com, créateur de ce bot, en cas de problème\n"+
           "\n`"+process.env.BOT_PREFIX+" export`. Exporte tout le channel (maximum 600 messages) dans laquelle la commande est tapée, dans un html lisible offline. **Seuls ceux ayant un rôle >= Enseignant** peuvent taper cette commande n'importe où." +
-          "\n`"+process.env.BOT_PREFIX+" joinVocal`. Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les étudiants de l'UE. Les channels créés par cette commandes sont effacés lorsque plus personne n'est dans le vocal créé."+
+          "\n`"+process.env.BOT_PREFIX+" joinVocal`. Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les personnes de votre choix. Les channels créés par cette commandes sont effacés lorsque plus personne n'est dans le vocal créé."+
           "\n\n`"+process.env.BOT_PREFIX+" author` Affiche des informations diverses sur l'auteur de ce bot").catch(console.error)
     }
   }
