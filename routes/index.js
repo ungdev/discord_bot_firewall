@@ -173,79 +173,84 @@ router.get("/attribuerrole", function(req, res) {
   /** On vérifie qu'on a toutes les infos du formulaire */
   if(req.query.site_etu_token && req.query.utilisateur && req.query.discriminant)
   {
-    let donnees = {
-      "access_token": req.query.site_etu_token
-    };
-    /** On récupère les données de l'utilisateur sur le site etu */
-    axios.get(baseUrl+"/api/public/user/account?"+httpBuildQuery(donnees))
-        .then(async function (response) {
-          /** L'utilisateur du site etu dans membreSiteEtu */
-          let membreSiteEtu = response.data.data;
-          /** Si on arrive à savoir si l'user est étu ou pas */
-          if(typeof membreSiteEtu.isStudent !== 'undefined')
-          {
-            let guild = client.guilds.cache.get(process.env.SERVER_ID);
-            /** On récupère son compte discord dans le serveur */
-            let membreDiscord = (await guild.members.fetch()).find(user => user.user.username === req.query.utilisateur && user.user.discriminator === req.query.discriminant);
-            /** Si on l"a trouvé */
-            if(membreDiscord)
+    if(req.query.checkRGPD !== "on")
+      res.send("Vous n'avez pas coché la case de consentement RGPD. Vos données n'ont pas été traitées. <a href='/'>Revenir au départ et recommencer !</a>");
+    else
+    {
+      let donnees = {
+        "access_token": req.query.site_etu_token
+      };
+      /** On récupère les données de l'utilisateur sur le site etu */
+      axios.get(baseUrl+"/api/public/user/account?"+httpBuildQuery(donnees))
+          .then(async function (response) {
+            /** L'utilisateur du site etu dans membreSiteEtu */
+            let membreSiteEtu = response.data.data;
+            /** Si on arrive à savoir si l'user est étu ou pas */
+            if(typeof membreSiteEtu.isStudent !== 'undefined')
             {
-              let roles = (await guild.roles.fetch()).cache;
-              /** Liste des id de rôles à attribuer */
-              let rolesAAttribuer = [];
-              /** On définit son pseudo */
-              let pseudo = capitalize(membreSiteEtu.firstName.toString())+" "+membreSiteEtu.lastName.toString().toUpperCase();
-              if(membreSiteEtu.isStudent)
+              let guild = client.guilds.cache.get(process.env.SERVER_ID);
+              /** On récupère son compte discord dans le serveur */
+              let membreDiscord = (await guild.members.fetch()).find(user => user.user.username === req.query.utilisateur && user.user.discriminator === req.query.discriminant);
+              /** Si on l"a trouvé */
+              if(membreDiscord)
               {
-                /** On ajoute le rôle étudiant */
-                rolesAAttribuer.push(process.env.ROLE_ETUDIANT_ID);
-                /** On définit un pseudo */
-                pseudo +=" - "+membreSiteEtu.branch+membreSiteEtu.level;
-                /** On définit la liste des noms de rôles à attribuer (nom uvs + nom de branche) */
-                let tableauChainesToRoles = membreSiteEtu.uvs;
-                tableauChainesToRoles.push(membreSiteEtu.branch);
-
-                /** Pour tous les noms de rôle on récupère l'id du rôle et on l'ajoute à la liste des id de rôles à attribuer */
-                for (let chaine of tableauChainesToRoles)
+                let roles = (await guild.roles.fetch()).cache;
+                /** Liste des id de rôles à attribuer */
+                let rolesAAttribuer = [];
+                /** On définit son pseudo */
+                let pseudo = capitalize(membreSiteEtu.firstName.toString())+" "+membreSiteEtu.lastName.toString().toUpperCase();
+                if(membreSiteEtu.isStudent)
                 {
-                  if(chaine === "")
-                    chaine="vide";
-                  let role = roles.find(role => role.name.toUpperCase() === chaine.toString().toUpperCase());
-                  if(role)
-                    rolesAAttribuer.push(role.id);
-                  else{
-                    /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
-                    client.channels.cache.get(process.env.CHANNEL_ADMIN_ID).send("Le rôle "+chaine+" va être créé pour l'utilisateur "+membreDiscord.user.tag+" "+pseudo);
-                    let roleCree = await guild.roles.create({ data: {name: chaine.toString().toUpperCase()}}).catch(console.error);
-                    rolesAAttribuer.push(roleCree.id);
+                  /** On ajoute le rôle étudiant */
+                  rolesAAttribuer.push(process.env.ROLE_ETUDIANT_ID);
+                  /** On définit un pseudo */
+                  pseudo +=" - "+membreSiteEtu.branch+membreSiteEtu.level;
+                  /** On définit la liste des noms de rôles à attribuer (nom uvs + nom de branche) */
+                  let tableauChainesToRoles = membreSiteEtu.uvs;
+                  tableauChainesToRoles.push(membreSiteEtu.branch);
+
+                  /** Pour tous les noms de rôle on récupère l'id du rôle et on l'ajoute à la liste des id de rôles à attribuer */
+                  for (let chaine of tableauChainesToRoles)
+                  {
+                    if(chaine === "")
+                      chaine="vide";
+                    let role = roles.find(role => role.name.toUpperCase() === chaine.toString().toUpperCase());
+                    if(role)
+                      rolesAAttribuer.push(role.id);
+                    else{
+                      /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
+                      client.channels.cache.get(process.env.CHANNEL_ADMIN_ID).send("Le rôle "+chaine+" va être créé pour l'utilisateur "+membreDiscord.user.tag+" "+pseudo);
+                      let roleCree = await guild.roles.create({ data: {name: chaine.toString().toUpperCase()}}).catch(console.error);
+                      rolesAAttribuer.push(roleCree.id);
+                    }
                   }
                 }
+                /** Si pas étudiant, le seul rôle est le rôle prof */
+                else
+                  rolesAAttribuer.push(process.env.ROLE_ENSEIGNANT_ID);
+                /** On applique le pseudo sur le compte */
+                if(pseudo.length > 32)
+                {
+                  client.channels.cache.get(process.env.CHANNEL_ADMIN_ID).send(" :warning: Le pseudo "+pseudo+" de l'utilisateur "+membreDiscord.user.tag+" est trop long. Vérifiez son pseudo.");
+                  pseudo = pseudo.slice(0,32);
+                }
+                membreDiscord.setNickname(pseudo).catch(console.error);
+                /** On applique les rôles */
+                membreDiscord.roles.set(rolesAAttribuer).catch(console.error);
+                /** On affiche un message */
+                res.send("Vos rôles ont été affectés. Si d'ici quelques heures rien ne change dans votre compte, merci de nous contacter.<br><br><b>Vous pouvez maintenant fermer cette fenêtre et retourner sur Discord.</b>");
               }
-              /** Si pas étudiant, le seul rôle est le rôle prof */
+              /** SI utilisateur non trouvé dans le serveur, message */
               else
-                rolesAAttribuer.push(process.env.ROLE_ENSEIGNANT_ID);
-              /** On applique le pseudo sur le compte */
-              if(pseudo.length > 32)
-              {
-                client.channels.cache.get(process.env.CHANNEL_ADMIN_ID).send(" :warning: Le pseudo "+pseudo+" de l'utilisateur "+membreDiscord.user.tag+" est trop long. Vérifiez son pseudo.");
-                pseudo = pseudo.slice(0,32);
-              }
-              membreDiscord.setNickname(pseudo).catch(console.error);
-              /** On applique les rôles */
-              membreDiscord.roles.set(rolesAAttribuer).catch(console.error);
-              /** On affiche un message */
-              res.send("Vos rôles ont été affectés. Si d'ici quelques heures rien ne change dans votre compte, merci de nous contacter.<br><br><b>Vous pouvez maintenant fermer cette fenêtre et retourner sur Discord.</b>");
+                res.send("Utilisateur discord non trouvé dans le serveur. Avez-vous bien rejoint le serveur Discord ? <a href='/'>Revenir au départ</a>");
             }
-            /** SI utilisateur non trouvé dans le serveur, message */
+            /** Si le token n'a pas pu être validé (tentative de hacking, ...), affiche un message */
             else
-              res.send("Utilisateur discord non trouvé dans le serveur. Avez-vous bien rejoint le serveur Discord ? <a href='/'>Revenir au départ</a>");
-          }
-          /** Si le token n'a pas pu être validé (tentative de hacking, ...), affiche un message */
-          else
-            res.send(texteBug);
-    }).catch(function () {
-      res.send(texteBug);
-    });
+              res.send(texteBug);
+          }).catch(function () {
+        res.send(texteBug);
+      });
+    }
   }
   /** Si tous les champs n'ont pas pu être trouvés, affiche un message */
   else
