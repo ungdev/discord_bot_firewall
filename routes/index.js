@@ -17,6 +17,59 @@ const capitalize = (s) => {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 };
 
+/** Un tableau[channelTexte] = channelVocal associé */
+/** Utilisé pour vérifier si channel voix existe déjà pour un chan texte */
+let tableauChannelTexteAChannelVocal = [];
+
+/** Structure : tableauChannelsVocauxEnCours[member.id] = listedesChannelsIDGenDyn */
+/** Utilisé pour supprimer les chan qui ont été générés dynamiquement */
+let tableauChannelsVocauxEnCours = [];
+
+function remove_non_ascii(str) {
+
+  if ((str===null) || (str===''))
+    return false;
+  else
+    str = str.toString();
+
+  return str.replace(/[^\x20-\x7E]/g, '');
+}
+
+/** Merci StackOverflow */
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
+
+function help(channelID)
+{
+  let texte = ":tools: Plusieurs fonctions accessibles. Contacter Ivann LARUELLE, ivann.laruelle@gmail.com, créateur de ce bot, en cas de problème";
+  if(channelID === process.env.CHANNEL_ADMIN_ID)
+  {
+    texte = texte + "\n\n`" + process.env.BOT_PREFIX + " addUE @RoleUE <categoryID> texte | vocal | lesDeux`. Permet de créer les channels texte et voix d'un rôle existant avec les permissions correctes. La catégorie et le rôle doivent déjà exister." +
+        "\n`" + process.env.BOT_PREFIX + " delUE #ueASupprimer vocal | tout`. Supprime les channels texte et voix de l'UE et le rôle. Vous devez tagguer le channel texte de l'UE !" +
+        "\n`" + process.env.BOT_PREFIX + " getNb @ROLE`. Récupère le nombre de personnes dans le rôle. Le rôle doit exister." +
+        "\n`" + process.env.BOT_PREFIX + " getRoles NombrePersonne`. Affiche la liste des rôles ne contenant que le nombre de personnes demandé. :clock1: Cette commande peut être longue." +
+        "\n`" + process.env.BOT_PREFIX + " getZeroOne`. Affiche les rôles ayant soit 0 ou 1 personne dedans. :clock1: Cette commande peut être longue." +
+        "\n`" + process.env.BOT_PREFIX + " getUrl`. Affiche les url du serveur web du bot, le lien d'invitation discord"+
+        "\n`" + process.env.BOT_PREFIX + " kickAll`. Expulse tous les membres du serveur. Commande réservée aux administrateurs. Expulse toute personne qui tape la commande sans être admin.\n\n";
+  }
+  else
+    texte = texte + "\n";
+  texte = texte + "\n`" + process.env.BOT_PREFIX + " export`. Exporte tout le channel (maximum 600 messages) dans laquelle la commande est tapée, dans un html lisible offline. **Seuls ceux ayant un rôle >= Enseignant** peuvent taper cette commande n'importe où." +
+      "\n`" + process.env.BOT_PREFIX + " joinVocal`. Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi vocal et textuel que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les étudiants de l'UE." +
+      "\n\n`" + process.env.BOT_PREFIX + " author` Affiche des informations diverses sur l'auteur de ce bot";
+  return texte;
+}
+
+function author()
+{
+  return "Le créateur de ce bot est Ivann LARUELLE, ivann.laruelle@gmail.com"+
+      "\nJ'aime l'OpenSource : https://github.com/larueli/discord_bot_firewall / https://hub.docker.com/repository/docker/larueli/discord_bot_firewall"+
+      "\n\n:sos: Si vous aussi vous voulez faire un bot sur Discord, ne faites pas la même erreur que moi, **oubliez NodeJS**. Quelle idée quand j'y repense ... Si j'avais su plutôt que la librairie discord.py existait..."+
+      "\n\n\nLe créateur du système d'export est ici : https://github.com/Tyrrrz";
+}
+
+
 /* GET home page. */
 router.get('/', function(req, res) {
   /** Redirige tout de suite l'utilisateur vers le site etu pour authentification. La route de retour est /connexion */
@@ -74,11 +127,11 @@ router.get("/attribuerrole", function(req, res) {
           {
             let guild = client.guilds.cache.get(process.env.SERVER_ID);
             /** On récupère son compte discord dans le serveur */
-            let membreDiscord = guild.members.cache.find(user => user.user.username === req.query.utilisateur && user.user.discriminator === req.query.discriminant);
+            let membreDiscord = (await guild.members.fetch()).find(user => user.user.username === req.query.utilisateur && user.user.discriminator === req.query.discriminant);
             /** Si on l"a trouvé */
             if(membreDiscord)
             {
-              let roles = guild.roles.cache;
+              let roles = (await guild.roles.fetch()).cache;
               /** Liste des id de rôles à attribuer */
               let rolesAAttribuer = [];
               /** On définit son pseudo */
@@ -134,14 +187,14 @@ router.get("/attribuerrole", function(req, res) {
 });
 
 /** Quand le bot se lance */
-client.on('ready', () => {
+client.on('ready', async () => {
   /** On dit qu'il est en train de jouer à "gérer le serveur" sur l'url du BOT */
   client.user.setActivity("gérer le serveur", {
     type: "PLAYING",
     url: process.env.BOT_URL
   }).catch(console.error);
   /** On alerte sur le chan dédié au bot du démarrage */
-  client.channels.cache.get(process.env.CHANNEL_ADMIN_ID).send("Je suis en ligne. Je viens d'être (re)démarré. Cela signifie qu'il y a soit eu un bug, soit que j'ai été mis à jour, soit qu'on m'a redémarré manuellement. La gestion des vocaux a été remise à zéro (je ne gère plus ceux déjà créés).");
+  (await client.channels.fetch(process.env.CHANNEL_ADMIN_ID)).send("Je suis en ligne. Je viens d'être (re)démarré. Cela signifie qu'il y a soit eu un bug, soit que j'ai été mis à jour, soit qu'on m'a redémarré manuellement. La gestion des vocaux a été remise à zéro (je ne gère plus ceux déjà créés).");
 });
 
 /**
@@ -153,335 +206,306 @@ client.on("guildMemberAdd", (member) => {
       "\nVous devez également lire les règles dans le channel `accueil`"+"\n\nEn cas de problème, contactez l'un des administrateurs, visibles en haut à droite.").catch(console.error)
 });
 
-/** Un tableau[channelTexte] = channelVocal associé */
-let tableauChannelTexteAChannelVocal = [];
-
-/** Structure : owner.id = listedesChannelsID */
-let tableauChannelsVocauxEnCours = [];
-
 /** Si le bot reçoit un message en privé, ou sur l'un des channels qu'ils peut voir */
-client.on('message', msg => {
+client.on('message', async (msg) => {
   /** Si le message a le bon préfixe et est dans le channel dédié au bot, accès étendu aux commandes */
-  if (msg.content.toLowerCase().startsWith(process.env.BOT_PREFIX.toLowerCase()) &&
-      msg.channel.id === process.env.CHANNEL_ADMIN_ID) {
+  if (msg.content.toLowerCase().startsWith(process.env.BOT_PREFIX.toLowerCase())) {
     /** On découpe la ligne de commande par les espaces */
     /** index 0 : le préfix, index 1 : la commande, index 2,3,... : les vrais paramètres */
     let parametres = msg.content.split(" ");
-    /** S'il y a une commande */
-    if(parametres.length > 1)
-      /** Série de if,elseifs, else avec les commandes possibles */
-
-      /** Créer les salons d'une UE dans une catégorie, l'UE ayant déjà un rôle */
-      if (parametres[1].toLowerCase() === "addUE".toLowerCase()) {
-        /** S'il n'y a pas 3 paramètres dont la mention d'un role ni de ce qui doit être créé */
-        if( parametres.length !== 5 ||
-            !msg.mentions.roles.first() ||
-            !(["texte","vocal","lesDeux"].includes(parametres[4]))
-        )
-        {
-          msg.reply(" :warning:  Erreur. La syntaxe est `"+process.env.BOT_PREFIX+" addUE @RoleUE <categoryID> texte | vocal | lesDeux`. La catégorie et le rôle doivent déjà exister.").catch(console.error);
-        }
-        /** Si tout va bien */
-        else
-        {
-          /** On crée le texte avec aucune permission pour @everyone et les permissions d' écrire pour le rôle concerné */
-          if(parametres[4].toLowerCase() === "texte" || parametres[4] === "lesDeux".toLowerCase())
-          {
-            client.guilds.cache.get(process.env.SERVER_ID).channels.create(msg.mentions.roles.first().name.toLowerCase(), {parent: parametres[3], permissionOverwrites:[
-                {
-                  id: msg.guild.roles.everyone,
-                  deny: 2147483127
-                },
-                {
-                  id: msg.mentions.roles.first().id,
-                  allow: 36961344
-                }
-              ]}).catch(console.error);
+    if (parametres.length === 1)
+      parametres[1] = "help";
+    if (msg.channel.id === process.env.CHANNEL_ADMIN_ID) {
+          /** Série de if,elseifs, else avec les commandes possibles */
+          /** Créer les salons d'une UE dans une catégorie, l'UE ayant déjà un rôle */
+        if (parametres[1].toLowerCase() === "addue") {
+          /** S'il n'y a pas 3 paramètres dont la mention d'un role ni de ce qui doit être créé */
+          if (parametres.length !== 5 ||
+              !msg.mentions.roles.first() ||
+              !(["texte", "vocal", "lesDeux"].includes(parametres[4]))
+          ) {
+            msg.reply(" :warning:  Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " addUE @RoleUE <categoryID> texte | vocal | lesDeux`. La catégorie et le rôle doivent déjà exister.").catch(console.error);
           }
-          /** On crée le vocal avec aucune permission pour @everyone et les permissions de parler/connecter pour le rôle concerné */
-          if(parametres[4].toLowerCase() === "vocal".toLowerCase() || parametres[4].toLowerCase() === "lesDeux".toLowerCase())
-          {
-            client.guilds.cache.get(process.env.SERVER_ID).channels.create(msg.mentions.roles.first().name.toLowerCase()+" - vocal", {parent: parametres[3], type: "voice", permissionOverwrites:[
-                {
-                  id: msg.guild.roles.everyone,
-                  deny: 2147483127
-                },
-                {
-                  id: msg.mentions.roles.first().id,
-                  allow: 36961344
-                }
-              ]}).catch(console.error);
+          /** Si tout va bien */
+          else {
+            /** On crée le texte avec aucune permission pour @everyone et les permissions d'écrire pour le rôle concerné */
+            if (parametres[4].toLowerCase() === "texte" || parametres[4] === "lesDeux".toLowerCase()) {
+              client.guilds.cache.get(process.env.SERVER_ID).channels.create(msg.mentions.roles.first().name.toLowerCase(), {
+                parent: parametres[3], permissionOverwrites: [
+                  {
+                    id: msg.guild.roles.everyone,
+                    deny: 2147483127
+                  },
+                  {
+                    id: msg.mentions.roles.first().id,
+                    allow: 36961344
+                  }
+                ]
+              }).then(function (channel) {
+                channel.send("Bonjour <@&"+msg.mentions.roles.first().id+", votre channel texte vient d'être créé !");
+              }).catch(console.error);
+            }
+            /** On crée le vocal avec aucune permission pour @everyone et les permissions de parler/connecter pour le rôle concerné */
+            if (parametres[4].toLowerCase() === "vocal".toLowerCase() || parametres[4].toLowerCase() === "lesDeux".toLowerCase()) {
+              client.guilds.cache.get(process.env.SERVER_ID).channels.create(msg.mentions.roles.first().name.toLowerCase() + " - vocal", {
+                parent: parametres[3], type: "voice", permissionOverwrites: [
+                  {
+                    id: msg.guild.roles.everyone,
+                    deny: 2147483127
+                  },
+                  {
+                    id: msg.mentions.roles.first().id,
+                    allow: 36961344
+                  }
+                ]
+              }).catch(console.error);
+            }
+            msg.channel.send(":white_check_mark: Si la catégorie existe, c'est fait !").catch(console.error);
           }
-          msg.channel.send(":white_check_mark: Si la catégorie existe, c'est fait !").catch(console.error);
         }
-      }
-      /** Suppression d'une UE en indiquant son channel texte */
-    else if(parametres[1].toLowerCase() === "delUE".toLowerCase())
-    {
-      if(parametres.length !== 4 || !msg.mentions.channels.first() || !(["tout".toLowerCase(), "vocal".toLowerCase()].includes(parametres[3].toLowerCase())))
-      {
-        msg.reply(" :warning: Erreur. La syntaxe est `"+process.env.BOT_PREFIX+" delUE #ueASupprimer vocal | tout`. Vous devez tagguer le channel texte de l'UE !").catch(console.error);
-      }
-      else
-      {
-        if(parametres[3].toLowerCase() === "tout".toLowerCase() || parametres[3].toLowerCase() === "vocal".toLowerCase())
-          client.guilds.cache.get(process.env.SERVER_ID).channels.cache.find(channel => (channel.name.toLowerCase().includes(" "+msg.mentions.channels.first().name.toLowerCase()) || channel.name.toLowerCase().includes(msg.mentions.channels.first().name.toLowerCase()+" ")) && channel.type === "voice").delete("Demandé par "+msg.author.tag+" "+msg.author.username).catch(console.error);
-        if(parametres[3] === "tout")
-        {
-          msg.mentions.channels.first().delete("Demandé par "+msg.author.tag+" "+msg.author.username).catch(console.error);
-          client.guilds.cache.get(process.env.SERVER_ID).roles.cache.find(role => role.name.toUpperCase() === msg.mentions.channels.first().name.toUpperCase()).delete("Demandé par "+msg.author.tag+" "+msg.author.username).catch(console.error);
-        }
-        msg.channel.send(":white_check_mark: Ce que vous avez demandé a été effacé pour "+msg.mentions.channels.first().name+" !").catch(console.error);
-      }
-    }
-    else if (parametres[1].toLowerCase() === "getNb".toLowerCase()) {
-        if (parametres.length !== 3 || !msg.mentions.roles.first()) {
-          msg.reply(" :warning:  Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " getNb @RoleUE`. Le rôle doit exister.").catch(console.error);
-        } else {
-          msg.channel.send(":white_check_mark: Il y a "+msg.mentions.roles.first().members.size+" utilisateur(s) dans le rôle "+msg.mentions.roles.first().name).catch(console.error);
-        }
-      }
-    else if (parametres[1].toLowerCase() === "getRoles".toLowerCase()) {
-        if (parametres.length !== 3) {
-          msg.reply(" :warning:  Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " getRoles NombreDePersonnes`.").catch(console.error);
-        } else {
-          msg.channel.send(":clock1: Cette commande peut être longue, elle affichera un message pour signaler sa fin. Si elle ne le fait pas, contacter un administrateur.").then(function () {
+        /** Suppression d'une UE en indiquant son channel texte */
+        else if (parametres[1].toLowerCase() === "delue") {
+          if (parametres.length !== 4 || !msg.mentions.channels.first() || !(["tout".toLowerCase(), "vocal".toLowerCase()].includes(parametres[3].toLowerCase()))) {
+            msg.reply(" :warning: Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " delUE #ueASupprimer vocal | tout`. Vous devez tagguer le channel texte de l'UE !").catch(console.error);
+          } else {
+            if (parametres[3].toLowerCase() === "tout".toLowerCase() || parametres[3].toLowerCase() === "vocal".toLowerCase())
+              client.channels.cache.find(channel => (channel.name.toLowerCase().includes(" " + msg.mentions.channels.first().name.toLowerCase()) || channel.name.toLowerCase().includes(msg.mentions.channels.first().name.toLowerCase() + " ")) && channel.type === "voice").delete("Demandé par " + msg.author.tag + " " + msg.author.username).catch(console.error);
+            if (parametres[3] === "tout") {
+              msg.mentions.channels.first().delete("Demandé par " + msg.author.tag + " " + msg.author.username).catch(console.error);
+              (await client.guilds.cache.get(process.env.SERVER_ID).roles.fetch()).cache.find(role => role.name.toUpperCase() === msg.mentions.channels.first().name.toUpperCase()).delete("Demandé par " + msg.author.tag + " " + msg.author.username).catch(console.error);
+            }
+            msg.channel.send(":white_check_mark: Ce que vous avez demandé a été effacé pour " + msg.mentions.channels.first().name + " !").catch(console.error);
+          }
+        } else if (parametres[1].toLowerCase() === "getnb") {
+          if (parametres.length !== 3 || !msg.mentions.roles.first()) {
+            msg.reply(" :warning:  Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " getNb @RoleUE`. Le rôle doit exister.").catch(console.error);
+          } else {
+            msg.channel.send(":white_check_mark: Il y a " + msg.mentions.roles.first().members.size + " utilisateur(s) dans le rôle " + msg.mentions.roles.first().name).catch(console.error);
+          }
+        } else if (parametres[1].toLowerCase() === "getroles") {
+          if (parametres.length !== 3) {
+            msg.reply(" :warning:  Erreur. La syntaxe est `" + process.env.BOT_PREFIX + " getRoles NombreDePersonnes`.").catch(console.error);
+          } else {
+            msg.channel.send(":clock1: Cette commande peut être longue, elle affichera un message pour signaler sa fin. Si elle ne le fait pas, contacter un administrateur.").then(async function () {
+              let compteur = 0;
+              (await msg.guild.roles.fetch()).cache.forEach(role => {
+                if (role.members.size.toString() === parametres[2].toString()) {
+                  msg.channel.send("Le rôle " + role.name + " a " + role.members.size + " utilisateur(s).").catch(console.error);
+                  compteur = compteur + 1;
+                }
+              });
+              msg.channel.send(":white_check_mark: Commande terminée, " + compteur + " roles ont été identifiés.").catch(console.error);
+            }).catch(console.error);
+          }
+        } else if (parametres[1].toLowerCase() === "getzeroone") {
+          msg.channel.send(":clock1: Cette commande peut être longue, elle affichera un message pour signaler sa fin. Si elle ne le fait pas, contacter un administrateur.").then(async function () {
             let compteur = 0;
-            msg.guild.roles.cache.forEach(role => {
-              if(role.members.size.toString() === parametres[2].toString()) {
-                msg.channel.send("Le rôle "+role.name+" a "+ role.members.size + " utilisateur(s).").catch(console.error);
+            (await msg.guild.roles.fetch()).cache.forEach(role => {
+              if (role.members.size === 0 || role.members.size === 1) {
+                msg.channel.send("Le rôle " + role.name + " a " + role.members.size + " utilisateur.").catch(console.error);
                 compteur = compteur + 1;
               }
             });
-            msg.channel.send(":white_check_mark: Commande terminée, "+compteur+" roles ont été identifiés.").catch(console.error);
+            msg.channel.send(":white_check_mark: Commande terminée, " + compteur + " roles ont été identifiés.").catch(console.error);
           }).catch(console.error);
+        } else if (parametres[1].toLowerCase() === "geturl") {
+          msg.channel.send("URL de connexion (à transmettre) : " + process.env.BOT_URL +
+              "\n\nLe lien d'invitation direct (peu recommandé) : " + process.env.LIEN_INVITATION_DISCORD).catch(console.error);
         }
-      }
-    else if (parametres[1].toLowerCase() === "getZeroOne".toLowerCase()) {
-        msg.channel.send(":clock1: Cette commande peut être longue, elle affichera un message pour signaler sa fin. Si elle ne le fait pas, contacter un administrateur.").then(function () {
-          let compteur = 0;
-          msg.guild.roles.cache.forEach(role => {
-            if(role.members.size === 0 || role.members.size === 1) {
-              msg.channel.send("Le rôle "+role.name+" a "+ role.members.size + " utilisateur.").catch(console.error);
-              compteur = compteur + 1;
+        else if (parametres[1].toLowerCase() === "kickall")
+        {
+          if((await msg.member.fetch()).hasPermission("ADMINISTRATOR"))
+          {
+            if(parametres.length < 3)
+              msg.reply("@everyone :warning: Cette commande est destructrice. Elle expulsera toute les personnes / bot / ... ayant un rôle inférieur au bot, ou n'étant pas admin. Tapez `"+process.env.BOT_PREFIX+" kickall SERVER_ID` pour confirmer.\n\n@everyone Surveillez !").catch(console.error);
+            else
+            {
+              if(parametres[2] === msg.guild.id)
+              {
+                msg.reply("@everyone Lancement de l'expulsion. :clock1: Cette commande peut être longue, le bot enverra un message quand ça sera fini.").catch(console.error);
+                await msg.channel.send("Il y a " + (await msg.guild.fetch()).memberCount + " membres");
+                let compteur = 0;
+                (await client.guilds.cache.get(process.env.SERVER_ID).members.fetch()).forEach(function (membre) {
+                  if(!(membre.hasPermission("ADMINISTRATOR")))
+                  {
+                    membre.kick("commande kickall").catch(console.error);
+                    compteur = compteur+1;
+                  }
+                  else
+                    msg.channel.send("L'utilisateur "+membre.user.tag+" n'a pas pu être expulsé.").catch(console.error);
+                });
+                await msg.reply(" :white_check_mark: " + compteur + " utilisateurs ont été expulsés. Il reste " + (await msg.guild.members.fetch()).size + " membres").catch(console.error);
+              }
+              else
+                msg.reply("L'ID ne correspond pas.").catch(console.error);
             }
-          });
-          msg.channel.send(":white_check_mark: Commande terminée, "+compteur+" roles ont été identifiés.").catch(console.error);
-        }).catch(console.error);
-      }
-    else if (parametres[1].toLowerCase() === "getUrl".toLowerCase()) {
-        msg.channel.send("URL de connexion (à transmettre) : "+process.env.BOT_URL+"\n\nLe lien d'invitation direct (peu recommandé) : "+process.env.LIEN_INVITATION_DISCORD).catch(console.error);
-      }
-    else if (!(["export".toLowerCase(),"joinVocal".toLowerCase(),"author".toLowerCase()].includes(parametres[1].toLowerCase())))
-    {
-      parametres[1] = "help";
-    }
-    if(parametres.length === 1 || parametres[1] === "help")
-    {
-      msg.channel.send(":tools: Plusieurs fonctions accessibles. Contacter Ivann LARUELLE, ivann.laruelle@gmail.com, créateur de ce bot, en cas de problème"+
-      "\n\n`"+process.env.BOT_PREFIX+" addUE @RoleUE <categoryID> texte | vocal | lesDeux`. Permet de créer les channels texte et voix d'un rôle existant avec les permissions correctes. La catégorie et le rôle doivent déjà exister."+
-          "\n`"+process.env.BOT_PREFIX+" delUE #ueASupprimer vocal | tout`. Supprime les channels texte et voix de l'UE et le rôle. Vous devez tagguer le channel texte de l'UE !"+
-          "\n`"+process.env.BOT_PREFIX+" getNb @ROLE`. Récupère le nombre de personnes dans le rôle. Le rôle doit exister."+
-          "\n`"+process.env.BOT_PREFIX+" getRoles NombrePersonne`. Affiche la liste des rôles ne contenant que le nombre de personnes demandé. :clock1: Cette commande peut être longue."+
-          "\n`"+process.env.BOT_PREFIX+" getZeroOne`. Affiche les rôles ayant soit 0 ou 1 personne dedans. :clock1: Cette commande peut être longue."+
-          "\n`"+process.env.BOT_PREFIX+" getUrl`. Affiche les url du serveur web du bot, le lien d'invitation discord"+
-          "\n`"+process.env.BOT_PREFIX+" export`. Exporte tout le channel (maximum 600 messages) dans laquelle la commande est tapée, dans un html lisible offline. **Seuls ceux ayant un rôle >= Enseignant** peuvent taper cette commande n'importe où." +
-          "\n`"+process.env.BOT_PREFIX+" joinVocal`. Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi vocal et textuel que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les étudiants de l'UE." +
-          "\n\n`"+process.env.BOT_PREFIX+" author` Affiche des informations diverses sur l'auteur de ce bot").catch(console.error);
-    }
-  }
-  if (msg.content.toLowerCase().startsWith(process.env.BOT_PREFIX.toLowerCase() && msg.channel.type !== "dm"))
-  {
-    let parametres = msg.content.split(" ");
-    if(parametres.length < 2)
-      parametres[1] = "help";
-    if(parametres[1].toLowerCase() === "export")
-    {
-      if(msg.member.roles.highest.comparePositionTo(process.env.ROLE_ENSEIGNANT_ID) >= 0)
-      {
-        function remove_non_ascii(str) {
-
-          if ((str===null) || (str===''))
-            return false;
+          }
           else
-            str = str.toString();
-
-          return str.replace(/[^\x20-\x7E]/g, '');
+          {
+            msg.reply(" :octagonal_sign: Vous avez tenté d'expulser tout le monde sans être administrateur. Vous allez être expulsé.").catch(console.error);
+            msg.member.kick("A utilisé la commande kickall sans avoir les droits").catch(console.error);
+            msg.author.send(":octagonal_sign: Vous avez tenté d'expulser tout le monde sans être administrateur. Vous avez été expulsé.").catch(console.error);
+            (await client.channels.fetch(process.env.CHANNEL_ADMIN_ID)).send("@everyone L'utilisateur "+msg.member.nickname + " / "+msg.author.tag+ " a été expulsé.");
+          }
         }
-        let nomChannel = remove_non_ascii(msg.channel.name);
-        msg.channel.send("Lancement de l'export pour maximum 600 messages. Cette commande peut prendre un certain temps (2 minutes max, notifier un administrateur en cas de délai plus long !)").then(function () {
-          shell.exec("dotnet "+process.env.DISCORD_CHAT_EXPORTER_EXE_PATH + " export -t "+process.env.BOT_TOKEN+" -b -c "+msg.channel.id+" -f HtmlDark -o "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+".html 2>&1");
-          shell.exec("wget --mirror --restrict-file-names=windows --page-requisites --adjust-extension --convert-links --execute robots=off --span-hosts -Dlocalhost,cdn.discordapp.com,cdnjs.cloudflare.com -P " +process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+" --user-agent mozilla http://localhost:8000/"+nomChannel+".html 2>&1 | grep -i 'failed\\|error'");
-          shell.exec("touch "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+"/Ouvrez_le_dossier_localhost_et_ouvrez_le_fichier_html_dans_navigateur_web");
-          shell.exec("cd "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+" && zip -q -r "+nomChannel+".zip *");
-          msg.channel.send("Voici l'export. Vous devez extraire les fichiers du fichier zip, et ensuite ouvrir le fichier html du dossier localhost. La personne à l'origine de la commande l'a également reçu en message privé.").catch(console.error);
-          msg.channel.send(new Discord.MessageAttachment(process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+"/"+nomChannel+".zip")).catch(console.error);
-          msg.author.send("Voici l'export. Vous devez extraire les fichiers du fichier zip, et ensuite ouvrir le fichier html du dossier localhost.").catch(console.error);
-          msg.author.send(new Discord.MessageAttachment(process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+"/"+nomChannel+".zip")).then(function () {
-            shell.exec("rm -rf "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+"*");
-            //Windows : shell.exec("del "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+".html");
+        else {
+          parametres[1] = "help";
+        }
+    }
+    if (msg.channel.id !== process.env.CHANNEL_ADMIN_ID && msg.channel.type !== "dm") {
+      if (parametres[1].toLowerCase() === "export") {
+        if ((await msg.member.fetch()).roles.highest.comparePositionTo(process.env.ROLE_ENSEIGNANT_ID) >= 0) {
+          let nomChannel = remove_non_ascii(msg.channel.name);
+          msg.channel.send("Lancement de l'export pour maximum 600 messages. Cette commande peut prendre un certain temps (2 minutes max, notifier un administrateur en cas de délai plus long !)").then(function () {
+            shell.exec("dotnet " + process.env.DISCORD_CHAT_EXPORTER_EXE_PATH + " export -t " + process.env.BOT_TOKEN + " -b -c " + msg.channel.id + " -f HtmlDark -o " + process.env.DISCORD_CHAT_EXPORT_PATH + nomChannel + ".html 2>&1");
+            shell.exec("wget --mirror --restrict-file-names=windows --page-requisites --adjust-extension --convert-links --execute robots=off --span-hosts -Dlocalhost,cdn.discordapp.com,cdnjs.cloudflare.com -P " + process.env.DISCORD_CHAT_EXPORT_PATH + nomChannel + " --user-agent mozilla http://localhost:8000/" + nomChannel + ".html 2>&1 | grep -i 'failed\\|error'");
+            shell.exec("touch " + process.env.DISCORD_CHAT_EXPORT_PATH + nomChannel + "/Ouvrez_le_dossier_localhost_et_ouvrez_le_fichier_html_dans_navigateur_web");
+            shell.exec("cd " + process.env.DISCORD_CHAT_EXPORT_PATH + nomChannel + " && zip -q -r " + nomChannel + ".zip *");
+            msg.channel.send("Voici l'export. Vous devez extraire les fichiers du fichier zip, et ensuite ouvrir le fichier html du dossier localhost. La personne à l'origine de la commande l'a également reçu en message privé.").catch(console.error);
+            msg.channel.send(new Discord.MessageAttachment(process.env.DISCORD_CHAT_EXPORT_PATH + nomChannel + "/" + nomChannel + ".zip")).catch(console.error);
+            msg.author.send("Voici l'export. Vous devez extraire les fichiers du fichier zip, et ensuite ouvrir le fichier html du dossier localhost.").catch(console.error);
+            msg.author.send(new Discord.MessageAttachment(process.env.DISCORD_CHAT_EXPORT_PATH + nomChannel + "/" + nomChannel + ".zip")).then(function () {
+              shell.exec("rm -rf " + process.env.DISCORD_CHAT_EXPORT_PATH + nomChannel + "*");
+              //Windows : shell.exec("del "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+".html");
+            }).catch(console.error);
           }).catch(console.error);
-        }).catch(console.error);
-      }
-      else
-      {
-        msg.reply(" :octagonal_sign: Action non autorisée ! Seul un enseignant ou une personne ayant un rôle supérieur peut lancer cette commande.").catch(console.error);
-      }
-    }
-    else if (parametres[1].toLowerCase() === "author") {
-      msg.channel.send("Le créateur de ce bot est Ivann LARUELLE, ivann.laruelle@gmail.com\nJ'aime l'OpenSource : https://github.com/larueli/discord_bot_firewall / https://hub.docker.com/repository/docker/larueli/discord_bot_firewall\n\n\nLe créateur du système d'export est ici : https://github.com/Tyrrrz").catch(console.error);
-    }
-    else if (parametres[1].toLowerCase() === "joinVocal".toLowerCase()) {
-      if(!msg.member.voice.channelID)
-        msg.reply(" :warning: Erreur ! Vous devez déjà être dans un canal vocal pour exécuter cette commande !").catch(console.error);
-      else if(!msg.channel.parentID)
-        msg.reply(" :warning: Erreur ! Vous devez taper cette commande dans un channel texte dans une catégorie.").catch(console.error);
-      else if(msg.author.id in tableauChannelsVocauxEnCours)
-      {
-        msg.reply(" :warning: Vous êtes déjà dans un channel voix dont vous êtes le propriétaire. Quittez le vocal dans lequel vous êtes puis relancez la commande.").catch(console.error);
-      }
-      else if(msg.member.roles.cache.keyArray().includes(process.env.ROLE_ETUDIANT_ID))
-      {
-        if(!client.guilds.cache.get(process.env.SERVER_ID).roles.cache.find(role => role.name.toUpperCase() === msg.channel.name.toUpperCase()))
-        {
-          msg.reply(" :warning: Erreur ! Je n'ai pas pu trouver de role associé à votre nom de channel").catch(console.error);
+        } else {
+          msg.reply(" :octagonal_sign: Action non autorisée ! Seul un enseignant ou une personne ayant un rôle supérieur peut lancer cette commande.").catch(console.error);
         }
-        else if(!(msg.channel.id in tableauChannelTexteAChannelVocal))
-        {
-          client.guilds.cache.get(process.env.SERVER_ID).channels.create(msg.channel.name.toLowerCase() +" - etudes", {parent: msg.channel.parentID, type: "voice", permissionOverwrites:[
+      } else if (parametres[1].toLowerCase() === "author") {
+        msg.channel.send(author()).catch(console.error);
+      } else if (parametres[1].toLowerCase() === "joinvocal") {
+        if (!msg.member.voice.channelID)
+          msg.reply(" :warning: Erreur ! Vous devez déjà être dans un canal vocal pour exécuter cette commande !").catch(console.error);
+        else if (!msg.channel.parentID)
+          msg.reply(" :warning: Erreur ! Vous devez taper cette commande dans un channel texte dans une catégorie.").catch(console.error);
+        else if (msg.author.id in tableauChannelsVocauxEnCours) {
+          msg.reply(" :warning: Vous êtes déjà dans un channel voix dont vous êtes le propriétaire. Quittez le vocal dans lequel vous êtes puis relancez la commande.").catch(console.error);
+        } else if ((await msg.member.fetch()).roles.cache.keyArray().includes(process.env.ROLE_ETUDIANT_ID)) {
+          if (!client.guilds.cache.get(process.env.SERVER_ID).roles.cache.find(role => role.name.toUpperCase() === msg.channel.name.toUpperCase())) {
+            msg.reply(" :warning: Erreur ! Je n'ai pas pu trouver de role associé à votre nom de channel").catch(console.error);
+          } else if (!(msg.channel.id in tableauChannelTexteAChannelVocal)) {
+            client.guilds.cache.get(process.env.SERVER_ID).channels.create(msg.channel.name.toLowerCase() + " - etudes", {
+              parent: msg.channel.parentID, type: "voice", permissionOverwrites: [
+                {
+                  id: msg.guild.roles.everyone,
+                  deny: 2147483127
+                },
+                {
+                  id: (await client.guilds.cache.get(process.env.SERVER_ID).roles.fetch()).cache.find(role => role.name.toUpperCase() === msg.channel.name.toUpperCase()).id,
+                  allow: 36961344
+                }
+              ]
+            }).then(function (channel) {
+              if (!(msg.author.id in tableauChannelsVocauxEnCours))
+                tableauChannelsVocauxEnCours[msg.author.id] = [];
+              tableauChannelsVocauxEnCours[msg.author.id].push(channel.id);
+              msg.reply(" Votre canal vocal a été créé.").catch(console.error);
+              msg.member.voice.setChannel(channel.id).catch(console.error);
+              tableauChannelTexteAChannelVocal[msg.channel.id] = channel.id;
+            }).catch(console.error);
+          } else
+            msg.member.voice.setChannel(tableauChannelTexteAChannelVocal[msg.channel.id]).catch(console.error);
+        } else if ((await msg.member.fetch()).roles.cache.keyArray().includes(process.env.ROLE_ENSEIGNANT_ID)) {
+          let nomChannel = "vocal";
+          if (!msg.member.nickname)
+            nomChannel = msg.member.user.username;
+          else
+            nomChannel = msg.member.nickname;
+          if (msg.mentions.roles.first())
+            nomChannel = msg.mentions.roles.first().name.toLowerCase();
+          nomChannel = nomChannel + "-amphi";
+          let Permissions;
+          if (msg.mentions.roles.first()) {
+            Permissions = [
               {
                 id: msg.guild.roles.everyone,
                 deny: 2147483127
               },
               {
-                id: client.guilds.cache.get(process.env.SERVER_ID).roles.cache.find(role => role.name.toUpperCase() === msg.channel.name.toUpperCase()).id,
-                allow: 36961344
+                id: msg.mentions.roles.first().id,
+                allow: 37223488
+              },
+              {
+                id: msg.author.id,
+                allow: 305659216
               }
-            ]}).then(function (channel) {
-            if(!(msg.author.id in tableauChannelsVocauxEnCours))
-              tableauChannelsVocauxEnCours[msg.author.id] = [];
-            tableauChannelsVocauxEnCours[msg.author.id].push(channel.id);
-            msg.reply(" Votre canal vocal a été créé.").catch(console.error);
-            msg.member.voice.setChannel(channel.id).catch(console.error);
-            tableauChannelTexteAChannelVocal[msg.channel.id]=channel.id;
-          }).catch(console.error);
+            ];
+          } else {
+            Permissions = [
+              {
+                id: msg.guild.roles.everyone,
+                deny: 2147483127
+              },
+              {
+                id: process.env.ROLE_ENSEIGNANT_ID,
+                allow: 37223488
+              },
+              {
+                id: process.env.ROLE_ETUDIANT_ID,
+                allow: 37223488
+              },
+              {
+                id: msg.author.id,
+                allow: 305659216
+              }
+            ];
+          }
+          client.guilds.cache.get(process.env.SERVER_ID).channels.create(nomChannel + " - vocal", {
+            parent: process.env.CATEGORY_AMPHI,
+            type: "voice",
+            permissionOverwrites: Permissions
+          })
+              .then(function (channel) {
+                if (!(msg.member.id in tableauChannelsVocauxEnCours))
+                  tableauChannelsVocauxEnCours[msg.member.id] = [];
+                tableauChannelsVocauxEnCours[msg.member.id].push(channel.id);
+                msg.member.voice.setChannel(channel.id).catch(console.error);
+              })
+              .catch(console.error);
+          client.guilds.cache.get(process.env.SERVER_ID).channels.create(nomChannel, {
+            parent: process.env.CATEGORY_AMPHI,
+            permissionOverwrites: Permissions
+          })
+              .then(async function (channel) {
+                if (!(msg.member.id in tableauChannelsVocauxEnCours))
+                  tableauChannelsVocauxEnCours[msg.member.id] = [];
+                tableauChannelsVocauxEnCours[msg.member.id].push(channel.id);
+                (await client.channels.fetch(channel.id)).send(":speaking_head: <@" + msg.member.id + "> Votre amphi vient d'être créé. Vous disposez d'un canal textuel (celui que vous regardez, visible à gauche et qui commence par #), et d'un canal vocal où vous pouvez parler jusqu'à 100 personnes, et 50 maximum si vous partagez votre écran." +
+                    "\n:wastebasket: **Les canaux voix et texte seront effacés dès que plus personne ne sera dans le canal vocal.**" +
+                    "\n\n:writing_hand: Si vous souhaitez conserver le tchat, pensez à taper commande `/ UE export`, **sans l'espace entre / et UE**. Seul un enseignant ou un modérateur/administrateur peut utiliser cette commande qui génére un fichier zip contenant tout la conversation du tchat textuel utilisable dans un navigateur web, même hors ligne. :warning: Au delà de 600 messages (il faut y arriver !), la sauvegarde n'est pas garantie." +
+                    "\n\n:tools: Vous pouvez renommer vos salons sur la gauche qui portent votre nom pour leur donner le nom de l'UE par exemple (clic-droit sur le salon à gauche, modifier le salon puis enregistrer les changements)" +
+                    "\n\n:toolbox: En bas à gauche, à côté de voix connectée, vous disposez de 5 boutons." +
+                    "\nLes deux boutons au dessus permettent de diffuser votre écran (bouton flèche dans l'écran) ou de mettre fin à la communication (bouton téléphone avec la croix)." +
+                    "\nLes trois boutons du bas permettent de couper votre micro (ne plus parler), ou votre casque (ne plus entendre), et d'accéder aux paramètres du logiciels grâce à la roue crantée." +
+                    "\n\n:grey_question: N'hésitez pas à envoyer un message à la modération (tapez `@ Modération` sans espace) ou l'administration (`@ Administrateur`, sans espace) du serveur en cas de souci." +
+                    "\n\n:school: Bon cours !\n\n").then(async function (message) {
+                  message.pin().catch(console.error);
+                  if (msg.mentions.roles.first()) {
+                    channel.send(":loudspeaker: Etudiants de <@&" + msg.mentions.roles.first().id + ">, votre enseignant " + (msg.member.nickname ? msg.member.nickname : msg.author.tag) + " vient de créer un amphi !").catch(console.error);
+                    let channelEtudiants = client.channels.cache.find(channel => (channel.type === "text" && channel.name.toLowerCase() === msg.mentions.roles.first().name.toLowerCase()));
+                    if (channelEtudiants)
+                      channelEtudiants.send(":school: <@&" + msg.mentions.roles.first().id + "> Votre enseignant " + (msg.member.nickname ? msg.member.nickname : msg.author.tag) + " vient de créer un amphi <#" + channel.id + ">");
+                  }
+                });
+              }).catch(console.error);
+        } else {
+          msg.reply("Vous n'êtes ni étudiant, ni enseignant. D'où venez-vous ?").catch(console.error);
+          (await client.channels.fetch(process.env.CHANNEL_ADMIN_ID)).send(" :octagonal_sign: Alerte ! " + msg.author.tag + " / " + msg.member.nickname + " a tenté de lancer un vocal en n'étant ni enseignant ni étudiant.").catch(console.error);
         }
-        else
-          msg.member.voice.setChannel(tableauChannelTexteAChannelVocal[msg.channel.id]).catch(console.error);
+      } else {
+        parametres[1] = "help";
       }
-      else if(msg.member.roles.cache.keyArray().includes(process.env.ROLE_ENSEIGNANT_ID)) {
-        let nomChannel = "vocal";
-        if (!msg.member.nickname)
-          nomChannel = msg.member.user.username;
-        else
-          nomChannel = msg.member.nickname;
-        if (msg.mentions.roles.first())
-          nomChannel = msg.mentions.roles.first().name.toLowerCase();
-        nomChannel = nomChannel + "-amphi";
-        let Permissions = [];
-        if(msg.mentions.roles.first())
-        {
-          Permissions = [
-            {
-              id: msg.guild.roles.everyone,
-              deny: 2147483127
-            },
-            {
-              id: msg.mentions.roles.first().id,
-              allow: 37223488
-            },
-            {
-              id: msg.author.id,
-              allow: 305659216
-            }
-          ];
-        }
-        else {
-          Permissions = [
-            {
-              id: msg.guild.roles.everyone,
-              deny: 2147483127
-            },
-            {
-              id: process.env.ROLE_ENSEIGNANT_ID,
-              allow: 37223488
-            },
-            {
-              id: process.env.ROLE_ETUDIANT_ID,
-              allow: 37223488
-            },
-            {
-              id: msg.author.id,
-              allow: 305659216
-            }
-          ];
-        }
-        client.guilds.cache.get(process.env.SERVER_ID).channels.create(nomChannel + " - vocal", {
-          parent: process.env.CATEGORY_AMPHI,
-          type: "voice",
-          permissionOverwrites: Permissions
-        })
-            .then(function (channel) {
-              if (!(msg.member.id in tableauChannelsVocauxEnCours))
-                tableauChannelsVocauxEnCours[msg.member.id] = [];
-              tableauChannelsVocauxEnCours[msg.member.id].push(channel.id);
-              msg.member.voice.setChannel(channel.id).catch(console.error);
-            })
-            .catch(console.error);
-        client.guilds.cache.get(process.env.SERVER_ID).channels.create(nomChannel, {parent: process.env.CATEGORY_AMPHI, permissionOverwrites: Permissions})
-            .then(function (channel) {
-              if (!(msg.member.id in tableauChannelsVocauxEnCours))
-                tableauChannelsVocauxEnCours[msg.member.id] = [];
-              tableauChannelsVocauxEnCours[msg.member.id].push(channel.id);
-              client.channels.cache.get(channel.id).send(":speaking_head: <@" + msg.member.id + "> Votre amphi vient d'être créé. Vous disposez d'un canal textuel (celui que vous regardez, visible à gauche et qui commence par #), et d'un canal vocal où vous pouvez parler jusqu'à 100 personnes, et 50 maximum si vous partagez votre écran." +
-                  "\n:wastebasket: **Les canaux voix et texte seront effacés dès que plus personne ne sera dans le canal vocal.**" +
-                  "\n\n:writing_hand: Si vous souhaitez conserver le tchat, pensez à taper commande `/ UE export`, **sans l'espace entre / et UE**. Seul un enseignant ou un modérateur/administrateur peut utiliser cette commande qui génére un fichier zip contenant tout la conversation du tchat textuel utilisable dans un navigateur web, même hors ligne. :warning: Au delà de 600 messages (il faut y arriver !), la sauvegarde n'est pas garantie." +
-                  "\n\n:tools: Vous pouvez renommer vos salons sur la gauche qui portent votre nom pour leur donner le nom de l'UE par exemple (clic-droit sur le salon à gauche, modifier le salon puis enregistrer les changements)" +
-                  "\n\n:toolbox: En bas à gauche, à côté de voix connectée, vous disposez de 5 boutons." +
-                  "\nLes deux boutons au dessus permettent de diffuser votre écran (bouton flèche dans l'écran) ou de mettre fin à la communication (bouton téléphone avec la croix)." +
-                  "\nLes trois boutons du bas permettent de couper votre micro (ne plus parler), ou votre casque (ne plus entendre), et d'accéder aux paramètres du logiciels grâce à la roue crantée." +
-                  "\n\n:grey_question: N'hésitez pas à envoyer un message à la modération (tapez `@ Modération` sans espace) ou l'administration (`@ Administrateur`, sans espace) du serveur en cas de souci." +
-                  "\n\n:school: Bon cours !\n\n").then(function (message) {
-                message.pin().catch(console.error);
-                if(msg.mentions.roles.first())
-                {
-                  channel.send(":loudspeaker: Etudiants de <@&"+msg.mentions.roles.first().id+">, votre enseignant "+(msg.member.nickname ? msg.member.nickname : msg.author.tag)+" vient de créer un amphi !").catch(console.error);
-                  let channelEtudiants = client.channels.cache.find(channel => (channel.type === "text" && channel.name.toLowerCase() === msg.mentions.roles.first().name.toLowerCase()));
-                  if(channelEtudiants)
-                    channelEtudiants.send(":school: <@&"+msg.mentions.roles.first().id+"> Votre enseignant "+(msg.member.nickname ? msg.member.nickname : msg.author.tag)+" vient de créer un amphi <#"+channel.id+">");
-                }
-              });
-            }).catch(console.error);
-      }
-      else {
-        msg.reply("Vous n'êtes ni étudiant, ni enseignant. D'où venez-vous ?").catch(console.error);
-        client.channels.cache.get(process.env.CHANNEL_ADMIN_ID).send(" :octagonal_sign: Alerte ! "+msg.author.tag+" / "+msg.member.nickname+" a tenté de lancer un vocal en n'étant ni enseignant ni étudiant.").catch(console.error);
-      }
+    } else if (msg.channel.type === "dm") {
+      msg.reply(" :octagonal_sign: Je ne prends aucune commande en Message Privé !").catch(console.error);
+      msg.channel.send(author()).catch(console.error);
     }
-    else
-    {
-      parametres[1] = "help";
-    }
-    if (parametres[1].toLowerCase() === "help" && !(msg.channel.id === process.env.CHANNEL_ADMIN_ID))
-    {
-      msg.channel.send(":tools: Plusieurs fonctions accessibles. Contacter Ivann LARUELLE, ivann.laruelle@gmail.com, créateur de ce bot, en cas de problème\n"+
-          "\n`"+process.env.BOT_PREFIX+" export`. Exporte tout le channel (maximum 600 messages) dans laquelle la commande est tapée, dans un html lisible offline. **Seuls ceux ayant un rôle >= Enseignant** peuvent taper cette commande n'importe où." +
-          "\n`"+process.env.BOT_PREFIX+" joinVocal`. Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les personnes de votre choix. Les channels créés par cette commandes sont effacés lorsque plus personne n'est dans le vocal créé."+
-          "\n\n`"+process.env.BOT_PREFIX+" author` Affiche des informations diverses sur l'auteur de ce bot").catch(console.error)
-    }
-  }
-  else if(msg.content.toLowerCase().startsWith(process.env.BOT_PREFIX.toLowerCase()) && msg.channel.type === "dm")
-  {
-    msg.reply(" Je ne prends aucune commande en MP.").catch(console.error);
-    msg.channel.send("Le créateur de ce bot est Ivann LARUELLE, ivann.laruelle@gmail.com\nJ'aime l'OpenSource : https://github.com/larueli/discord_bot_firewall / https://hub.docker.com/repository/docker/larueli/discord_bot_firewall\n\n\nLe créateur du système d'export est ici : https://github.com/Tyrrrz").catch(console.error);
+    if(parametres[1] === "help" && msg.channel.type !== "dm")
+      msg.reply(help(msg.channel.id)).catch(console.error);
   }
 });
 
-function getKeyByValue(object, value) {
-  return Object.keys(object).find(key => object[key] === value);
-}
-
-client.on('voiceStateUpdate', (oldState, newState ) => {
+client.on('voiceStateUpdate', async (oldState, newState ) => {
   if( oldState.channelID &&
       oldState.channelID !== newState.channelID &&
       oldState.channelID !== process.env.CHANNEL_CREATION_AMPHI &&
@@ -497,7 +521,9 @@ client.on('voiceStateUpdate', (oldState, newState ) => {
     }
     else
     {
-      tableauChannelsVocauxEnCours[oldState.member.id].forEach(id => client.guilds.cache.get(process.env.SERVER_ID).channels.cache.get(id).delete().catch(console.error));
+      for (const id of tableauChannelsVocauxEnCours[oldState.member.id]) {
+        (await client.channels.fetch(id)).delete().catch(console.error);
+      }
       delete tableauChannelsVocauxEnCours[oldState.member.id];
       if(getKeyByValue(tableauChannelTexteAChannelVocal,oldState.channelID))
       {
