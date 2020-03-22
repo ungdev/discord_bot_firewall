@@ -299,7 +299,7 @@ client.on('message', async (msg) => {
                   }
                 ]
               }).then(function (channel) {
-                channel.send("Bonjour <@&"+msg.mentions.roles.first().id+", votre channel texte vient d'être créé !");
+                channel.send("Bonjour <@&"+msg.mentions.roles.first().id+">, votre channel texte vient d'être créé !");
               }).catch(console.error);
             }
             /** On crée le vocal avec aucune permission pour @everyone et les permissions de parler/connecter pour le rôle concerné */

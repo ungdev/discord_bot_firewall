@@ -2,12 +2,11 @@
 
 ## But
 Lors du Coronavirus 2019, création d'un Bot discord rassemblant les 3 000 étudiants de mon [université / école d'ingé publique](https://utt.fr).
-Nécessité de gérer les rôles des membres sur le discord, via une connexion extérieur. Ce bot dispose d'une interface web où les étudiants et profs se connectent via OAuth2 et se voient affecter les droits de lecture et d'écriture correspondant.
+Nécessité de gérer les rôles des membres sur le discord, via une connexion extérieure. Ce bot dispose d'une interface web où les étudiants et profs se connectent via OAuth2 et se voient affectés les droits de lecture et d'écriture correspondant.
 
-Egalement, gestion (création/suppression) des rôles et channels correspondant aux cours des étudiants, ainsi que création de salons vocaux à la volée (par une commande pour les étudiants, par un bouton pour les amphis).
+Egalement, gestion (création/suppression) des rôles et channels correspondant aux cours des étudiants, ainsi que création de salons vocaux à la volée (par une commande) et suppression quand plus personne n'est dedans.
 
-Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel en html, via [https://github.com/Tyrrrz/DiscordChatExporter](https://github.com/Tyrrrz/DiscordChatExporter) qui génère le html et wget/zip génèrent la version offline (600 messages max).
-
+Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel en html, via [https://github.com/Tyrrrz/DiscordChatExporter](https://github.com/Tyrrrz/DiscordChatExporter) qui génère le html et wget/zip génèrent la version offline (600 messages max, limite Discord).
 
 ## Fonctionnalités
 
