@@ -221,6 +221,11 @@ router.get("/attribuerrole", function(req, res) {
               else
                 rolesAAttribuer.push(process.env.ROLE_ENSEIGNANT_ID);
               /** On applique le pseudo sur le compte */
+              if(pseudo.length > 32)
+              {
+                client.channels.cache.get(process.env.CHANNEL_ADMIN_ID).send(" :warning: Le pseudo "+pseudo+" de l'utilisateur "+membreDiscord.user.tag+" est trop long. Vérifiez son pseudo.");
+                pseudo = pseudo.slice(0,32);
+              }
               membreDiscord.setNickname(pseudo).catch(console.error);
               /** On applique les rôles */
               membreDiscord.roles.set(rolesAAttribuer).catch(console.error);
