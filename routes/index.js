@@ -136,6 +136,8 @@ router.get('/', function(req, res) {
   res.redirect(baseUrl+"/api/oauth/authorize?"+httpBuildQuery(donnees));
 });
 
+let texteBug = "Nous n'avons pas pu vous authentifier. Cela peut être du à bug momentané. <a href='/'>Revenir au départ et recommencer !</a>"
+
 router.get('/connexion', function(req, res) {
   /** S'il y a bien un token dans la requete, on continue */
   if(req.query.code)
@@ -160,7 +162,9 @@ router.get('/connexion', function(req, res) {
           /** Message d'erreur sinon invitant l'utilisateur à recommencer */
           else
             res.send("Nous n'avons pas pu vous authentifier. <a href='/'>Revenir au départ</a>");
-        });
+        }).catch(function () {
+      res.send(texteBug);
+    });
   }
 });
 
@@ -238,7 +242,9 @@ router.get("/attribuerrole", function(req, res) {
           }
           /** Si le token n'a pas pu être validé (tentative de hacking, ...), affiche un message */
           else
-            res.send("Il y a eu une erreur à la connection avec le site etu. <a href='/'>Revenir au départ</a>");
+            res.send(texteBug);
+    }).catch(function () {
+      res.send(texteBug);
     });
   }
   /** Si tous les champs n'ont pas pu être trouvés, affiche un message */
