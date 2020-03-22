@@ -203,7 +203,7 @@ client.on('ready', async () => {
 client.on("guildMemberAdd", (member) => {
   member.send("Bienvenue sur le serveur Discord des étudiants de l'UTT." +
       "\nCeci n'étant pas une zone de non droit, vous **devez** vous identifier en cliquant ici (**que vous soyez étudiant ou prof**) : "+process.env.BOT_URL+
-      "\nVous devez également lire les règles dans le channel `accueil`"+"\n\nEn cas de problème, contactez l'un des administrateurs, visibles en haut à droite.").catch(console.error)
+      "\nVous devez également lire les règles dans le channel `accueil`"+"\n\nEn cas de problème, contactez l'un des administrateurs, visibles en haut à droite.+\nTapez `/UE` dans un channel texte pour voir la liste des commandes.").catch(console.error)
 });
 
 /** Si le bot reçoit un message en privé, ou sur l'un des channels qu'ils peut voir */
@@ -478,7 +478,7 @@ client.on('message', async (msg) => {
                     "\n\n:toolbox: En bas à gauche, à côté de voix connectée, vous disposez de 5 boutons." +
                     "\nLes deux boutons au dessus permettent de diffuser votre écran (bouton flèche dans l'écran) ou de mettre fin à la communication (bouton téléphone avec la croix)." +
                     "\nLes trois boutons du bas permettent de couper votre micro (ne plus parler), ou votre casque (ne plus entendre), et d'accéder aux paramètres du logiciels grâce à la roue crantée." +
-                    "\n\n:grey_question: N'hésitez pas à envoyer un message à la modération (tapez `@ Modération` sans espace) ou l'administration (`@ Administrateur`, sans espace) du serveur en cas de souci." +
+                    "\n\n:grey_question: Tapez `/UE` pour voir la liste des commandes. N'hésitez pas à envoyer un message à la modération (tapez `@ Modération` sans espace) ou l'administration (`@ Administrateur`, sans espace) du serveur en cas de souci." +
                     "\n\n:school: Bon cours !\n\n").then(async function (message) {
                   message.pin().catch(console.error);
                   if (msg.mentions.roles.first()) {
