@@ -216,7 +216,7 @@ router.get("/attribuerrole", function(req, res) {
                       chaine="vide";
                     let role = roles.find(role => role.name.toUpperCase() === chaine.toString().toUpperCase());
                     if(role)
-                      rolesAAttribuer.push(role.id);
+                      rolesAAttribuer.push( role.id);
                     else{
                       /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
                       client.channels.cache.get(process.env.CHANNEL_ADMIN_ID).send("Le rôle "+chaine+" va être créé pour l'utilisateur "+membreDiscord.user.tag+" "+pseudo);
@@ -247,7 +247,7 @@ router.get("/attribuerrole", function(req, res) {
             /** Si le token n'a pas pu être validé (tentative de hacking, ...), affiche un message */
             else
               res.send(texteBug);
-          }).catch(function () {
+          }).catch( function () {
         res.send(texteBug);
       });
     }
