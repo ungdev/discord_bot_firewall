@@ -119,7 +119,7 @@ function help(channelID)
 function author()
 {
   return "Le créateur de ce bot est Ivann LARUELLE, ivann.laruelle@gmail.com"+
-      "\nJ'aime l'OpenSource : https://github.com/larueli/discord_bot_firewall / https://hub.docker.com/repository/docker/larueli/discord_bot_firewall"+
+      "\nJ'aime l'OpenSource : https://github.com/ungdev/discord_bot_firewall / https://hub.docker.com/repository/docker/larueli/discord_bot_firewall"+
       "\n\n:sos: Si vous aussi vous voulez faire un bot sur Discord, ne faites pas la même erreur que moi, **oubliez NodeJS**. Quelle idée quand j'y repense ... Si j'avais su plutôt que la librairie discord.py existait..."+
       "\n\n\nLe créateur du système d'export est ici : https://github.com/Tyrrrz";
 }
