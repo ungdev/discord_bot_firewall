@@ -1,0 +1,52 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+/*html {
+    position: relative;
+    min-height: 100vh;
+}*/
+body {
+    height: 100vh;
+    min-height: 100vh;
+}
+
+.carousel-inner > .carousel-item > img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 500px !important;
+    margin: auto;
+}
+
+/*body {
+    /* Margin bottom by footer height
+    margin-bottom: 60px;
+}*/
+
+/*body {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #f5f5f5;
+}*/
+.vertical-center {
+    /*min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+    min-height: 100vh; /*These two lines are counted as one :-)       */
+
+    padding-top: 40px;
+    padding-bottom: 40px;
+    display: flex;
+    align-items: center;
+}
+
+/*.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+/*height: 60px;
+line-height: 60px; /* Vertically center the text there
+background-color: #f5f5f5;
+}*/

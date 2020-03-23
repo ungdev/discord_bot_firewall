@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- PAGE settings -->
+    <title>{% block title %}{% endblock %} | Discord Bot Roles</title>
+    <meta name="description" content="{% block descriptionPage %}{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}{% endblock %}">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <meta name="author" content="Ivann LARUELLE">
+    <link rel="stylesheet" href="/stylesheets/test.css">
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" rel="stylesheet">
+</head>
+
+<body class="text-center bg-light d-flex flex-column">
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+{% block body %}
+    <div class="container-fluid border-bottom bg-light">
+        <div class="row">
+            <div class="mx-auto col">
+                <nav class="navbar navbar-light navbar-expand-md">
+                    <b class="text-dark">Bot d'attribution des rôles</b>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#navbar2SupportedContent"
+                            aria-controls="navbar2SupportedContent" aria-expanded="false" aria-label="Menu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </div>
+    {% if app.session %}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="container my-2">
+                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                        {{ message | raw }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+    <div class="footer container-fluid align-self-end border-top pt-1">
+        <div class="row">
+            <div class="col-md-12">
+                <p class="mt-auto text-secondary small">Développé par <a href="https://ivannlaruelle.fr">Ivann
+                        LARUELLE</a> / Code source sur <a href="https://github.com/larueli/discord_bot_firewall">Github</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+</body>
+{% block scripts %}
+{% endblock %}
+</html>
