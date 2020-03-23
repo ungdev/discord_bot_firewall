@@ -32,10 +32,11 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
     
 ## Installation
 
-* Via [docker](https://hub.docker.com/repository/docker/larueli/discord_bot_firewall)
+* Via [docker](https://hub.docker.com/repository/docker/ungdev/discord_bot_firewall)
 * Manuellement
     * ``git clone https://github.com/larueli/discord_bot_firewall``
     * ``cd discord_bot_firewall``
+    * Télécharger [l'outil d'export](https://github.com/Tyrrrz/DiscordChatExporter)
     * ``cp .env.dist .env`` et éditez-le
     * ``npm install``
     * ``node bin/www``
