@@ -136,6 +136,11 @@ router.get('/', function(req, res) {
   res.redirect(baseUrl+"/api/oauth/authorize?"+httpBuildQuery(donnees));
 });
 
+/* GET home page. */
+router.get('/status', function(req, res) {
+  res.send("Application up and running !");
+});
+
 let texteBug = "Nous n'avons pas pu vous authentifier. Cela peut être du à bug momentané. <a href='/'>Revenir au départ et recommencer !</a>";
 
 router.get('/connexion', function(req, res) {
