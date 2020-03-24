@@ -125,8 +125,6 @@ body {
 }
 
 .title {
-  max-width: 16ch;
-
   font-weight: 800;
   font-size: 38px;
   line-height: 1.2;
@@ -134,6 +132,8 @@ body {
 }
 @media (max-width: 600px) {
   .title {
+    max-width: 16ch;
+
     font-size: 32px;
   }
 }
