@@ -20,9 +20,7 @@
     "axios": "^0.19.2",
     "dotenv": "^8.2.0",
     "nodemon": "^2.0.2",
-    "shelljs": "^0.8.3",
-    "stylelint": "^13.2.1",
-    "stylelint-config-rational-order": "^0.1.2",
-    "stylelint-order": "^4.0.0"
+    "prettier": "2.0.2",
+    "shelljs": "^0.8.3"
   }
 }
