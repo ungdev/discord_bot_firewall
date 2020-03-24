@@ -95,25 +95,26 @@ function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
 }
 
-function help(channelID)
+async function help(channelID)
 {
-  let texte = ":tools: Plusieurs fonctions accessibles. Contacter Ivann LARUELLE, ivann.laruelle@gmail.com, créateur de ce bot, en cas de problème";
+  let channel = await client.channels.fetch(channelID);
+  channel.send(":tools: Plusieurs fonctions accessibles. Contacter Ivann LARUELLE, ivann.laruelle@gmail.com, créateur de ce bot, en cas de problème").catch(console.error);
   if(channelID === process.env.CHANNEL_ADMIN_ID)
   {
-    texte = texte + "\n\n`" + process.env.BOT_PREFIX + " addUE @RoleUE <categoryID> texte | vocal | lesDeux`. Permet de créer les channels texte et voix d'un rôle existant avec les permissions correctes. La catégorie et le rôle doivent déjà exister." +
+    channel.send( "\n\n`" + process.env.BOT_PREFIX + " addUE @RoleUE <categoryID> texte | vocal | lesDeux`. Permet de créer les channels texte et voix d'un rôle existant avec les permissions correctes. La catégorie et le rôle doivent déjà exister." +
         "\n`" + process.env.BOT_PREFIX + " delUE #ueASupprimer vocal | tout`. Supprime les channels texte et voix de l'UE et le rôle. Vous devez tagguer le channel texte de l'UE !" +
         "\n`" + process.env.BOT_PREFIX + " getNb @ROLE`. Récupère le nombre de personnes dans le rôle. Le rôle doit exister." +
         "\n`" + process.env.BOT_PREFIX + " getRoles NombrePersonne`. Affiche la liste des rôles ne contenant que le nombre de personnes demandé. :clock1: Cette commande peut être longue." +
         "\n`" + process.env.BOT_PREFIX + " getZeroOne`. Affiche les rôles ayant soit 0 ou 1 personne dedans. :clock1: Cette commande peut être longue." +
         "\n`" + process.env.BOT_PREFIX + " getUrl`. Affiche les url du serveur web du bot, le lien d'invitation discord"+
-        "\n`" + process.env.BOT_PREFIX + " kickAll`. Expulse tous les membres du serveur. Commande réservée aux administrateurs. Expulse toute personne qui tape la commande sans être admin.\n\n";
+        "\n`" + process.env.BOT_PREFIX + " listDynVoc`. Affiche tous les channels textes dans lesquels des vocaux ont été lancés, ainsi que leur catégorie. Utile pour savoir quand lancer une mise à jour du bot."+
+        "\n`" + process.env.BOT_PREFIX + " kickAll`. Expulse tous les membres du serveur. Commande réservée aux administrateurs. Expulse toute personne qui tape la commande sans être admin.\n\n").catch(console.error);
   }
-  else
-    texte = texte + "\n";
-  texte = texte + "\n`" + process.env.BOT_PREFIX + " export`. Exporte tout le channel (maximum 600 messages) dans laquelle la commande est tapée, dans un html lisible offline. **Seuls ceux ayant un rôle >= Enseignant** peuvent taper cette commande n'importe où." +
-      "\n`" + process.env.BOT_PREFIX + " joinVocal`. Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi vocal et textuel que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les étudiants de l'UE." +
-      "\n\n`" + process.env.BOT_PREFIX + " author` Affiche des informations diverses sur l'auteur de ce bot";
-  return texte;
+      channel.send( "\n`" + process.env.BOT_PREFIX + " export`. Exporte tout le channel (maximum 600 messages) dans laquelle la commande est tapée, dans un html lisible offline. **Seuls ceux ayant un rôle >= Enseignant** peuvent taper cette commande n'importe où." +
+          "\n`" + process.env.BOT_PREFIX + " joinVocal`. Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi vocal et textuel que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les personnes de votre choix." +
+          "\n`" + process.env.BOT_PREFIX + " pin messageID`. Permet d'ajouter un message à la liste des messages pin (sans donner la permission `MANAGE_MESSAGES`)"+
+          "\n`" + process.env.BOT_PREFIX + " unpin messageID`. Permet de supprimer un message de la liste des messages pin (sans donner la permission `MANAGE_MESSAGES`)"+
+          "\n\n`" + process.env.BOT_PREFIX + " author` Affiche des informations diverses sur l'auteur de ce bot").catch(console.error);
 }
 
 function author()
@@ -426,7 +427,17 @@ client.on('message', async (msg) => {
             (await client.channels.fetch(process.env.CHANNEL_ADMIN_ID)).send("@everyone L'utilisateur "+msg.member.nickname + " / "+msg.author.tag+ " a été expulsé.");
           }
         }
-        else if (!(["export","joinvocal","author"].includes(parametres[1].toLowerCase()))) {
+        else if(parametres[1].toLowerCase() === "listdynvoc")
+        {
+          msg.channel.send(":clock1: Début du listing des channels");
+          let compteur = 0;
+          for(const key of Object.keys(tableauChannelTexteAChannelVocal)) {
+            msg.channel.send("Pour le canal texte <#"+(await client.channels.fetch(key.toString())).name+"> dans la catégorie "+(await client.channels.fetch((await client.channels.fetch(key.toString())).parentID)).name).catch(console.error);
+            compteur = compteur +1;
+          }
+          msg.channel.send(" :white_check_mark: Il y a "+ compteur +" channels vocaux. Vérifiez aussi la catégorie amphi !").catch(console.error);
+        }
+        else if (!(["export","joinvocal","author","pin","unpin"].includes(parametres[1].toLowerCase()))) {
           parametres[1] = "help";
         }
     }
@@ -435,7 +446,7 @@ client.on('message', async (msg) => {
         if ((await msg.member.fetch()).roles.highest.comparePositionTo(process.env.ROLE_ENSEIGNANT_ID) >= 0) {
           let nomChannel = remove_non_ascii(msg.channel.name);
           msg.channel.send("Lancement de l'export pour maximum 600 messages. Cette commande peut prendre un certain temps (2 minutes max, notifier un administrateur en cas de délai plus long !)").then(function () {
-            shell.exec("dotnet " + process.env.DISCORD_CHAT_EXPORTER_EXE_PATH + " export -t " + process.env.BOT_TOKEN + " -b -c " + msg.channel.id + " -f HtmlDark -o " + process.env.DISCORD_CHAT_EXPORT_PATH + nomChannel + ".html 2>&1");
+            shell.exec("dotnet " + process.env.DISCORD_CHAT_EXPORTER_EXE_PATH + " export -t " + process.env.BOT_TOKEN + " -b -c " + msg.channel.id + " -f HtmlDark -o " + process.env.DISCORD_CHAT_EXPORT_PATH + nomChannel + ".html > /dev/null");
             shell.exec("wget --mirror --restrict-file-names=windows --page-requisites --adjust-extension --convert-links --execute robots=off --span-hosts -Dlocalhost,cdn.discordapp.com,cdnjs.cloudflare.com -P " + process.env.DISCORD_CHAT_EXPORT_PATH + nomChannel + " --user-agent mozilla http://localhost:8000/" + nomChannel + ".html 2>&1 | grep -i 'failed\\|error'");
             shell.exec("touch " + process.env.DISCORD_CHAT_EXPORT_PATH + nomChannel + "/Ouvrez_le_dossier_localhost_et_ouvrez_le_fichier_html_dans_navigateur_web");
             shell.exec("cd " + process.env.DISCORD_CHAT_EXPORT_PATH + nomChannel + " && zip -q -r " + nomChannel + ".zip *");
@@ -452,6 +463,30 @@ client.on('message', async (msg) => {
         }
       } else if (parametres[1].toLowerCase() === "author") {
         msg.channel.send(author()).catch(console.error);
+      }
+      else if (parametres[1].toLowerCase() === "pin") {
+          if(parametres.length < 3)
+            msg.reply(" :warning: Vous devez spécifier l'ID du message à pin.").catch(console.error);
+          else
+          {
+            let message = await msg.channel.messages.fetch(parametres[2]);
+            if(!message)
+              msg.reply(" :warning: Votre message n'a pas pu être trouvé dans ce channel. Vous devez spécifier l'ID du message.").catch(console.error);
+            else
+              message.pin().catch(console.error);
+          }
+      }
+      else if (parametres[1].toLowerCase() === "unpin") {
+        if(parametres.length < 3)
+          msg.reply(" :warning: Vous devez spécifier l'ID du message à supprimer des pins.").catch(console.error);
+        else
+        {
+          let message = await (await msg.channel.messages.fetchPinned()).get(parametres[2]);
+          if(!message)
+            msg.reply(" :warning: Votre message n'a pas pu être trouvé dans la liste des messages pin. Vous devez spécifier l'ID du message.").catch(console.error);
+          else
+            message.unpin().catch(console.error);
+        }
       } else if (parametres[1].toLowerCase() === "joinvocal") {
         if (!msg.member.voice.channelID)
           msg.reply(" :warning: Erreur ! Vous devez déjà être dans un canal vocal pour exécuter cette commande !").catch(console.error);
@@ -571,7 +606,7 @@ client.on('message', async (msg) => {
           msg.reply("Vous n'êtes ni étudiant, ni enseignant. D'où venez-vous ?").catch(console.error);
           (await client.channels.fetch(process.env.CHANNEL_ADMIN_ID)).send(" :octagonal_sign: Alerte ! " + msg.author.tag + " / " + msg.member.nickname + " a tenté de lancer un vocal en n'étant ni enseignant ni étudiant.").catch(console.error);
         }
-      } else if (!(["delue","addue","kickall","getnb","getroles","getzeroone","geturl"].includes(parametres[1].toLowerCase()))) {
+      } else if (!(["delue","addue","kickall","getnb","getroles","getzeroone","geturl","listdynvoc"].includes(parametres[1].toLowerCase()))) {
         parametres[1] = "help";
       }
     } else if (msg.channel.type === "dm") {
@@ -579,7 +614,7 @@ client.on('message', async (msg) => {
       msg.channel.send(author()).catch(console.error);
     }
     if(parametres[1] === "help" && msg.channel.type !== "dm")
-      msg.reply(help(msg.channel.id)).catch(console.error);
+      await help(msg.channel.id);
   }
 });
 

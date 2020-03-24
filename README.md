@@ -19,16 +19,19 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
 * Sur le site, une petite notice qui explique aux gens comment installer le logiciel
 * Génération dynamique de channels vocaux et texte. L'utilisateur se place sur un channel vocal précis, et il est transporté dans un channel vocal créé (utile pour créer des salles de cours à la volée). Les channels texte seront supprimés quand la denrière personne aura quitté le vocal.
 * Commandes :
-    * ``PREFIX addUE @role <categoryID> texte | vocal | lesDeux`` qui crée un chan texte et vocal avec les permissions qui vont bien et dans la catégorie indiquée, la commande ne peut être exécutée que depuis un channel précis
-    * ``PREFIX delUE #channelTexteUE vocal | tout`` qui supprime les deux channels d'une UE, ainsi que son rôle, la commande ne peut être exécutée que depuis un channel précis.
-    * ``PREFIX getNb @ROLE`` qui affiche le nombre de personnes dans le role correspondant.
-    * ``PREFIX getRoles NombrePersonne`` qui affiche la liste des rôle ne contenant que le nombre de personnes demandé
-    * ``PREFIX getZeroOne`` qui affiche la liste des rôle ne contenant que 0 ou 1 personne.
-    * ``PREFIX getUrl`` Affiche les url du serveur web du bot, le lien d'invitation discord
-    * ``PREFIX export`` Exporte tout le channel dans laquelle la commande est tapée, dans un html lisible offline. Tout ceux ayant un rôle >= Enseignant peuvent taper cette commande n'importe où.
-    * ``PREFIX joinVocal`` Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les personnes de votre choix. Les channels créés par cette commandes sont effacés lorsque plus personne n'est dans le vocal créé.
-    * ``PREFIX kickall`` Expulse tous les membres du serveur. Commande réservée aux administrateurs. Expulse toute personne qui tape la commande sans être admin.
-    * ``PREFIX author`` Affiche des informations sur l'auteur
+    * `PREFIX addUE @role <categoryID> texte | vocal | lesDeux` qui crée un chan texte et vocal avec les permissions qui vont bien et dans la catégorie indiquée, la commande ne peut être exécutée que depuis un channel précis
+    * `PREFIX delUE #channelTexteUE vocal | tout` qui supprime les deux channels d'une UE, ainsi que son rôle, la commande ne peut être exécutée que depuis un channel précis.
+    * `PREFIX getNb @ROLE` qui affiche le nombre de personnes dans le role correspondant.
+    * `PREFIX getRoles NombrePersonne` qui affiche la liste des rôle ne contenant que le nombre de personnes demandé
+    * `PREFIX getZeroOne` qui affiche la liste des rôle ne contenant que 0 ou 1 personne.
+    * `PREFIX getUrl` Affiche les url du serveur web du bot, le lien d'invitation discord
+    * `PREFIX export` Exporte tout le channel dans laquelle la commande est tapée, dans un html lisible offline. Tout ceux ayant un rôle >= Enseignant peuvent taper cette commande n'importe où.
+    * `PREFIX joinVocal`` Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les personnes de votre choix. Les channels créés par cette commandes sont effacés lorsque plus personne n'est dans le vocal créé.
+    * `PREFIX listDynVoc`. Affiche tous les channels textes dans lesquels des vocaux ont été lancés, ainsi que leur catégorie. Utile pour savoir quand lancer une mise à jour du bot.
+    * `PREFIX kickall` Expulse tous les membres du serveur. Commande réservée aux administrateurs. Expulse toute personne qui tape la commande sans être admin.
+    * `PREFIX pin messageID`. Permet d'ajouter un message à la liste des messages pin (sans donner la permission `MANAGE_MESSAGES`).
+    * `PREFIX unpin messageID`. Permet de supprimer un message de la liste des messages pin (sans donner la permission `MANAGE_MESSAGES`).
+    * `PREFIX author` Affiche des informations sur l'auteur
     
 ## Installation
 
