@@ -7,6 +7,25 @@ let httpBuildQuery = require('http-build-query');
 let router = express.Router();
 let baseUrl = 'https://etu.utt.fr';
 
+if (process.env.NODE_ENV === 'development') {
+  router.get('/test/formulaire', function(req, res) {
+    res.render('formulaire', {
+      token: 'TOKEN',
+      lienDiscord: 'LIEN_INVITATION_DISCORD'
+    });
+  });
+
+  router.get('/test/error', function(req, res) {
+    res.render('error', {
+      message: 'message',
+      error: {
+        status: 'error.status',
+        stack: 'error.stack'
+      }
+    });
+  });
+}
+
 /**
  * Capitalise une chaine de caractères
  * @param s
@@ -223,11 +242,7 @@ router.get('/connexion', function(req, res) {
 /** Quand l'utilisateur soumet son formulaire, il arrive ici */
 router.get('/attribuerrole', function(req, res) {
   /** On vérifie qu'on a toutes les infos du formulaire */
-  if (
-    req.query.site_etu_token &&
-    req.query.utilisateur &&
-    req.query.discriminant
-  ) {
+  if (req.query.site_etu_token && req.query.discordUsername) {
     if (req.query.checkRGPD !== 'on')
       res.send(
         "Vous n'avez pas coché la case de consentement RGPD. Vos données n'ont pas été traitées. <a href='/'>Revenir au départ et recommencer !</a>"
@@ -236,6 +251,7 @@ router.get('/attribuerrole', function(req, res) {
       let donnees = {
         access_token: req.query.site_etu_token
       };
+
       /** On récupère les données de l'utilisateur sur le site etu */
       axios
         .get(baseUrl + '/api/public/user/account?' + httpBuildQuery(donnees))
@@ -246,10 +262,13 @@ router.get('/attribuerrole', function(req, res) {
           if (typeof membreSiteEtu.isStudent !== 'undefined') {
             let guild = client.guilds.cache.get(process.env.SERVER_ID);
             /** On récupère son compte discord dans le serveur */
+            const username = req.query.discordUsername.split('#')[0];
+            const discriminant = req.query.discordUsername.split('#')[1];
+
             let membreDiscord = (await guild.members.fetch()).find(
               user =>
-                user.user.username === req.query.utilisateur &&
-                user.user.discriminator === req.query.discriminant
+                user.user.username === username &&
+                user.user.discriminator === discriminant
             );
             /** Si on l"a trouvé */
             if (membreDiscord) {
@@ -334,7 +353,7 @@ router.get('/attribuerrole', function(req, res) {
         });
     }
   } else {
-  /** Si tous les champs n'ont pas pu être trouvés, affiche un message */
+    /** Si tous les champs n'ont pas pu être trouvés, affiche un message */
     res.send("Le formulaire est incomplet. <a href='/'>Revenir au départ</a>");
   }
 });
@@ -397,7 +416,7 @@ client.on('message', async msg => {
             )
             .catch(console.error);
         } else {
-        /** Si tout va bien */
+          /** Si tout va bien */
           /** On crée le texte avec aucune permission pour @everyone et les permissions d'écrire pour le rôle concerné */
           if (
             parametres[4].toLowerCase() === 'texte' ||
@@ -458,7 +477,7 @@ client.on('message', async msg => {
             .catch(console.error);
         }
       } else if (parametres[1].toLowerCase() === 'delue') {
-      /** Suppression d'une UE en indiquant son channel texte */
+        /** Suppression d'une UE en indiquant son channel texte */
         if (
           parametres.length !== 4 ||
           !msg.mentions.channels.first() ||
@@ -1127,5 +1146,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 
 module.exports = router;
 
-/** On connecte le BOT à discord */
-client.login(process.env.BOT_TOKEN).catch(console.error);
+if (process.env.BOT_TOKEN) {
+  /** On connecte le BOT à discord */
+  client.login(process.env.BOT_TOKEN).catch(console.error);
+}
