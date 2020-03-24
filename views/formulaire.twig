@@ -1,29 +1,103 @@
 {% extends 'base.html.twig' %}
 {% block title %}Connexion Discord{% endblock %}
 {% block content %}
-  <div class="container my-auto text-left">
-    <h1>A. Accédez à la plateforme</h1>
-    <p>1. Assurez-vous d'avoir installé Discord et d'avoir un compte en vous rendant sur le site <a href="https://discordapp.com" target="_blank">de Discord</a>. Vous êtes libres d'utiliser le mail et le mot de passe de votre choix. <b>Pour des raisons de sécurité, n'utilisez pas le mot de passe UTT, et évitez d'utiliser le mail UTT.</b> Suivez les <a href="https://www.ssi.gouv.fr/guide/mot-de-passe/" target="_blank">préconisations de l'ANSSI</a> en matière de mots de passe.</p>
-    <p>2. Rejoignez le serveur Discord que nous avons créé en cliquant sur <a href="{{ lienDiscord }}" target="_blank">ce lien</a>.</p>
-    <p>Discord est une application tierce, que nous ne controlons pas. <b>Ne mettez pas de données sensibles (recherche, ...) dessus.</b></p>
-    <p><b>Les enseignants n'ont aucune obligation d'utiliser cet outil. Etudiants, référez vous à Moodle et à vos mails. Vous pouvez néanmoins suggérer cet outil à vos enseignants.</b></p>
-    <h1>B. Indiquez votre nom d'utilisateur Discord pour être autorisé à interagir</h1>
-    <p>Celui-ci se situe tout en bas à gauche de l'interface de Discord, il est représenté sous la forme <b>Utilisateur#1234</b>.</p>
-    <p class="text-muted">Les informations recueillies à partir de ce formulaire font l'objet d'un traitement informatique par l'association UTT Net Group pour permettre l'organisation (attribution de rôles et pseudo) d'un serveur Discord. Ces informations ne sont pas conservées par l'UNG, mais traitées puis transmises à Discord Inc, dont la <a href="https://discorapp.com/privacy" target="_blank">politique de confidentialité</a> prévaut dès l'envoi du formulaire.<br>
-      Conformément à la loi « Informatique et Libertés » modifiée en 2018 par le règlement européen général sur la protection des données (RGPD), vous pouvez exercer vos droits d'accès, d’opposition, de rectification et d’effacement des données vous concernant en vous adressant à Discord Inc. : privacy@discordapp.com en indiquant "Personal Data" dans le corps ou l'objet du mail, ou encore par courrier postal au : Discord Headquarters, 444 De Haro Street, San Francisco, United States of America.<br>
-      Si vous estimez, après avoir contacté Discord Inc., que vos droits Informatique et Libertés ne sont pas respectés ou que le dispositif n’est pas conforme aux règles de protection des données, vous pouvez adresser une réclamation en ligne à la CNIL ou par voie postale.</p>
-    <p>Contactez Ivann LARUELLE (larueli#0199, ivann.laruelle@utt.fr, m.me/ILaruelle), créateur de cet outil de connexion, en cas de souci.</p>
-    <form action="/attribuerrole">
-      <input type="checkbox" name="checkRGPD" id="checkRGPD">
-      <label for="checkRGPD">En cochant cette case et en cliquant sur le bouton envoyer, vous reconnaissez et acceptez de donner à Discord Inc. les informations suivantes : nom, prénom, et votre statut (étudiant ou enseignant). Si vous êtes étudiant, les informations suivantes sont également transmises : branche, niveau dans la branche, listes des UEs suivies. La <a href="https://discorapp.com/privacy" target="_blank">politique de confidentialité de Discord</a> s'applique dès l'envoi du formulaire.</label>
-      <br><br>
-      <label for="utilisateur">Nom d'utilisateur Discord :</label><br>
-      <input type="text" id="utilisateur" name="utilisateur">
-      <label for="discriminant">#</label>
-      <input type="text" id="discriminant" name="discriminant"><br>
-      <input type="hidden" name="site_etu_token" id="site_etu_token" value="{{ token }}">
-      <input type="submit" value="Envoyer !">
-      <p><br><br>Aucune de vos données personnelles n'a encore été traitée par le bot. Cliquez sur envoyer pour lancer la procédure.<br><br></p>
-    </form>
-  </div>
+  <main class="main">
+    <div class="main__wrap">
+      <div class="form">
+        <div class="form__wrap">
+          <h1 class="title">Authentification</h1>
+
+          <h2 class="sub-title">Indiquez votre nom d'utilisateur Discord pour être autorisé à interagir</h2>
+
+          <p>Celui-ci se situe tout en bas à gauche de l'interface de Discord, il est représenté sous la forme <strong>Utilisateur#1234</strong>.</p>
+          
+          <form action="/attribuerrole">
+            <input type="hidden" name="site_etu_token" id="site_etu_token" value="{{ token }}">
+
+            <div class="input">
+              <label for="discord-username">Nom d'utilisateur Discord :</label>
+
+              <input
+                type="text"
+                id="discord-username"
+                name="discordUsername"
+                placeholder="Utilisateur#1234"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false" />
+            </div>
+
+            <label for="checkRGPD" class="checkbox">
+              <input type="checkbox" name="checkRGPD" id="checkRGPD">
+              <span class="checkbox__input" for="checkRGPD">
+                <svg enable-background="new 0 0 24 24" height="24px" id="Layer_1" version="1.1" viewBox="0 0 24 24" width="24px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path clip-rule="evenodd" d="M21.652,3.211c-0.293-0.295-0.77-0.295-1.061,0L9.41,14.34  c-0.293,0.297-0.771,0.297-1.062,0L3.449,9.351C3.304,9.203,3.114,9.13,2.923,9.129C2.73,9.128,2.534,9.201,2.387,9.351  l-2.165,1.946C0.078,11.445,0,11.63,0,11.823c0,0.194,0.078,0.397,0.223,0.544l4.94,5.184c0.292,0.296,0.771,0.776,1.062,1.07  l2.124,2.141c0.292,0.293,0.769,0.293,1.062,0l14.366-14.34c0.293-0.294,0.293-0.777,0-1.071L21.652,3.211z" fill-rule="evenodd" fill="white"/></svg>
+              </span>
+
+              <p>En cochant cette case et en cliquant sur le bouton envoyer, vous reconnaissez et acceptez de donner à Discord Inc. les informations suivantes : nom, prénom, et votre statut (étudiant ou enseignant). Si vous êtes étudiant, les informations suivantes sont également transmises : branche, niveau dans la branche, listes des UEs suivies. La <a href="https://discorapp.com/privacy" target="_blank">politique de confidentialité de Discord</a> s'applique dès l'envoi du formulaire.</p>
+            </label>
+
+            <button type="submit" class="button" id="submit-button">Envoyer</button>
+
+            <footer class="form__footer">
+              <p>
+                Aucune de vos données personnelles n'a encore été traitée par le bot.
+              </p>
+              
+              <p>
+                Cliquez sur envoyer pour lancer la procédure.
+              </p>
+            </footer>
+          </form>
+        </div>
+      </div>
+
+      <div class="presentation">
+        <div class="presentation__wrap">
+          <h2 class="title">Accédez à la plateforme</h2>
+
+          <ul class="list">
+            <li>
+              Assurez-vous d'avoir installé Discord et d'avoir un compte en vous rendant <a href="https://discordapp.com" target="_blank" rel="noopener">sur le site de Discord</a>. Vous êtes libres d'utiliser l'adresse e-mail et le mot de passe de votre choix. <b>Pour des raisons de sécurité, n'utilisez pas le mot de passe UTT, et évitez d'utiliser le mail UTT.</b> Suivez les <a href="https://www.ssi.gouv.fr/guide/mot-de-passe/" target="_blank">préconisations de l'ANSSI</a> en matière de mots de passe.
+            </li>
+
+            <li>
+              Rejoignez le serveur Discord <a href="{{ lienDiscord }}" target="_blank">en cliquant sur ce lien</a>.
+
+              <p>Discord est une application tierce, que nous ne controlons pas. <b>Ne mettez pas de données sensibles (recherche, ...) dessus.</b></p>
+
+              <p><strong>Les enseignants n'ont aucune obligation d'utiliser cet outil. Etudiants, référez vous à Moodle et à vos mails. Vous pouvez néanmoins suggérer cet outil à vos enseignants.</strong></p>
+            </li>
+          </ul>
+
+          <div class="details">
+            <p>
+              Les informations recueillies à partir de ce formulaire font l'objet d'un traitement informatique par l'association UTT Net Group pour permettre l'organisation (attribution de rôles et pseudo) d'un serveur Discord. Ces informations ne sont pas conservées par l'UNG, mais traitées puis transmises à Discord Inc, dont la <a href="https://discorapp.com/privacy" target="_blank">politique de confidentialité</a> prévaut dès l'envoi du formulaire.
+            </p>
+
+            <p>
+              Conformément à la loi « Informatique et Libertés » modifiée en 2018 par le règlement européen général sur la protection des données (RGPD), vous pouvez exercer vos droits d'accès, d’opposition, de rectification et d’effacement des données vous concernant en vous adressant à Discord Inc. : <a href="mailto:privacy@discordapp.com">privacy@discordapp.com</a> en indiquant "Personal Data" dans le corps ou l'objet du mail, ou encore par courrier postal au : Discord Headquarters, 444 De Haro Street, San Francisco, United States of America.
+            </p>
+            
+            <p>
+              Si vous estimez, après avoir contacté Discord Inc., que vos droits Informatique et Libertés ne sont pas respectés ou que le dispositif n’est pas conforme aux règles de protection des données, vous pouvez adresser une réclamation en ligne à la CNIL ou par voie postale.
+            </p>
+      
+            <footer>
+              <p>
+                Contactez Ivann LARUELLE (larueli#0199, <a href="mailto:ivann.laruelle@utt.fr">ivann.laruelle@utt.fr</a>, <a href="https://m.me/ILaruelle" target="_blank" rel="noopener">m.me/ILaruelle</a>), créateur de cet outil de connexion, en cas de souci.
+              </p>
+
+              <p>
+                Développé par
+                <a href="https://ivannlaruelle.fr" target="_blank" rel="noopener">Ivann LARUELLE</a>
+                /
+                <a href="https://github.com/ungdev/discord_bot_firewall" target="_blank" rel="noopener">Code source sur Github</a>
+              </p>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 {% endblock %}
