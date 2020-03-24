@@ -1,0 +1,65 @@
+{
+  "ignoreFiles": [
+    "node_modules/**/*.*",
+    "output/dist/bundle.css",
+    "**/*.json",
+    "**/*.ts",
+    "**/*.js",
+    "**/*.jsx"
+  ],
+  "extends": [
+    "stylelint-config-rational-order"
+  ],
+  "plugins": [
+    "stylelint-order",
+    "stylelint-config-rational-order/plugin"
+  ],
+  "rules": {
+    "order/properties-order": [
+      [],
+      {
+        "severity": "warning"
+      }
+    ],
+    "plugin/rational-order": [
+      true,
+      {
+        "border-in-box-model": false,
+        "empty-line-between-groups": true,
+        "severity": "warning"
+      }
+    ],
+    "indentation": 2,
+    "block-no-empty": null,
+    "color-hex-case": "lower",
+    "color-no-invalid-hex": true,
+    "color-named": "always-where-possible",
+    "selector-combinator-space-after": "always",
+    "selector-combinator-space-before": "always",
+    "selector-list-comma-newline-after": "always",
+    "declaration-block-trailing-semicolon": "always",
+    "declaration-colon-space-before": "never",
+    "declaration-colon-space-after": "always",
+    "selector-pseudo-element-colon-notation": "double",
+    "media-feature-parentheses-space-inside": "never",
+    "media-feature-colon-space-before": "never",
+    "media-feature-colon-space-after": "always",
+    "block-opening-brace-newline-after": "always-multi-line",
+    "block-closing-brace-empty-line-before": "never",
+    "comment-empty-line-before": [
+      "always",
+      {
+        "ignore": [
+          "stylelint-commands",
+          "after-comment"
+        ]
+      }
+    ],
+    "max-empty-lines": 2,
+    "declaration-block-no-shorthand-property-overrides": true,
+    "length-zero-no-unit": true,
+    "unit-case": "lower",
+    "value-keyword-case": "lower",
+    "selector-type-case": "lower"
+  }
+}
