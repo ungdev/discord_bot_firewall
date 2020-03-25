@@ -5,6 +5,8 @@ const client = new Discord.Client();
 const axios = require("axios");
 let httpBuildQuery = require("http-build-query");
 let router = express.Router();
+const capitalize = require('capitalize');
+
 let baseUrl = "https://etu.utt.fr";
 
 if (process.env.APP === "development") {
@@ -25,16 +27,6 @@ if (process.env.APP === "development") {
     });
   });
 }
-
-/**
- * Capitalise une chaine de caractères
- * @param s
- * @returns {string}
- */
-const capitalize = (s) => {
-  if (typeof s !== "string") return "";
-  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-};
 
 /** Un tableau[channelTexte] = channelVocal associé */
 /** Utilisé pour vérifier si channel voix existe déjà pour un chan texte */
@@ -278,7 +270,7 @@ router.get("/attribuerrole", function (req, res) {
               let rolesAAttribuer = [];
               /** On définit son pseudo */
               let pseudo =
-                capitalize(membreSiteEtu.firstName.toString()) +
+                capitalize.words(membreSiteEtu.firstName.toString()) +
                 " " +
                 membreSiteEtu.lastName.toString().toUpperCase();
               if (membreSiteEtu.isStudent) {
@@ -714,7 +706,7 @@ client.on("message", async (msg) => {
           msg.channel
             .send(
               "Pour le canal texte <#" +
-                (await client.channels.fetch(key.toString())).name +
+                (await client.channels.fetch(key.toString())).id +
                 "> dans la catégorie " +
                 (
                   await client.channels.fetch(
