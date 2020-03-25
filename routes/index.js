@@ -706,7 +706,7 @@ client.on("message", async (msg) => {
           msg.channel
             .send(
               "Pour le canal texte <#" +
-                (await client.channels.fetch(key.toString())).name +
+                (await client.channels.fetch(key.toString())).id +
                 "> dans la catégorie " +
                 (
                   await client.channels.fetch(
