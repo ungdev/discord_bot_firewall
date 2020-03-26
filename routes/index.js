@@ -451,6 +451,7 @@ client.on("message", async (msg) => {
                 {
                   parent: parametres[3],
                   type: "voice",
+                  userLimit: 99,
                   permissionOverwrites: [
                     {
                       id: msg.guild.roles.everyone,
@@ -908,6 +909,7 @@ client.on("message", async (msg) => {
               .channels.create(msg.channel.name.toLowerCase() + " - etudes", {
                 parent: msg.channel.parentID,
                 type: "voice",
+                userLimit: 99,
                 permissionOverwrites: [
                   {
                     id: msg.guild.roles.everyone,
@@ -994,6 +996,7 @@ client.on("message", async (msg) => {
             .channels.create(nomChannel + " - vocal", {
               parent: process.env.CATEGORY_AMPHI,
               type: "voice",
+              userLimit: 99,
               permissionOverwrites: Permissions,
             })
             .then(function (channel) {
