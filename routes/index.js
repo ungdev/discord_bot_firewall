@@ -954,7 +954,7 @@ client.on("message", async (msg) => {
           else nomChannel = msg.member.nickname;
           if (msg.mentions.roles.first())
             nomChannel = msg.mentions.roles.first().name.toLowerCase();
-          nomChannel = nomChannel + "-amphi";
+          nomChannel = nomChannel + "-cours";
           let Permissions;
           if (msg.mentions.roles.first()) {
             Permissions = [
