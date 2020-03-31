@@ -16,7 +16,8 @@
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "serve-index": "^1.9.1",
-    "twig": "~0.10.3"
+    "twig": "~0.10.3",
+    "uniqid": "^5.2.0"
   },
   "devDependencies": {
     "axios": "^0.19.2",
