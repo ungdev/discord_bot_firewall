@@ -3,30 +3,12 @@ let Discord = require("discord.js");
 let shell = require("shelljs");
 const client = new Discord.Client();
 const axios = require("axios");
+const path = require("path");
 let httpBuildQuery = require("http-build-query");
 let router = express.Router();
-const capitalize = require('capitalize');
+const capitalize = require("capitalize");
 
 let baseUrl = "https://etu.utt.fr";
-
-if (process.env.APP === "development") {
-  router.get("/test/formulaire", function (req, res) {
-    res.render("formulaire", {
-      token: "TOKEN",
-      lienDiscord: "LIEN_INVITATION_DISCORD",
-    });
-  });
-
-  router.get("/test/error", function (req, res) {
-    res.render("error", {
-      message: "message",
-      error: {
-        status: "error.status",
-        stack: "error.stack",
-      },
-    });
-  });
-}
 
 /** Un tableau[channelTexte] = channelVocal associé */
 /** Utilisé pour vérifier si channel voix existe déjà pour un chan texte */
@@ -155,7 +137,7 @@ async function help(channelID) {
     .send(
       "\n`" +
         process.env.BOT_PREFIX +
-        " export`. Exporte tout le channel (maximum 600 messages) dans laquelle la commande est tapée, dans un html lisible offline. **Seuls ceux ayant un rôle >= Enseignant** peuvent taper cette commande n'importe où." +
+        " export`. Exporte tout le channel dans lequel la commande est tapée, dans un html lisible offline. **Seuls ceux ayant un rôle >= Enseignant** peuvent taper cette commande n'importe où." +
         "\n`" +
         process.env.BOT_PREFIX +
         " joinVocal`. Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi vocal et textuel que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les personnes de votre choix." +
@@ -701,7 +683,7 @@ client.on("message", async (msg) => {
           );
         }
       } else if (parametres[1].toLowerCase() === "listdynvoc") {
-        msg.channel.send(":clock1: Début du listing des channels");
+        msg.channel.send(":clock1: Début du listing des channels").catch(console.error);
         let compteur = 0;
         for (const key of Object.keys(tableauChannelTexteAChannelVocal)) {
           msg.channel
@@ -743,7 +725,7 @@ client.on("message", async (msg) => {
           let nomChannel = remove_non_ascii(msg.channel.name);
           msg.channel
             .send(
-              "Lancement de l'export pour maximum 600 messages. Cette commande peut prendre un certain temps (2 minutes max, notifier un administrateur en cas de délai plus long !)"
+              "Lancement de l'export. Cette commande peut prendre un certain temps (2 minutes max, notifier un administrateur en cas de délai plus long !)"
             )
             .then(function () {
               shell.exec(
@@ -777,49 +759,39 @@ client.on("message", async (msg) => {
                   process.env.DISCORD_CHAT_EXPORT_PATH +
                   nomChannel +
                   " && zip -q -r " +
-                  nomChannel +
-                  ".zip *"
+                  path.join(
+                    __dirname,
+                    "..",
+                    "public",
+                    "exports",
+                    nomChannel + ".zip"
+                  ) +
+                  " *"
               );
+              shell.exec(
+                "rm -rf " +
+                  process.env.DISCORD_CHAT_EXPORT_PATH +
+                  nomChannel +
+                  "*"
+              );
+              //Windows : shell.exec("del "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+".html");
               msg.channel
                 .send(
-                  "Voici l'export. Vous devez extraire les fichiers du fichier zip, et ensuite ouvrir le fichier html du dossier localhost. La personne à l'origine de la commande l'a également reçu en message privé."
-                )
-                .catch(console.error);
-              msg.channel
-                .send(
-                  new Discord.MessageAttachment(
-                    process.env.DISCORD_CHAT_EXPORT_PATH +
-                      nomChannel +
-                      "/" +
-                      nomChannel +
-                      ".zip"
-                  )
+                  "L'export est accessible ici pendant une durée limitée, téléchargez-le vite : " +
+                    process.env.BOT_URL +
+                    "/exports/" +
+                    nomChannel +
+                    ".zip\nVous devez extraire les fichiers du fichier zip, et ensuite ouvrir le fichier html du dossier localhost. La personne à l'origine de la commande a également reçu le lien et les instructions en message privé."
                 )
                 .catch(console.error);
               msg.author
                 .send(
-                  "Voici l'export. Vous devez extraire les fichiers du fichier zip, et ensuite ouvrir le fichier html du dossier localhost."
+                  "L'export est accessible ici pendant une durée limitée, téléchargez-le vite : " +
+                    process.env.BOT_URL +
+                    "/exports/" +
+                    nomChannel +
+                    ".zip\nVous devez extraire les fichiers du fichier zip, et ensuite ouvrir le fichier html du dossier localhost."
                 )
-                .catch(console.error);
-              msg.author
-                .send(
-                  new Discord.MessageAttachment(
-                    process.env.DISCORD_CHAT_EXPORT_PATH +
-                      nomChannel +
-                      "/" +
-                      nomChannel +
-                      ".zip"
-                  )
-                )
-                .then(function () {
-                  shell.exec(
-                    "rm -rf " +
-                      process.env.DISCORD_CHAT_EXPORT_PATH +
-                      nomChannel +
-                      "*"
-                  );
-                  //Windows : shell.exec("del "+process.env.DISCORD_CHAT_EXPORT_PATH+nomChannel+".html");
-                })
                 .catch(console.error);
             })
             .catch(console.error);
@@ -1022,7 +994,7 @@ client.on("message", async (msg) => {
                     msg.member.id +
                     "> Votre amphi vient d'être créé. Vous disposez d'un canal textuel (celui que vous regardez, visible à gauche et qui commence par #), et d'un canal vocal où vous pouvez parler jusqu'à 100 personnes, et 50 maximum si vous partagez votre écran." +
                     "\n:wastebasket: **Les canaux voix et texte seront effacés dès que plus personne ne sera dans le canal vocal.**" +
-                    "\n\n:writing_hand: Si vous souhaitez conserver le tchat, pensez à taper la commande `/ UE export`, **sans l'espace entre / et UE**. Seul un enseignant ou un modérateur/administrateur peut utiliser cette commande qui génére un fichier zip contenant tout la conversation du tchat textuel utilisable dans un navigateur web, même hors ligne. :warning: Au delà de 600 messages (il faut y arriver !), la sauvegarde n'est pas garantie." +
+                    "\n\n:writing_hand: Si vous souhaitez conserver le tchat, pensez à taper la commande `/ UE export`, **sans l'espace entre / et UE**. Seul un enseignant ou un modérateur/administrateur peut utiliser cette commande qui génére un fichier zip contenant tout la conversation du tchat textuel utilisable dans un navigateur web, même hors ligne." +
                     "\n\n:tools: Vous pouvez renommer vos salons sur la gauche qui portent votre nom pour leur donner le nom de l'UE par exemple (clic-droit sur le salon à gauche, modifier le salon puis enregistrer les changements)" +
                     "\n\n:toolbox: En bas à gauche, à côté de voix connectée, vous disposez de 5 boutons." +
                     "\nLes deux boutons au dessus permettent de diffuser votre écran (bouton flèche dans l'écran) ou de mettre fin à la communication (bouton téléphone avec la croix)." +
@@ -1106,7 +1078,6 @@ client.on("message", async (msg) => {
       await help(msg.channel.id);
   }
 });
-
 client.on("voiceStateUpdate", async (oldState, newState) => {
   if (
     oldState.channelID &&
