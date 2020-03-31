@@ -6,7 +6,7 @@ Nécessité de gérer les rôles des membres sur le discord, via une connexion e
 
 Egalement, gestion (création/suppression) des rôles et channels correspondant aux cours des étudiants, ainsi que création de salons vocaux à la volée (par une commande) et suppression quand plus personne n'est dedans.
 
-Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel en html, via [https://github.com/Tyrrrz/DiscordChatExporter](https://github.com/Tyrrrz/DiscordChatExporter) qui génère le html et wget/zip génèrent la version offline (600 messages max, limite Discord).
+Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel en html, via [https://github.com/Tyrrrz/DiscordChatExporter](https://github.com/Tyrrrz/DiscordChatExporter) qui génère le html et wget/zip génèrent la version offline.
 
 ## Fonctionnalités
 
@@ -25,7 +25,7 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
     * `PREFIX getRoles NombrePersonne` qui affiche la liste des rôle ne contenant que le nombre de personnes demandé
     * `PREFIX getZeroOne` qui affiche la liste des rôle ne contenant que 0 ou 1 personne.
     * `PREFIX getUrl` Affiche les url du serveur web du bot, le lien d'invitation discord
-    * `PREFIX export` Exporte tout le channel dans laquelle la commande est tapée, dans un html lisible offline. Tout ceux ayant un rôle >= Enseignant peuvent taper cette commande n'importe où.
+    * `PREFIX export` Exporte tout le channel dans lequel la commande est tapée, dans un html lisible offline. Tout ceux ayant un rôle >= Enseignant peuvent taper cette commande n'importe où.
     * `PREFIX joinVocal` Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les personnes de votre choix. Les channels créés par cette commandes sont effacés lorsque plus personne n'est dans le vocal créé.
     * `PREFIX listDynVoc`. Affiche tous les channels textes dans lesquels des vocaux ont été lancés, ainsi que leur catégorie. Utile pour savoir quand lancer une mise à jour du bot.
     * `PREFIX kickall` Expulse tous les membres du serveur. Commande réservée aux administrateurs. Expulse toute personne qui tape la commande sans être admin.

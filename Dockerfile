@@ -1,5 +1,5 @@
 FROM node
-RUN apt-get update && apt-get install -y apt-transport-https ca-certificates wget zip python3 && wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg && \
+RUN apt-get update && apt-get install -y cron apt-transport-https ca-certificates wget zip python3 && wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg && \
     mv microsoft.asc.gpg /etc/apt/trusted.gpg.d/ && \
     wget -q https://packages.microsoft.com/config/debian/10/prod.list && \
     mv prod.list /etc/apt/sources.list.d/microsoft-prod.list && \
@@ -11,7 +11,7 @@ WORKDIR /var/exports
 RUN python3 -m http.server &
 WORKDIR /usr/src/app
 COPY . .
-RUN npm install
+RUN chmod 777 public/exports && echo "00 00 * * * rm -f /usr/src/app/public/exports/*" >> mycron && crontab mycron && npm install
 EXPOSE 8080
 USER 1001
 CMD cd /var/exports/ && python3 -m http.server & node bin/www
