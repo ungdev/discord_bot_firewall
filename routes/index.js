@@ -7,6 +7,7 @@ const path = require("path");
 let httpBuildQuery = require("http-build-query");
 let router = express.Router();
 const capitalize = require("capitalize");
+const uniqid = require("uniqid");
 
 let baseUrl = "https://etu.utt.fr";
 
@@ -722,7 +723,7 @@ client.on("message", async (msg) => {
             process.env.ROLE_ENSEIGNANT_ID
           ) >= 0
         ) {
-          let nomChannel = remove_non_ascii(msg.channel.name);
+          let nomChannel = remove_non_ascii(msg.channel.name) +"-"+ uniqid();
           msg.channel
             .send(
               "Lancement de l'export. Cette commande peut prendre un certain temps (2 minutes max, notifier un administrateur en cas de délai plus long !)"
