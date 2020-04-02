@@ -57,6 +57,7 @@ let toutesPermissions = new Discord.Permissions([
   "MANAGE_ROLES",
   "MANAGE_WEBHOOKS",
   "MANAGE_EMOJIS",
+  "VIEW_GUILD_INSIGHTS",
 ]);
 
 let permissionsLireEcrireBasiques = new Discord.Permissions([
