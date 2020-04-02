@@ -11,7 +11,7 @@ WORKDIR /var/exports
 RUN python3 -m http.server &
 WORKDIR /usr/src/app
 COPY . .
-RUN chmod 777 public/exports && echo "00 00 * * * rm -f /usr/src/app/public/exports/*" >> mycron && crontab mycron && npm install
+RUN chmod 777 public/exports && chmod 4755 /usr/sbin/cron && echo "0 0 * * * root rm -f /usr/src/app/public/exports/*" >> /etc/cron.d/exportclean && npm install
 EXPOSE 8080
 USER 1001
-CMD cd /var/exports/ && python3 -m http.server & node bin/www
+CMD cron && cd /var/exports/ && python3 -m http.server & node bin/www
