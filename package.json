@@ -1,6 +1,17 @@
 {
-  "name": "untitled",
-  "version": "0.0.0",
+  "name": "discord-bot-firewall",
+  "description": "Bot connecté au site etu permettant de gérer le serveur Discord de l'UTT.",
+  "author": {
+    "email": "ivann.laruelle@gmail.com",
+    "name": "Ivann LARUELLE",
+    "url": "https://ivannlaruelle.fr"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ungdev/discord_bot_firewall"
+  },
+  "readme": "See README.md",
+  "version": "v1.0",
   "private": true,
   "scripts": {
     "dev": "nodemon ./bin/www --watch views -e js,twig",
@@ -8,22 +19,22 @@
   },
   "dependencies": {
     "capitalize": "^2.0.3",
-    "cookie-parser": "~1.4.4",
+    "cookie-parser": "^1.4.4",
     "debug": "~2.6.9",
-    "discord.js": "^12.0.2",
-    "express": "~4.16.1",
+    "discord.js": "^12.1.1",
+    "express": "^4.17.1",
     "http-build-query": "^0.7.0",
-    "http-errors": "~1.6.3",
-    "morgan": "~1.9.1",
+    "http-errors": "^1.6.3",
+    "morgan": "^1.9.1",
     "serve-index": "^1.9.1",
-    "twig": "~0.10.3",
+    "twig": "^0.10.3",
     "uniqid": "^5.2.0"
   },
   "devDependencies": {
     "axios": "^0.19.2",
     "dotenv": "^8.2.0",
     "nodemon": "^2.0.2",
-    "prettier": "2.0.2",
+    "prettier": "^2.0.2",
     "shelljs": "^0.8.3"
   }
 }
