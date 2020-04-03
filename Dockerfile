@@ -11,7 +11,9 @@ WORKDIR /var/exports
 RUN python3 -m http.server &
 WORKDIR /usr/src/app
 COPY . .
-RUN chmod 777 public/exports && chmod 4755 /usr/sbin/cron && echo "0 0 * * * root rm -f /usr/src/app/public/exports/*" >> /etc/cron.d/exportclean && npm install
+ARG timezone=Etc/UTC
+ARG cronMinHour="0 0"
+RUN ln -snf /usr/share/zoneinfo/$timezone /etc/localtime && echo $timezone > /etc/timezone && chmod 777 public/exports && chmod 4755 /usr/sbin/cron && echo "$cronMinHour * * * root rm -f /usr/src/app/public/exports/*" >> /etc/cron.d/exportclean && npm install
 EXPOSE 8080
 USER 1001
 CMD cron && cd /var/exports/ && python3 -m http.server & node bin/www
