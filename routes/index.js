@@ -685,7 +685,9 @@ client.on("message", async (msg) => {
           );
         }
       } else if (parametres[1].toLowerCase() === "listdynvoc") {
-        msg.channel.send(":clock1: Début du listing des channels").catch(console.error);
+        msg.channel
+          .send(":clock1: Début du listing des channels")
+          .catch(console.error);
         let compteur = 0;
         for (const key of Object.keys(tableauChannelTexteAChannelVocal)) {
           msg.channel
@@ -724,7 +726,7 @@ client.on("message", async (msg) => {
             process.env.ROLE_ENSEIGNANT_ID
           ) >= 0
         ) {
-          let nomChannel = remove_non_ascii(msg.channel.name) +"-"+ uniqid();
+          let nomChannel = remove_non_ascii(msg.channel.name) + "-" + uniqid();
           msg.channel
             .send(
               "Lancement de l'export. Cette commande peut prendre un certain temps (2 minutes max, notifier un administrateur en cas de délai plus long !)"
@@ -918,6 +920,17 @@ client.on("message", async (msg) => {
             msg.member.voice
               .setChannel(tableauChannelTexteAChannelVocal[msg.channel.id])
               .catch(console.error);
+        } else if (
+          (await msg.member.fetch()).roles.cache
+            .keyArray()
+            .includes(process.env.ROLE_ENSEIGNANT_ID) &&
+          process.env.VACANCES === "1"
+        ) {
+          msg
+            .reply(
+              " :octagonal_sign: Pour la sérénité et le repos des étudiants comme des enseignants, il est interdit de lancer un amphi pendant les vacances.\nSi vous estimez que c'est nécessaire, ou que la DFP a donné son accord, contactez-nous directement."
+            )
+            .catch(console.error);
         } else if (
           (await msg.member.fetch()).roles.cache
             .keyArray()
