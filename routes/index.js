@@ -931,7 +931,7 @@ client.on("message", async (msg) => {
         ) {
           msg
             .reply(
-              " :octagonal_sign: Pour la sérénité et le repos des étudiants comme des enseignants, il est interdit de lancer un amphi pendant les vacances.\nSi vous estimez que c'est nécessaire, ou que la DFP a donné son accord, ou que vous n'êtes pas assujeti aux périodes de vacances du calendrier universitaire, contactez directement un administrateur (en haut à droite)."
+              " :octagonal_sign: Pour la sérénité et le repos des étudiants comme des enseignants, il est interdit de lancer un amphi pendant les vacances.\nSi vous estimez que c'est nécessaire, ou que la DFP a donné son accord, ou que vous n'êtes pas assujetti aux périodes de vacances du calendrier universitaire de l'UTT, contactez directement un administrateur (en haut à droite)."
             )
             .catch(console.error);
         } else if (
