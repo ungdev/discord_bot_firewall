@@ -32,6 +32,7 @@ let toutesPermissions = new Discord.Permissions([
   "CREATE_INSTANT_INVITE",
   "KICK_MEMBERS",
   "BAN_MEMBERS",
+  "STREAM",
   "MANAGE_CHANNELS",
   "MANAGE_GUILD",
   "ADD_REACTIONS",
@@ -90,7 +91,6 @@ let permissionsLireEcrireProf = new Discord.Permissions([
   "CONNECT",
   "SPEAK",
   "USE_VAD",
-  "MANAGE_ROLES",
 ]);
 
 /** Merci StackOverflow */
@@ -931,7 +931,7 @@ client.on("message", async (msg) => {
         ) {
           msg
             .reply(
-              " :octagonal_sign: Pour la sérénité et le repos des étudiants comme des enseignants, il est interdit de lancer un amphi pendant les vacances.\nSi vous estimez que c'est nécessaire, ou que la DFP a donné son accord, ou que vous n'êtes pas assujeti aux périodes de vacances du calendrier universitaire, contactez directement un administrateur (en haut à droite)."
+              " :octagonal_sign: Pour la sérénité et le repos des étudiants comme des enseignants, il est interdit de lancer un amphi pendant les vacances.\nSi vous estimez que c'est nécessaire, ou que la DFP a donné son accord, ou que vous n'êtes pas assujetti aux périodes de vacances du calendrier universitaire de l'UTT, contactez directement un administrateur (en haut à droite)."
             )
             .catch(console.error);
         } else if (
@@ -957,7 +957,7 @@ client.on("message", async (msg) => {
                 allow: permissionsLireEcrireBasiques,
               },
               {
-                id: msg.author.id,
+                id: process.env.ROLE_ENSEIGNANT_ID,
                 allow: permissionsLireEcrireProf,
               },
             ];
@@ -969,15 +969,11 @@ client.on("message", async (msg) => {
               },
               {
                 id: process.env.ROLE_ENSEIGNANT_ID,
-                allow: permissionsLireEcrireBasiques,
+                allow: permissionsLireEcrireProf,
               },
               {
                 id: process.env.ROLE_ETUDIANT_ID,
                 allow: permissionsLireEcrireBasiques,
-              },
-              {
-                id: msg.author.id,
-                allow: permissionsLireEcrireProf,
               },
             ];
           }
