@@ -32,6 +32,7 @@ let toutesPermissions = new Discord.Permissions([
   "CREATE_INSTANT_INVITE",
   "KICK_MEMBERS",
   "BAN_MEMBERS",
+  "STREAM",
   "MANAGE_CHANNELS",
   "MANAGE_GUILD",
   "ADD_REACTIONS",
