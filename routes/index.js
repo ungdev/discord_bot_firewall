@@ -90,7 +90,6 @@ let permissionsLireEcrireProf = new Discord.Permissions([
   "CONNECT",
   "SPEAK",
   "USE_VAD",
-  "MANAGE_ROLES",
 ]);
 
 /** Merci StackOverflow */
@@ -957,7 +956,7 @@ client.on("message", async (msg) => {
                 allow: permissionsLireEcrireBasiques,
               },
               {
-                id: msg.author.id,
+                id: process.env.ROLE_ENSEIGNANT_ID,
                 allow: permissionsLireEcrireProf,
               },
             ];
@@ -969,15 +968,11 @@ client.on("message", async (msg) => {
               },
               {
                 id: process.env.ROLE_ENSEIGNANT_ID,
-                allow: permissionsLireEcrireBasiques,
+                allow: permissionsLireEcrireProf,
               },
               {
                 id: process.env.ROLE_ETUDIANT_ID,
                 allow: permissionsLireEcrireBasiques,
-              },
-              {
-                id: msg.author.id,
-                allow: permissionsLireEcrireProf,
               },
             ];
           }
