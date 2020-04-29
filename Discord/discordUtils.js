@@ -31,9 +31,9 @@ module.exports.help = async function (/** module:"discord.js".Message */ msg) {
           process.env.BOT_PREFIX +
           " listDynVoc`. Affiche tous les channels textes dans lesquels des vocaux ont été lancés, ainsi que leur catégorie. Utile pour savoir quand lancer une mise à jour du bot." +
           "\n`" +
-        process.env.BOT_PREFIX +
-        " assignLireEcrireBasiques categoryID @role oui|non|null` Permet d'assigner/supprimer/réinitialiser les permissions basiques de lecture écriture sur tous les channels d'une catégorie pour un rôle spécifique. Utile quand les permissions des channels ne sont pas synchro avec la catégorie"+
-        "\n`"+
+          process.env.BOT_PREFIX +
+          " assignLireEcrireBasiques channelID|categoryID @role oui|non|null` Permet d'assigner/supprimer/réinitialiser les permissions basiques de lecture écriture sur tous les channels d'une catégorie pour un rôle spécifique. Utile quand les permissions des channels ne sont pas synchro avec la catégorie" +
+          "\n`" +
           process.env.BOT_PREFIX +
           " kickAll`. Expulse tous les membres du serveur. Commande réservée aux administrateurs. Expulse toute personne qui tape la commande sans être admin.\n\n"
       )
@@ -163,4 +163,37 @@ module.exports.permissionsLireEcrireBasiquesOverwrite = function (
 
 module.exports.permissionsLireEcrireProfOverwrite = function (ouiOuNonOuNull) {
   return createOverwrite(permissionsLireEcrireProf, ouiOuNonOuNull);
+};
+
+module.exports.assignPerm = function (
+  /** module:"discord.js".GuildChannel */ channel,
+  /** module:"discord.js".Role */ role,
+  ouiOuNonOuNull
+) {
+  switch (ouiOuNonOuNull) {
+    case "oui":
+      channel
+        .updateOverwrite(
+          role,
+          module.exports.permissionsLireEcrireBasiquesOverwrite(true)
+        )
+        .catch(console.error);
+      break;
+    case "non":
+      channel
+        .updateOverwrite(
+          role,
+          module.exports.permissionsLireEcrireBasiquesOverwrite(false)
+        )
+        .catch(console.error);
+      break;
+    case "null":
+      channel
+        .updateOverwrite(
+          role,
+          module.exports.permissionsLireEcrireBasiquesOverwrite(null)
+        )
+        .catch(console.error);
+      break;
+  }
 };
