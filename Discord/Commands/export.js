@@ -5,6 +5,15 @@ let path = require("path");
 
 module.exports = async function (/** module:"discord.js".Message */ msg) {
   if (
+    typeof process.env.DISCORD_CHAT_EXPORT_PATH === "undefined" ||
+    typeof process.env.DISCORD_CHAT_EXPORTER_EXE_PATH === "undefined" ||
+    process.env.DISCORD_CHAT_EXPORT_PATH === "" ||
+    process.env.DISCORD_CHAT_EXPORTER_EXE_PATH === ""
+  ) {
+    msg.reply(
+      " :warning: L'exécution actuelle ne prend pas en charge l'export."
+    );
+  } else if (
     (await msg.member.fetch()).roles.highest.comparePositionTo(
       process.env.ROLE_ENSEIGNANT_ID
     ) >= 0
