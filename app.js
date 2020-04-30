@@ -87,10 +87,7 @@ client.on("voiceStateUpdate", async (
   );
 });
 
-if (process.env.BOT_TOKEN) {
-  /** On connecte le BOT à discord */
-  client.login(process.env.BOT_TOKEN).catch(console.error);
-}
+client.login(process.env.BOT_TOKEN).catch(console.error);
 
 /**
  *
