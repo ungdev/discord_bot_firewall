@@ -1,5 +1,38 @@
+/**
+ *
+ *
+ * Variables d'environnement
+ *
+ *
+ * */
 require("dotenv").config();
-
+[
+  ["APP", process.env.APP],
+  ["BOT_PREFIX", process.env.BOT_PREFIX],
+  ["BOT_URL", process.env.BOT_URL],
+  ["BOT_TOKEN", process.env.BOT_TOKEN],
+  ["SERVER_ID", process.env.SERVER_ID],
+  ["CHANNEL_ADMIN_ID", process.env.CHANNEL_ADMIN_ID],
+  ["ROLE_ENSEIGNANT_ID", process.env.ROLE_ENSEIGNANT_ID],
+  ["ROLE_ETUDIANT_ID", process.env.ROLE_ETUDIANT_ID],
+  ["ROLE_VACANCES_ENSEIGNANT_ID", process.env.ROLE_VACANCES_ENSEIGNANT_ID],
+  ["BOT_PREFIX", process.env.BOT_PREFIX],
+  ["CATEGORY_AMPHI", process.env.CATEGORY_AMPHI],
+].forEach(function (env) {
+  if (typeof env[1] === "undefined" || env[1] === "") {
+    console.error("La variable d'env " + env[0] + " n'est pas définie !");
+    process.exit(-1);
+  }
+});
+if (typeof process.env.VACANCES === "undefined" || process.env.VACANCES === "")
+  process.env.VACANCES = "0";
+if (typeof process.env.BOT_URL === "undefined" || process.env.BOT_URL === "")
+  process.env.BOT_URL = "l'url publique du bot n'est pas définie";
+if (
+  typeof process.env.LIEN_INVITATION_DISCORD === "undefined" ||
+  process.env.LIEN_INVITATION_DISCORD === ""
+)
+  process.env.LIEN_INVITATION_DISCORD = "pas de lien d'invitation";
 /**
  *
  *
@@ -44,9 +77,14 @@ client.on("message", async (/** module:"discord.js".Message */ msg) => {
 
 client.on("voiceStateUpdate", async (
   /** module:"discord.js".VoiceState */ oldState,
-  /** module:"discord.js".VoiceState */ newState,
+  /** module:"discord.js".VoiceState */ newState
 ) => {
-  await voiceStateUpdate(oldState, newState, tableauChannelTexteAChannelVocal, tableauChannelsVocauxEnCours);
+  await voiceStateUpdate(
+    oldState,
+    newState,
+    tableauChannelTexteAChannelVocal,
+    tableauChannelsVocauxEnCours
+  );
 });
 
 if (process.env.BOT_TOKEN) {
@@ -77,14 +115,34 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/connexion", require("./routes/connexion"));
-app.use("/attribuerrole", require("./routes/attribuerrole")(client));
-app.use(
-  "/exports",
-  express.static("public/exports"),
-  serveIndex("public/exports", { icons: true })
-);
-app.use("/", require("./routes/home"));
+if (
+  typeof process.env.SITE_ETU_CLIENT_ID !== "undefined" &&
+  process.env.SITE_ETU_CLIENT_ID !== "" &&
+  typeof process.env.SITE_ETU_CLIENT_SECRET !== "undefined" &&
+  process.env.SITE_ETU_CLIENT_SECRET !== ""
+) {
+  app.use("/connexion", require("./routes/connexion"));
+  app.use("/attribuerrole", require("./routes/attribuerrole")(client));
+  app.use("/", require("./routes/home"));
+} else {
+  app.get("/", function (req, res) {
+    res.send(
+      "La connexion avec le site etu n'est pas possible en raison d'une mauvaise configuration du bot, ou alors <a href='https://etu.utt.fr'>le site etu</a> n'est pas accessible. Ressayez plus tard."
+    );
+  });
+}
+if (
+  typeof process.env.DISCORD_CHAT_EXPORT_PATH !== "undefined" &&
+  typeof process.env.DISCORD_CHAT_EXPORTER_EXE_PATH !== "undefined" &&
+  process.env.DISCORD_CHAT_EXPORT_PATH !== "" &&
+  process.env.DISCORD_CHAT_EXPORTER_EXE_PATH !== ""
+) {
+  app.use(
+    "/exports",
+    express.static("public/exports"),
+    serveIndex("public/exports", { icons: true })
+  );
+}
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
