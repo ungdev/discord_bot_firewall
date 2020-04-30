@@ -25,7 +25,16 @@ module.exports = async function (
     .send(
       " :white_check_mark: Il y a " +
         compteur +
-        " channels vocaux. Vérifiez aussi la catégorie amphi !"
+        " channels vocaux lancés par les étudiants."
+    )
+    .catch(console.error);
+  msg.channel
+    .send(
+      "Il y a " +
+        (await msg.guild.channels.resolve(process.env.CATEGORY_AMPHI)).children
+          .length /
+          2 +
+        " amphis en cours."
     )
     .catch(console.error);
 };
