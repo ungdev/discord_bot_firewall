@@ -35,10 +35,7 @@ module.exports = async function (
   tableauChannelsVocauxEnCours
 ) {
   if (
-    msg.content
-      .toLowerCase()
-      .startsWith(
-        process.env.BOT_PREFIX.toLowerCase()) && msg.channel.type !== "dm"
+    msg.content.toLowerCase().startsWith(process.env.BOT_PREFIX.toLowerCase())
   ) {
     /** On découpe la ligne de commande par les espaces */
     /** index 0 : le préfix, index 1 : la commande, index 2,3,... : les vrais paramètres */
@@ -80,31 +77,33 @@ module.exports = async function (
           break;
       }
     }
-    switch (parametres[1].toLowerCase()) {
-      case "export":
-        await exportChannel(msg);
-        break;
-      case "pin":
-        await pin(msg, parametres);
-        break;
-      case "unpin":
-        await unpin(msg, parametres);
-        break;
-      case "joinvocal":
-        await joinVocal(
-          msg,
-          tableauChannelTexteAChannelVocal,
-          tableauChannelsVocauxEnCours
-        );
-        break;
-      case "author":
-        msg.channel.send(utils.author).catch(console.error);
-        break;
-      default:
-        if (!commandesAdmin.includes(parametres[1].toLowerCase())) {
-          await discordUtils.help(msg);
-        }
-        break;
+    if (msg.channel.type !== "dm") {
+      switch (parametres[1].toLowerCase()) {
+        case "export":
+          await exportChannel(msg);
+          break;
+        case "pin":
+          await pin(msg, parametres);
+          break;
+        case "unpin":
+          await unpin(msg, parametres);
+          break;
+        case "joinvocal":
+          await joinVocal(
+            msg,
+            tableauChannelTexteAChannelVocal,
+            tableauChannelsVocauxEnCours
+          );
+          break;
+        case "author":
+          msg.channel.send(utils.author).catch(console.error);
+          break;
+        default:
+          if (!commandesAdmin.includes(parametres[1].toLowerCase())) {
+            await discordUtils.help(msg);
+          }
+          break;
+      }
     }
     if (msg.channel.type === "dm") {
       msg
