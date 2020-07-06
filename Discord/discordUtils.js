@@ -53,6 +53,15 @@ module.exports.help = async function (/** module:"discord.js".Message */ msg) {
         "\n`" +
         process.env.BOT_PREFIX +
         " unpin messageID`. Permet de supprimer un message de la liste des messages pin (sans donner la permission `MANAGE_MESSAGES`)" +
+        "\n`" +
+        process.env.BOT_PREFIX +
+        " assignRole @membre @role ajouter|supprimer`. Ajoute ou supprime un rôle pour un membre, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres)" +
+        "\n`" +
+        process.env.BOT_PREFIX +
+        " setRoles @membre @role1 @role2 ...`. Efface tous les précédents rôles de l'utilisateur et lui affecte ceux indiqués, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres). Si aucun rôle n'est précisé, efface tous les rôles de l'utilisateur." +
+        "\n`" +
+        process.env.BOT_PREFIX +
+        " getMemberRoles @membre`. Affiche la liste des rôles d'un membre, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres)" +
         "\n\n`" +
         process.env.BOT_PREFIX +
         " author` Affiche des informations diverses sur l'auteur de ce bot"
