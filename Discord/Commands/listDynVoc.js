@@ -31,8 +31,8 @@ module.exports = async function (
   msg.channel
     .send(
       "Il y a " +
-        (await msg.guild.channels.resolve(process.env.CATEGORY_AMPHI)).children
-          .length /
+        msg.guild.channels.resolve(process.env.CATEGORY_AMPHI).children
+          .size /
           2 +
         " amphis en cours."
     )

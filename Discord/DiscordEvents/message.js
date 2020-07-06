@@ -14,6 +14,9 @@ let kickAll = require("../Commands/kickAll");
 let listDynVoc = require("../Commands/listDynVoc");
 let pin = require("../Commands/pin");
 let unpin = require("../Commands/unpin");
+let setRoles = require("../Commands/setRoles");
+let getMemberRoles = require("../Commands/getMemberRoles");
+let assignRole = require("../Commands/assignRole");
 
 let commandesAdmin = [
   "delue",
@@ -25,6 +28,9 @@ let commandesAdmin = [
   "geturl",
   "listdynvoc",
   "assignlireecrirebasiques",
+  "assignrole",
+  "getmemberroles",
+  "setroles",
 ];
 
 let commandesPubliques = ["export", "joinvocal", "author", "pin", "unpin"];
@@ -69,6 +75,15 @@ module.exports = async function (
           break;
         case "listdynvoc":
           await listDynVoc(msg, tableauChannelTexteAChannelVocal);
+          break;
+        case "setroles":
+          await setRoles(msg);
+          break;
+        case "getmemberroles":
+          await getMemberRoles(msg);
+          break;
+        case "assignrole":
+          await assignRole(msg, parametres);
           break;
         default:
           if (!commandesPubliques.includes(parametres[1].toLowerCase())) {
