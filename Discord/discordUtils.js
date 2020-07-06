@@ -35,7 +35,7 @@ module.exports.help = async function (/** module:"discord.js".Message */ msg) {
           " assignLireEcrireBasiques channelID|categoryID @role oui|non|null` Permet d'assigner/supprimer/réinitialiser les permissions basiques de lecture écriture sur tous les channels d'une catégorie pour un rôle spécifique. Utile quand les permissions des channels ne sont pas synchro avec la catégorie" +
           "\n`" +
           process.env.BOT_PREFIX +
-          " kickAll`. Expulse tous les membres du serveur. Commande réservée aux administrateurs. Expulse toute personne qui tape la commande sans être admin.\n\n"
+          " kickAll`. Expulse tous les membres du serveur. **Commande réservée aux administrateurs.** Expulse toute personne qui tape la commande sans être admin.\n\n"
       )
       .catch(console.error);
   }
@@ -55,13 +55,13 @@ module.exports.help = async function (/** module:"discord.js".Message */ msg) {
         " unpin messageID`. Permet de supprimer un message de la liste des messages pin (sans donner la permission `MANAGE_MESSAGES`)" +
         "\n`" +
         process.env.BOT_PREFIX +
-        " assignRole @membre @role ajouter|supprimer`. Ajoute ou supprime un rôle pour un membre, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres)" +
+        " assignRole @membre @role ajouter|supprimer`. Ajoute ou supprime un rôle pour un membre, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres). **Commande réservée aux administrateurs.**" +
         "\n`" +
         process.env.BOT_PREFIX +
-        " setRoles @membre @role1 @role2 ...`. Efface tous les précédents rôles de l'utilisateur et lui affecte ceux indiqués, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres). Si aucun rôle n'est précisé, efface tous les rôles de l'utilisateur." +
+        " setRoles @membre @role1 @role2 ...`. Efface tous les précédents rôles de l'utilisateur et lui affecte ceux indiqués, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres). Si aucun rôle n'est précisé, efface tous les rôles de l'utilisateur. **Commande réservée aux administrateurs.**" +
         "\n`" +
         process.env.BOT_PREFIX +
-        " getMemberRoles @membre`. Affiche la liste des rôles d'un membre, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres)" +
+        " getMemberRoles @membre`. Affiche la liste des rôles d'un membre, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres)." +
         "\n\n`" +
         process.env.BOT_PREFIX +
         " author` Affiche des informations diverses sur l'auteur de ce bot"
