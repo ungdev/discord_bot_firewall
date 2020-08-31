@@ -1,4 +1,4 @@
-module.exports = async function (
+module.exports = async function(
   /** module:"discord.js".Message */ msg,
   /** Array<String> */ parametres
 ) {
@@ -13,23 +13,22 @@ module.exports = async function (
     msg
       .reply(
         " :warning: Erreur. La syntaxe est `" +
-          process.env.BOT_PREFIX +
-          " delUE #ueASupprimer vocal | tout`. Vous devez tagguer le channel texte de l'UE !"
+        process.env.BOT_PREFIX +
+        " delUE #ueASupprimer vocal | tout`. Vous devez tagguer le channel texte de l'UE !"
       )
       .catch(console.error);
   } else {
     if (
-      parametres[3].toLowerCase() === "tout" ||
       parametres[3].toLowerCase() === "vocal"
-    )
+    ) {
       msg.guild.channels.cache
         .find(
           (channel) =>
             (channel.name
-              .toLowerCase()
-              .includes(
-                " " + msg.mentions.channels.first().name.toLowerCase()
-              ) ||
+                .toLowerCase()
+                .includes(
+                  " " + msg.mentions.channels.first().name.toLowerCase()
+                ) ||
               channel.name
                 .toLowerCase()
                 .includes(
@@ -39,11 +38,8 @@ module.exports = async function (
         )
         .delete("Demandé par " + msg.author.tag + " " + msg.author.username)
         .catch(console.error);
+    }
     if (parametres[3].toLowerCase() === "tout") {
-      msg.mentions.channels
-        .first()
-        .delete("Demandé par " + msg.author.tag + " " + msg.author.username)
-        .catch(console.error);
       (await msg.guild.roles.fetch()).cache
         .find(
           (role) =>
@@ -52,12 +48,13 @@ module.exports = async function (
         )
         .delete("Demandé par " + msg.author.tag + " " + msg.author.username)
         .catch(console.error);
+      msg.mentions.channels.first().delete("Demandé par " + msg.author.tag + " " + msg.author.username).catch(console.error);
     }
     msg.channel
       .send(
         ":white_check_mark: Ce que vous avez demandé a été effacé pour " +
-          msg.mentions.channels.first().name +
-          " !"
+        msg.mentions.channels.first().name +
+        " !"
       )
       .catch(console.error);
   }
