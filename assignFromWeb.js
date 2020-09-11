@@ -17,7 +17,6 @@ module.exports.etuToDiscord = async function (
   if (membreDiscord) {
     let roles = (await guild.roles.fetch()).cache;
     /** Liste des id de rôles à attribuer */
-    let rolesAAttribuer = [];
     /** On définit son pseudo */
     let pseudo =
       capitalize.words(
@@ -30,7 +29,7 @@ module.exports.etuToDiscord = async function (
         .toUpperCase();
     if (/** bool */ membreSiteEtu.isStudent) {
       /** On ajoute le rôle étudiant */
-      rolesAAttribuer.push(process.env.ROLE_ETUDIANT_ID);
+      membreDiscord.roles.add(process.env.ROLE_ETUDIANT_ID);
       /** On définit un pseudo */
       pseudo +=
         " - " + /** string */ membreSiteEtu.branch + membreSiteEtu.level;
@@ -45,7 +44,7 @@ module.exports.etuToDiscord = async function (
             (role) =>
               role.name.toUpperCase() === chaine.toString().toUpperCase()
           );
-          if (role) rolesAAttribuer.push(role.id);
+          if (role) membreDiscord.roles.add(role).catch(console.error);
           else {
             /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
             await guild.channels
@@ -63,7 +62,7 @@ module.exports.etuToDiscord = async function (
                 data: { name: chaine.toString().toUpperCase() },
               })
               .catch(console.error);
-            rolesAAttribuer.push(roleCree.id);
+            membreDiscord.roles.add(roleCree).catch(console.error);
           }
         }
       }
@@ -83,8 +82,6 @@ module.exports.etuToDiscord = async function (
       pseudo = pseudo.slice(0, 32);
     }
     membreDiscord.setNickname(pseudo).catch(console.error);
-    /** On applique les rôles */
-    membreDiscord.roles.set(rolesAAttribuer).catch(console.error);
     /** On affiche un message */
     return "Vos rôles ont été affectés. Si d'ici quelques heures rien ne change dans votre compte, merci de nous contacter.<br><br><b>Vous pouvez maintenant fermer cette fenêtre et retourner sur Discord.</b>";
   } else
@@ -117,6 +114,9 @@ async function roleValide(/** string */ roleName) {
   )
     return false;
   if (
+    roleName.startsWith("PMCS") ||
+    roleName.startsWith("PEXX") ||
+    roleName.startsWith("PMXX") ||
     roleName.startsWith("PMCS") ||
     roleName.startsWith("PMTM") ||
     roleName.startsWith("PMHT") ||
