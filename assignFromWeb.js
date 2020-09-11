@@ -21,11 +21,11 @@ module.exports.etuToDiscord = async function (
     /** On définit son pseudo */
     let pseudo =
       capitalize.words(
-        membreSiteEtu/** string */ .firstName
+        membreSiteEtu /** string */.firstName
           .toString()
       ) +
       " " +
-      membreSiteEtu/** string */ .lastName
+      membreSiteEtu /** string */.lastName
         .toString()
         .toUpperCase();
     if (/** bool */ membreSiteEtu.isStudent) {
@@ -40,29 +40,31 @@ module.exports.etuToDiscord = async function (
 
       /** Pour tous les noms de rôle on récupère l'id du rôle et on l'ajoute à la liste des id de rôles à attribuer */
       for (let chaine of tableauChainesToRoles) {
-        if (chaine === "") chaine = "vide";
-        let role = roles.find(
-          (role) => role.name.toUpperCase() === chaine.toString().toUpperCase()
-        );
-        if (role) rolesAAttribuer.push(role.id);
-        else {
-          /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
-          await guild.channels
-            .resolve(process.env.CHANNEL_ADMIN_ID)
-            .send(
-              "Le rôle " +
-                chaine +
-                " va être créé pour l'utilisateur " +
-                membreDiscord.user.tag +
-                " " +
-                pseudo
-            );
-          let roleCree = await guild.roles
-            .create({
-              data: { name: chaine.toString().toUpperCase() },
-            })
-            .catch(console.error);
-          rolesAAttribuer.push(roleCree.id);
+        if (await roleValide(chaine)) {
+          let role = roles.find(
+            (role) =>
+              role.name.toUpperCase() === chaine.toString().toUpperCase()
+          );
+          if (role) rolesAAttribuer.push(role.id);
+          else {
+            /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
+            await guild.channels
+              .resolve(process.env.CHANNEL_ADMIN_ID)
+              .send(
+                "Le rôle " +
+                  chaine +
+                  " va être créé pour l'utilisateur " +
+                  membreDiscord.user.tag +
+                  " " +
+                  pseudo
+              );
+            let roleCree = await guild.roles
+              .create({
+                data: { name: chaine.toString().toUpperCase() },
+              })
+              .catch(console.error);
+            rolesAAttribuer.push(roleCree.id);
+          }
         }
       }
     } else rolesAAttribuer.push(process.env.ROLE_ENSEIGNANT_ID);
@@ -89,3 +91,41 @@ module.exports.etuToDiscord = async function (
   /** SI utilisateur non trouvé dans le serveur, message */
     return "Utilisateur discord non trouvé dans le serveur. Avez-vous bien rejoint le serveur Discord ? <a href='/'>Revenir au départ</a>";
 };
+
+async function roleValide(/** string */ roleName) {
+  if (roleName === "") return false;
+  if (roleName === "CV ING") return false;
+  if (
+    roleName === "CVF2" ||
+    roleName.startsWith("FB") ||
+    roleName.startsWith("FA")
+  )
+    return false;
+  if (roleName === "FOS4") return false;
+  if (roleName === "EPSEM") return false;
+  if (
+    roleName.startsWith("NPML") ||
+    roleName.startsWith("LINGUA") ||
+    roleName.startsWith("LX") ||
+    roleName.startsWith("UX")
+  )
+    return false;
+  if (
+    roleName.startsWith("TX") ||
+    roleName.startsWith("AC") ||
+    roleName.startsWith("ER")
+  )
+    return false;
+  if (
+    roleName.startsWith("PMCS") ||
+    roleName.startsWith("PMTM") ||
+    roleName.startsWith("PMHT") ||
+    roleName.startsWith("PMEE") ||
+    roleName.startsWith("PMEC") ||
+    roleName.startsWith("PMME")
+  ) {
+    return false;
+  }
+
+  return true;
+}
