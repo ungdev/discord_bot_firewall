@@ -17,6 +17,9 @@ module.exports.help = async function (/** module:"discord.js".Message */ msg) {
           " delUE #ueASupprimer vocal | tout`. Supprime les channels texte et voix de l'UE et le rôle. Vous devez tagguer le channel texte de l'UE !" +
           "\n`" +
           process.env.BOT_PREFIX +
+          " delUEs <categoryID> vocal | tout`. Idem que la commande `delUE` mais sur tous les channels d'une catégorie." +
+          "\n`" +
+          process.env.BOT_PREFIX +
           " getNb @ROLE`. Récupère le nombre de personnes dans le rôle. Le rôle doit exister." +
           "\n`" +
           process.env.BOT_PREFIX +
@@ -35,7 +38,10 @@ module.exports.help = async function (/** module:"discord.js".Message */ msg) {
           " assignLireEcrireBasiques channelID|categoryID @role oui|non|null` Permet d'assigner/supprimer/réinitialiser les permissions basiques de lecture écriture sur tous les channels d'une catégorie pour un rôle spécifique. Utile quand les permissions des channels ne sont pas synchro avec la catégorie" +
           "\n`" +
           process.env.BOT_PREFIX +
-          " kickAll`. Expulse tous les membres du serveur. **Commande réservée aux administrateurs.** Expulse toute personne qui tape la commande sans être admin.\n\n"
+          " kickAll`. Expulse tous les membres du serveur. **Commande réservée aux administrateurs.** Expulse toute personne qui tape la commande sans être admin.\n" +
+          "\n`" +
+          process.env.BOT_PREFIX +
+          " removeAllFromRole @role`. Prend toutes les personnes ayant le rôle et leur retire. Permet de s'assurer que plus personne n'a un rôle précis.\n\n"
       )
       .catch(console.error);
   }

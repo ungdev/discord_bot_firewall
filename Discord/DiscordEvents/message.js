@@ -18,11 +18,13 @@ let unpin = require("../Commands/unpin");
 let setRoles = require("../Commands/setRoles");
 let getMemberRoles = require("../Commands/getMemberRoles");
 let assignRole = require("../Commands/assignRole");
+let removeAllFromRole = require("../Commands/removeAllFromRole");
 
 let commandesAdmin = [
   "delue",
   "delues",
   "addue",
+  "removeallfromrole",
   "kickall",
   "getnb",
   "getroles",
@@ -89,6 +91,9 @@ module.exports = async function (
           break;
         case "assignrole":
           await assignRole(msg, parametres);
+          break;
+        case "removeallfromrole":
+          await removeAllFromRole(msg);
           break;
         default:
           if (!commandesPubliques.includes(parametres[1].toLowerCase())) {
