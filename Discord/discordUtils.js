@@ -206,3 +206,43 @@ module.exports.assignPerm = function (
       break;
   }
 };
+
+module.exports.delUE = async function (
+  /** module:"discord.js".GuildChannel */ channelToDelete,
+  /** module:"discord.js".Message */ msg,
+  /** String */ scope
+) {
+  if (scope.toLowerCase() === "vocal") {
+    msg.guild.channels.cache
+      .find(
+        (channel) =>
+          (channel.name
+            .toLowerCase()
+            .includes(" " + channelToDelete.name.toLowerCase()) ||
+            channel.name
+              .toLowerCase()
+              .includes(channelToDelete.name.toLowerCase() + " ")) &&
+          channel.type === "voice"
+      )
+      .delete("Demandé par " + msg.author.tag + " " + msg.author.username)
+      .catch(console.error);
+  }
+  if (scope.toLowerCase() === "tout") {
+    (await msg.guild.roles.fetch()).cache
+      .find(
+        (role) => role.name.toUpperCase() === channelToDelete.name.toUpperCase()
+      )
+      .delete("Demandé par " + msg.author.tag + " " + msg.author.username)
+      .catch(console.error);
+    channelToDelete
+      .delete("Demandé par " + msg.author.tag + " " + msg.author.username)
+      .catch(console.error);
+  }
+  msg.channel
+    .send(
+      ":white_check_mark: Ce que vous avez demandé a été effacé pour " +
+        channelToDelete.name +
+        " !"
+    )
+    .catch(console.error);
+};

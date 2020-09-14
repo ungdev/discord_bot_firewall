@@ -7,7 +7,7 @@ module.exports = async function (
   /** Suppression d'une UE en indiquant son channel texte */
   if (
     parametres.length !== 4 ||
-    !msg.mentions.channels.first() ||
+    !msg.guild.channels.cache.has(parametres[2]) ||
     !["tout".toLowerCase(), "vocal".toLowerCase()].includes(
       parametres[3].toLowerCase()
     )
@@ -16,10 +16,12 @@ module.exports = async function (
       .reply(
         " :warning: Erreur. La syntaxe est `" +
           process.env.BOT_PREFIX +
-          " delUE #ueASupprimer vocal | tout`. Vous devez tagguer le channel texte de l'UE !"
+          " delUEs <categoryID> vocal | tout`."
       )
       .catch(console.error);
   } else {
-    await utils.delUE(msg.mentions.channels.first(), msg, parametres[3]);
+    msg.guild.channels.cache
+      .get(parametres[2])
+      .children.forEach((channel) => utils.delUE(channel, msg, parametres[3]));
   }
 };

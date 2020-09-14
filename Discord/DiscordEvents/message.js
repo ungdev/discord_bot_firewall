@@ -4,6 +4,7 @@ let discordUtils = require("../discordUtils");
 let addUe = require("../Commands/addUE");
 let assignLireEcrireBasiques = require("../Commands/assignLireEcrireBasiques");
 let delUe = require("../Commands/delUE");
+let delUEs = require("../Commands/delUEs");
 let exportChannel = require("../Commands/export");
 let getNb = require("../Commands/getNb");
 let getRoles = require("../Commands/getRoles");
@@ -20,6 +21,7 @@ let assignRole = require("../Commands/assignRole");
 
 let commandesAdmin = [
   "delue",
+  "delues",
   "addue",
   "kickall",
   "getnb",
@@ -54,6 +56,9 @@ module.exports = async function (
           break;
         case "delue":
           await delUe(msg, parametres);
+          break;
+        case "delues":
+          await delUEs(msg, parametres);
           break;
         case "getnb":
           await getNb(msg, parametres);
