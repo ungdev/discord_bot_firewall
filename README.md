@@ -26,6 +26,7 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
     * `PREFIX getRoles NombrePersonne` qui affiche la liste des rôle ne contenant que le nombre de personnes demandé
     * `PREFIX getZeroOne` qui affiche la liste des rôle ne contenant que 0 ou 1 personne.
     * `PREFIX assignLireEcrireBasiques channelID|categoryID @role oui|non|null` Permet d'assigner/supprimer/réinitialiser les permissions basiques de lecture écriture sur tous les channels d'une catégorie pour un rôle spécifique. Utile quand les permissions des channels ne sont pas synchro avec la catégorie, pour l'assignation de rôle de modération.
+    * `PREFIX removeAllFromRole @role` Retire toutes les personnes d'un rôle. Permet de s'assurer que plus personne n'a le rôle. Le rôle existe toujours après.
     * `PREFIX getUrl` Affiche les url du serveur web du bot, le lien d'invitation discord
     * `PREFIX export` Exporte tout le channel dans lequel la commande est tapée, dans un html lisible offline. Tout ceux ayant un rôle >= Enseignant peuvent taper cette commande n'importe où.
     * `PREFIX joinVocal` Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi que tout le monde peut rejoindre. Si vous rajoutez `@NOM_UE` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et les personnes de votre choix. Les channels créés par cette commandes sont effacés lorsque plus personne n'est dans le vocal créé.
