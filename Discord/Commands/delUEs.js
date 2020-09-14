@@ -1,6 +1,6 @@
-let utils = require('../discordUtils')
+let utils = require("../discordUtils");
 
-module.exports = async function(
+module.exports = async function (
   /** module:"discord.js".Message */ msg,
   /** Array<String> */ parametres
 ) {
@@ -15,11 +15,13 @@ module.exports = async function(
     msg
       .reply(
         " :warning: Erreur. La syntaxe est `" +
-        process.env.BOT_PREFIX +
-        " delUEs <categoryID> vocal | tout`."
+          process.env.BOT_PREFIX +
+          " delUEs <categoryID> vocal | tout`."
       )
       .catch(console.error);
   } else {
-    msg.guild.channels.cache.get(parametres[2]).children.forEach(channel => utils.delUE(channel, msg, parametres[3]))
+    msg.guild.channels.cache
+      .get(parametres[2])
+      .children.forEach((channel) => utils.delUE(channel, msg, parametres[3]));
   }
 };
