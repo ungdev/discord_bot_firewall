@@ -1,3 +1,22 @@
+require("dotenv").config();
+/**
+ *
+ *
+ * MONITORING
+ *
+ *
+ * */
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+});
+
 /**
  *
  *
@@ -5,7 +24,6 @@
  *
  *
  * */
-require("dotenv").config();
 [
   ["APP", process.env.APP],
   ["BOT_PREFIX", process.env.BOT_PREFIX],
