@@ -41,7 +41,11 @@ if (
  *
  * */
 let Discord = require("discord.js");
-const client = new Discord.Client();
+const intents = new Discord.Intents([
+  Discord.Intents.NON_PRIVILEGED,
+  Discord.Intents.PRIVILEGED,
+]);
+const client = new Discord.Client({ ws: { intents } });
 let ready = require("./Discord/DiscordEvents/ready");
 let guildMemberAdd = require("./Discord/DiscordEvents/guildMemberAdd");
 let message = require("./Discord/DiscordEvents/message");
