@@ -18,20 +18,22 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@sentry/node": "^5.27.2",
+    "@sentry/tracing": "^5.27.2",
+    "axios": "^0.21.0",
     "capitalize": "^2.0.3",
     "cookie-parser": "^1.4.4",
     "debug": "^4.2.0",
     "discord.js": "^12.4.1",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "http-build-query": "^0.7.0",
     "http-errors": "^1.8.0",
     "morgan": "^1.10.0",
     "serve-index": "^1.9.1",
-    "twig": "^1.15.2",
-    "uniqid": "^5.2.0",
     "shelljs": "^0.8.4",
-    "dotenv": "^8.2.0",
-    "axios": "^0.21.0"
+    "twig": "^1.15.2",
+    "uniqid": "^5.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.6",
