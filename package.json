@@ -24,7 +24,7 @@
     "capitalize": "^2.0.3",
     "cookie-parser": "^1.4.4",
     "debug": "^4.2.0",
-    "discord.js": "^12.4.1",
+    "discord.js": "^12.5.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "http-build-query": "^0.7.0",
