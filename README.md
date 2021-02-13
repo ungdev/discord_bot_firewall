@@ -34,7 +34,8 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
     * `PREFIX kickall` Expulse tous les membres du serveur. Commande réservée aux administrateurs. Expulse toute personne qui tape la commande sans être admin.
     * `PREFIX pin messageID`. Permet d'ajouter un message à la liste des messages pin (sans donner la permission `MANAGE_MESSAGES`).
     * `PREFIX unpin messageID`. Permet de supprimer un message de la liste des messages pin (sans donner la permission `MANAGE_MESSAGES`).
-    * `PREFIX checkSameRoles`. Permet de lister tous les rôles identiques (même nom)
+    * `PREFIX checkSameRoles`. Permet de lister tous les rôles présents plusieurs fois (même nom sans tenir compte de la casse).
+    * `PREFIX delSameRoles`. Supprime tous les rôles présents plusieurs fois (même nom sans tenir compte de la casse) pour n'en laisser qu'un seul.  
     * Pour les serveurs de plus de 1 000 personnes, Discord n'affiche pas les utilisateurs déconnectés dans la liste des utilisateurs, ce qui est très embétant pour gérer les rôles. En revanche, on peut toujours tagger l'utilisateur :
         * `PREFIX getMemberRoles @membre` Affiche la liste des rôles d'un membre, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres)
         * `PREFIX assignRole @membre @role ajouter|supprimer` Ajoute ou supprime un rôle pour un membre, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres). Commande réservée aux administrateurs.
