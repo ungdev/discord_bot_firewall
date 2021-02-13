@@ -20,6 +20,7 @@ let getMemberRoles = require("../Commands/getMemberRoles");
 let assignRole = require("../Commands/assignRole");
 let removeAllFromRole = require("../Commands/removeAllFromRole");
 let checkSameRoles = require("../Commands/checkSameRoles");
+let delSameRoles = require("../Commands/delSameRoles");
 
 let commandesAdmin = [
   "delue",
@@ -37,6 +38,7 @@ let commandesAdmin = [
   "getmemberroles",
   "setroles",
   "checksameroles",
+  "delsameroles",
 ];
 
 let commandesPubliques = ["export", "joinvocal", "author", "pin", "unpin"];
@@ -63,6 +65,9 @@ module.exports = async function (
           break;
         case "checksameroles":
           await checkSameRoles(msg);
+          break;
+        case "delsameroles":
+          await delSameRoles(msg);
           break;
         case "delues":
           await delUEs(msg, parametres);

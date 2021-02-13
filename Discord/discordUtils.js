@@ -70,7 +70,10 @@ module.exports.help = async function (/** module:"discord.js".Message */ msg) {
         " getMemberRoles @membre`. Affiche la liste des rôles d'un membre, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres)." +
         "\n`" +
         process.env.BOT_PREFIX +
-        " checkSameRoles`. Affiche la liste des rôles en double (même nom)." +
+        " checkSameRoles`. Affiche la liste des rôles présents plusieurs fois (même nom sans tenir compte de la casse)." +
+        "\n`" +
+        process.env.BOT_PREFIX +
+        " delSameRoles`. Supprime les rôles présents plusieurs fois (même nom sans tenir compte de la casse) pour n'en garder qu'un." +
         "\n\n`" +
         process.env.BOT_PREFIX +
         " author` Affiche des informations diverses sur l'auteur de ce bot"
