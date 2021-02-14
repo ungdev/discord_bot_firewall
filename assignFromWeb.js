@@ -57,12 +57,11 @@ module.exports.etuToDiscord = async function (
                   " " +
                   pseudo
               );
-            let roleCree = await guild.roles
+            guild.roles
               .create({
                 data: { name: chaine.toString().toUpperCase() },
-              })
+              }).then((role) => membreDiscord.roles.add(role).catch(console.error))
               .catch(console.error);
-            membreDiscord.roles.add(roleCree).catch(console.error);
           }
         }
       }
