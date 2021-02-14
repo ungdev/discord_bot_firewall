@@ -67,26 +67,26 @@ const intents = new Discord.Intents([
   Discord.Intents.PRIVILEGED,
 ]);
 const client = new Discord.Client({ ws: { intents } });
-let ready = require("./Discord/DiscordEvents/ready");
-let guildMemberAdd = require("./Discord/DiscordEvents/guildMemberAdd");
-let message = require("./Discord/DiscordEvents/message");
-let voiceStateUpdate = require("./Discord/DiscordEvents/voiceStateUpdate");
-
-/** Un tableau[channelTexte] = channelVocal associé */
-/** Utilisé pour vérifier si channel voix existe déjà pour un chan texte */
-let tableauChannelTexteAChannelVocal = [];
-
-/** Structure : tableauChannelsVocauxEnCours[member.id] = listedesChannelsIDGenDyn */
-/** Utilisé pour supprimer les chan qui ont été générés dynamiquement */
-let tableauChannelsVocauxEnCours = [];
-
-/** Quand le bot se lance */
-client.on("ready", function () {
-  ready(client);
-});
 
 if(process.env.DISCORD_LISTEN === "1")
 {
+  let ready = require("./Discord/DiscordEvents/ready");
+  let guildMemberAdd = require("./Discord/DiscordEvents/guildMemberAdd");
+  let message = require("./Discord/DiscordEvents/message");
+  let voiceStateUpdate = require("./Discord/DiscordEvents/voiceStateUpdate");
+
+  /** Un tableau[channelTexte] = channelVocal associé */
+  /** Utilisé pour vérifier si channel voix existe déjà pour un chan texte */
+  let tableauChannelTexteAChannelVocal = [];
+
+  /** Structure : tableauChannelsVocauxEnCours[member.id] = listedesChannelsIDGenDyn */
+  /** Utilisé pour supprimer les chan qui ont été générés dynamiquement */
+  let tableauChannelsVocauxEnCours = [];
+
+  /** Quand le bot se lance */
+  client.on("ready", function () {
+    ready(client);
+  });
   /**
    * Quand un utilisateur rejoint le serveur, on lui envoie un message de bienvenue pour lui dire de se connecter au site etu
    */
