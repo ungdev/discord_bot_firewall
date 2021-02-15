@@ -103,7 +103,8 @@ async function roleValide(/** string */ roleName) {
     roleName.startsWith("NPML") ||
     roleName.startsWith("LINGUA") ||
     roleName.startsWith("LX") ||
-    roleName.startsWith("UX")
+    roleName.startsWith("UX") ||
+    roleName.startsWith("ATDOC")
   )
     return false;
   if (
@@ -114,14 +115,19 @@ async function roleValide(/** string */ roleName) {
     return false;
   if (
     roleName.startsWith("PMCS") ||
-    roleName.startsWith("PEXX") ||
     roleName.startsWith("PMXX") ||
-    roleName.startsWith("PMCS") ||
     roleName.startsWith("PMTM") ||
     roleName.startsWith("PMHT") ||
     roleName.startsWith("PMEE") ||
     roleName.startsWith("PMEC") ||
-    roleName.startsWith("PMME")
+    roleName.startsWith("PMME") ||
+    roleName.startsWith("PEXX") ||
+    roleName.startsWith("PEEE") ||
+    roleName.startsWith("PEEC") ||
+    roleName.startsWith("PETM") ||
+    roleName.startsWith("PEME") ||
+    roleName.startsWith("PEHT") ||
+    roleName.startsWith("PECS")
   ) {
     return false;
   }
