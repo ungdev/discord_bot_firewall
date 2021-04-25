@@ -20,7 +20,7 @@ module.exports.help = async function (/** module:"discord.js".Message */ msg) {
           " delUEs <categoryID> vocal | tout`. Idem que la commande `delUE` mais sur tous les channels d'une catégorie." +
           "\n`" +
           process.env.BOT_PREFIX +
-          " getNb @ROLE`. Récupère le nombre de personnes dans le rôle. Le rôle doit exister." +
+          " getNb @ROLE|role_id`. Récupère le nombre de personnes dans le rôle. Le rôle doit exister." +
           "\n`" +
           process.env.BOT_PREFIX +
           " getRoles NombrePersonne`. Affiche la liste des rôles ne contenant que le nombre de personnes demandé. :clock1: Cette commande peut être longue." +

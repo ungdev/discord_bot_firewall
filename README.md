@@ -23,7 +23,7 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
     * `PREFIX addUE @role <categoryID> texte | vocal | lesDeux` qui crée un chan texte et vocal avec les permissions qui vont bien et dans la catégorie indiquée, la commande ne peut être exécutée que depuis un channel précis
     * `PREFIX delUE #channelTexteUE vocal | tout` qui supprime les deux channels d'une UE, ainsi que son rôle, la commande ne peut être exécutée que depuis un channel précis.
     * `PREFIX delUEs <categoryID> vocal | tout` idem que `delUE` mais pour tous les channels d'une catégorie.
-    * `PREFIX getNb @ROLE` qui affiche le nombre de personnes dans le role correspondant.
+    * `PREFIX getNb @ROLE|role_id` qui affiche le nombre de personnes dans le role correspondant.
     * `PREFIX getRoles NombrePersonne` qui affiche la liste des rôle ne contenant que le nombre de personnes demandé
     * `PREFIX getZeroOne` qui affiche la liste des rôle ne contenant que 0 ou 1 personne.
     * `PREFIX assignLireEcrireBasiques channelID|categoryID @role oui|non|null` Permet d'assigner/supprimer/réinitialiser les permissions basiques de lecture écriture sur tous les channels d'une catégorie pour un rôle spécifique. Utile quand les permissions des channels ne sont pas synchro avec la catégorie, pour l'assignation de rôle de modération.
