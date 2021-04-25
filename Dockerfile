@@ -1,4 +1,4 @@
-FROM node:15.10
+FROM node:16.0
 RUN apt-get update && apt-get install -y cron apt-transport-https ca-certificates wget zip python3 && wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg && \
     mv microsoft.asc.gpg /etc/apt/trusted.gpg.d/ && \
     wget -q https://packages.microsoft.com/config/debian/10/prod.list && \
