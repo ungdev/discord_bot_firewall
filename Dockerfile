@@ -1,11 +1,12 @@
-ARG NODE_VERSION="16.0"
-ENV NODE_VERSION=${NODE_VERSION}
+ARG NODE_VERSION="15"
+FROM node:${NODE_VERSION}
 
 ARG DISCORD_CHAT_EXPORTER_VERSION="2.27"
-ENV DISCORD_CHAT_EXPORTER_VERSION=${DISCORD_CHAT_EXPORTER_VERSION}
+ARG timezone=Etc/UTC
 
-FROM node:${NODE_VERSION}
-RUN apt-get update && apt-get install -y cron apt-transport-https ca-certificates wget zip python3 && wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg && \
+ENV NODE_VERSION=${NODE_VERSION}
+ENV DISCORD_CHAT_EXPORTER_VERSION=${DISCORD_CHAT_EXPORTER_VERSION}
+RUN apt-get update && apt-get install -y apt-transport-https ca-certificates wget zip python3 && wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg && \
     mv microsoft.asc.gpg /etc/apt/trusted.gpg.d/ && \
     wget -q https://packages.microsoft.com/config/debian/10/prod.list && \
     mv prod.list /etc/apt/sources.list.d/microsoft-prod.list && \
@@ -17,9 +18,7 @@ WORKDIR /var/exports
 RUN python3 -m http.server &
 WORKDIR /usr/src/app
 COPY . .
-ARG timezone=Etc/UTC
-ARG cronMinHour="0 0"
-RUN ln -snf /usr/share/zoneinfo/$timezone /etc/localtime && echo $timezone > /etc/timezone && chmod 777 public/exports && chmod 4755 /usr/sbin/cron && echo "$cronMinHour * * * root rm -f /usr/src/app/public/exports/*" >> /etc/cron.d/exportclean && npm install
+RUN ln -snf /usr/share/zoneinfo/$timezone /etc/localtime && echo $timezone > /etc/timezone && chmod 777 public/exports && npm install
 EXPOSE 3000
 USER 1001
-CMD cron && cd /var/exports/ && python3 -m http.server & node bin/www
+CMD cd /var/exports/ && python3 -m http.server & node bin/www
