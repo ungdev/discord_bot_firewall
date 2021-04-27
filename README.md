@@ -15,6 +15,7 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
 * LoadBalancing (possibilité d'avoir un processus en écoute des messages discord, et trois autres en écoute web avec 4 tokens API différents de Discord)  
 * Renomme les gens Prénom NOM (+ " - Branche NIVEAU" pour les étudiants)
 * Pour les étudiants : attribution des UEs + rôle selon la branche
+* Alerte lors de la connexion/déconnexion de certains membres désignés (comptes admin partagés, ...)
 * Création des rôles inexistants, signalement de la création sur un channel (si le rôle n'existe pas, il est créé et l'utilisateur recommence la manip)
 * Envoie un message automatique aux nouveaux qui rejoignent le serveur en leur disant d'aller sur le site
 * Sur le site, une petite notice qui explique aux gens comment installer le logiciel

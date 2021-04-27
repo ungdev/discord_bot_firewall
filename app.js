@@ -81,6 +81,7 @@ if(process.env.DISCORD_LISTEN === "1")
   let guildMemberAdd = require("./Discord/DiscordEvents/guildMemberAdd");
   let message = require("./Discord/DiscordEvents/message");
   let voiceStateUpdate = require("./Discord/DiscordEvents/voiceStateUpdate");
+  let presenceUpdate = require("./Discord/DiscordEvents/presenceUpdate");
 
   /** Un tableau[channelTexte] = channelVocal associé */
   /** Utilisé pour vérifier si channel voix existe déjà pour un chan texte */
@@ -108,6 +109,16 @@ if(process.env.DISCORD_LISTEN === "1")
       tableauChannelsVocauxEnCours
     );
   });
+
+  if(typeof process.env.WATCHED_MEMBERS !== "undefined" && process.env.WATCHED_MEMBERS !== "") {
+    let watchedMembers = process.env.WATCHED_MEMBERS.split(",");
+    client.on("presenceUpdate", async (
+      /** 'module:"discord.js".Presence */ oldPresence,
+      /** 'module:"discord.js".Presence */ newPresence) => {
+      await presenceUpdate(oldPresence, newPresence, watchedMembers);
+      }
+    )
+  }
 
   client.on("voiceStateUpdate", async (
     /** module:"discord.js".VoiceState */ oldState,
