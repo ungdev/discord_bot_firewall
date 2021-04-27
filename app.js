@@ -75,6 +75,10 @@ const intents = new Discord.Intents([
 ]);
 const client = new Discord.Client({ ws: { intents } });
 
+let rateLimit = require("./Discord/DiscordEvents/rateLimit");
+
+client.on("rateLimit", async (rateLimitInfo) => await rateLimit(rateLimitInfo));
+
 if(process.env.DISCORD_LISTEN === "1")
 {
   let ready = require("./Discord/DiscordEvents/ready");
