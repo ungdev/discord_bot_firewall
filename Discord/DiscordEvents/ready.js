@@ -2,8 +2,8 @@ module.exports = async function (/** 'module:"discord.js".Client */ client) {
   /** On dit qu'il est en train de jouer à "gérer le serveur" sur l'url du BOT */
   client.user
     .setActivity("gérer le serveur", {
-      type: "PLAYING",
-      url: process.env.BOT_URL,
+      type: "LISTENING",
+      url: process.env.BOT_PREFIX,
     })
     .catch(console.error);
   /** On alerte sur le chan dédié au bot du démarrage */
