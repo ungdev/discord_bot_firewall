@@ -2,6 +2,7 @@ let router = require("express").Router();
 let utils = require("../utils");
 const axios = require("axios");
 let httpBuildQuery = require("http-build-query");
+let shell = require("shelljs");
 const assignFromWeb = require("../assignFromWeb");
 
 module.exports = function (/** module:"discord.js".Client" */ client) {
@@ -10,7 +11,6 @@ module.exports = function (/** module:"discord.js".Client" */ client) {
     res.send("ok");
     res.end();
     console.log("Nettoyage des exports !");
-    let shell = require("shelljs");
     shell.exec(
       "rm -rf " +
       process.env.DISCORD_CHAT_EXPORT_PATH +
