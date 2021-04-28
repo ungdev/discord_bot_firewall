@@ -5,7 +5,8 @@ const utils = require("./utils");
 module.exports.etuToDiscord = async function etuToDiscord(
   membreSiteEtu,
   /** string */ discordUsername,
-  /** 'module:"discord.js".Guild */ guild
+  /** 'module:"discord.js".Guild */ guild,
+  nameOverride
 ) {
   /** On récupère son compte discord dans le serveur */
   const membreDiscord = await discordUtils.getUserFromGuild(
@@ -17,12 +18,17 @@ module.exports.etuToDiscord = async function etuToDiscord(
     const roles = (await guild.roles.fetch()).cache;
     /** Liste des id de rôles à attribuer */
     /** On définit son pseudo */
-    let pseudo = `${capitalize.words(
-      membreSiteEtu /** string */.firstName
+    let pseudo = "";
+    if (Object.keys(nameOverride).includes(discordUsername)) {
+      pseudo = nameOverride[discordUsername];
+    } else {
+      pseudo = `${capitalize.words(
+        membreSiteEtu /** string */.firstName
+          .toString()
+      )} ${membreSiteEtu /** string */.lastName
         .toString()
-    )} ${membreSiteEtu /** string */.lastName
-      .toString()
-      .toUpperCase()}`;
+        .toUpperCase()}`;
+    }
     if (/** bool */ membreSiteEtu.isStudent) {
       if (!membreSiteEtu.formation) {
         await membreDiscord.roles.add(process.env.ROLE_ANCIEN_ETUDIANT_ID);

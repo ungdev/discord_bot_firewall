@@ -6,7 +6,10 @@ const utils = require("../utils");
 const assignFromWeb = require("../assignFromWeb");
 /* eslint-disable no-restricted-syntax, no-await-in-loop */
 
-module.exports = function cron(/** module:"discord.js".Client" */ client) {
+module.exports = function cron(
+  /** module:"discord.js".Client" */ client,
+  nameOverride
+) {
   router.get("/cleanExports", (req, res) => {
     res.send("ok");
     res.end();
@@ -50,7 +53,7 @@ module.exports = function cron(/** module:"discord.js".Client" */ client) {
         for (const etuUser of response.data.data) {
           if (etuUser.discordTag) {
             assignFromWeb
-              .etuToDiscord(etuUser, etuUser.discordTag, guild)
+              .etuToDiscord(etuUser, etuUser.discordTag, guild, nameOverride)
               .catch(console.error);
             compteur += 1;
           }

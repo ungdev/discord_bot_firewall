@@ -71,7 +71,15 @@ if (!process.env.BOT_URL)
   process.env.BOT_URL = "l'url publique du bot n'est pas définie";
 if (!process.env.LIEN_INVITATION_DISCORD)
   process.env.LIEN_INVITATION_DISCORD = "pas de lien d'invitation";
-
+const nameOverride = {};
+/* eslint-disable no-restricted-syntax */
+if (process.env.NAME_OVERRIDE) {
+  for (const userAndName of process.env.NAME_OVERRIDE.split(",")) {
+    const arrayUserAndName = userAndName.split(":");
+    nameOverride[arrayUserAndName[0]] = arrayUserAndName[1];
+  }
+}
+/* eslint-enable no-restricted-syntax */
 const app = express();
 app.use(express.static(path.join(__dirname, "public")));
 /**
@@ -174,8 +182,8 @@ if (process.env.WEB_LISTEN === "1") {
 
   if (process.env.SITE_ETU_CLIENT_ID && process.env.SITE_ETU_CLIENT_SECRET) {
     app.use("/connexion", connexion);
-    app.use("/attribuerrole", attribuerRole(client));
-    app.use(`/cron/${process.env.CRON_SECRET}`, cron(client));
+    app.use("/attribuerrole", attribuerRole(client, nameOverride));
+    app.use(`/cron/${process.env.CRON_SECRET}`, cron(client, nameOverride));
     app.use("/", home);
   } else {
     app.get("/", (req, res) => {

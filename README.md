@@ -13,7 +13,7 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
 * Connexion par le [site Etu](https://etu.utt.fr) via OAuth2 puis on indique son id discord (utilisateur#discriminant)
 * Attribue le rôle enseignant / étudiant
 * LoadBalancing (possibilité d'avoir un processus en écoute des messages discord, et trois autres en écoute web avec 4 tokens API différents de Discord)  
-* Renomme les gens Prénom NOM (+ " - Branche NIVEAU" pour les étudiants)
+* Renomme les gens Prénom NOM (+ " - Branche NIVEAU" pour les étudiants) avec possibilité de définir un nom custom par tag discord pour les noms trop longs
 * Deux routes avec secret pour les crons (`/cron/secret/action`) pour nettoyer les exports et lancer la synchronisation des utilisateurs  
 * Pour les étudiants : attribution des UEs + rôle selon la branche
 * Permet d'envoyer des messages anonymes (avec formatage et emojis) en MP au bot diffusés sur des channels, tout en enregistrant l'identité réelle des users dans un fichier log 

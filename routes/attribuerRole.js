@@ -4,8 +4,9 @@ const httpBuildQuery = require("http-build-query");
 const utils = require("../utils");
 const assignFromWeb = require("../assignFromWeb");
 
-module.exports = function attribuerrole(
-  /** module:"discord.js".Client" */ client
+module.exports = function attribuerRole(
+  /** module:"discord.js".Client" */ client,
+  nameOverride
 ) {
   router.get("/", (req, res) => {
     /** On vérifie qu'on a toutes les infos du formulaire */
@@ -36,7 +37,8 @@ module.exports = function attribuerrole(
                 await assignFromWeb.etuToDiscord(
                   membreSiteEtu,
                   req.query.discordUsername,
-                  guild
+                  guild,
+                  nameOverride
                 )
               );
             } else res.send(utils.texteBug);
