@@ -1,4 +1,4 @@
-module.exports = async function (/** module:"discord.js".Message */ msg) {
+module.exports = async function getUrl(/** module:"discord.js".Message */ msg) {
   msg.channel
     .send(
       "URL de connexion (à transmettre) : " +

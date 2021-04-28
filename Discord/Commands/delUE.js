@@ -1,6 +1,6 @@
 let utils = require("../discordUtils");
 
-module.exports = async function (
+module.exports = async function delUE(
   /** module:"discord.js".Message */ msg,
   /** Array<String> */ parametres
 ) {

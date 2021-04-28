@@ -3,7 +3,7 @@ let shell = require("shelljs");
 const uniqid = require("uniqid");
 let path = require("path");
 
-module.exports = async function (/** module:"discord.js".Message */ msg) {
+module.exports = async function exportChannel(/** module:"discord.js".Message */ msg) {
   if (!process.env.DISCORD_CHAT_EXPORT_PATH || !process.env.DISCORD_CHAT_EXPORTER_EXE_PATH)
  {
     msg.reply(
@@ -14,7 +14,7 @@ module.exports = async function (/** module:"discord.js".Message */ msg) {
       process.env.ROLE_ENSEIGNANT_ID
     ) >= 0
   ) {
-    let nomChannel = utils.remove_non_ascii(msg.channel.name) + "-" + uniqid();
+    let nomChannel = utils.removeNonASCII(msg.channel.name) + "-" + uniqid();
     msg.channel
       .send(
         "Lancement de l'export. Cette commande peut prendre un certain temps (2 minutes max, notifier un administrateur en cas de délai plus long !)"

@@ -4,7 +4,7 @@ let assignFromWeb = require("../assignFromWeb");
 const axios = require("axios");
 let httpBuildQuery = require("http-build-query");
 
-module.exports = function (/** module:"discord.js".Client" */ client) {
+module.exports = function attribuerrole(/** module:"discord.js".Client" */ client) {
   router.get("/", function (req, res) {
     /** On vérifie qu'on a toutes les infos du formulaire */
     if (req.query.site_etu_token && req.query.discordUsername) {

@@ -1,19 +1,21 @@
 
-module.exports = async function (
+module.exports = async function checkSameRoles(
   /** module:"discord.js".Message */ msg
 ) {
   let roles = (await msg.guild.roles.fetch()).cache;
   let rolesSignales = [];
-  for (let roleEnCours of roles) {
+  roles.forEach(roleEnCours => {
     let found = roles.find(
       (role) =>
-        roleEnCours[1].name.toUpperCase() === role.name.toUpperCase() && roleEnCours[1].id !== role.id && !rolesSignales.includes(roleEnCours[1].name)
+        roleEnCours.name.toUpperCase() === role.name.toUpperCase() && roleEnCours.id !== role.id && !rolesSignales.includes(roleEnCours.name)
     );
     if (found) {
-      await msg.channel.send("Le role " + roleEnCours[1].name + " existe en plusieurs fois").catch(console.error);
-      await rolesSignales.push(roleEnCours[1].name);
+      msg.channel.send("Le role " + roleEnCours.name + " existe en plusieurs fois").catch(console.error);
+      rolesSignales.push(roleEnCours.name);
     }
-  }
+  });
+
+  await Promise.all(rolesSignales);
 
     msg.channel
       .send(":white_check_mark: La commande est terminée")

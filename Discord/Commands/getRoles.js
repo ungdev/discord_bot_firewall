@@ -1,4 +1,4 @@
-module.exports = async function (
+module.exports = async function getRoles(
   /** module:"discord.js".Message */ msg,
   /** Array<String> */ parametres
 ) {

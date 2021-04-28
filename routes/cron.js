@@ -4,8 +4,9 @@ const axios = require("axios");
 let httpBuildQuery = require("http-build-query");
 let shell = require("shelljs");
 const assignFromWeb = require("../assignFromWeb");
+/* eslint-disable no-restricted-syntax, no-await-in-loop */
 
-module.exports = function (/** module:"discord.js".Client" */ client) {
+module.exports = function cron(/** module:"discord.js".Client" */ client) {
 
   router.get("/cleanExports", function(req, res) {
     res.send("ok");
@@ -28,23 +29,20 @@ module.exports = function (/** module:"discord.js".Client" */ client) {
       client_id: process.env.SITE_ETU_CLIENT_ID,
       client_secret: process.env.SITE_ETU_CLIENT_SECRET,
     };
-    let access_token = "";
-    let request_token = await axios.post(utils.baseUrl + "/api/oauth/token?" + httpBuildQuery(donnees));
-    access_token = request_token.data.access_token.toString();
-    if (access_token !== "") {
-      let requete = { 'wantsJoinUTTDiscord': true, "access_token": access_token, "page": 1 };
-
-        let otherPage = true;
+    let accessToken = "";
+    let requestToken = await axios.post(utils.baseUrl + "/api/oauth/token?" + httpBuildQuery(donnees));
+    accessToken = requestToken.data.access_token.toString();
+    if (accessToken !== "") {
+      let requete = { 'wantsJoinUTTDiscord': true, "access_token": accessToken, "page": 1 };
         let guild = client.guilds.cache.get(process.env.SERVER_ID);
         let compteur = 0;
-        let page_request = await axios.get(utils.baseUrl + "/api/public/users?" + httpBuildQuery(requete));
-        for (const i of Array(page_request.data.pagination.totalPages)) {
+        let pageRequest = await axios.get(utils.baseUrl + "/api/public/users?" + httpBuildQuery(requete));
+        for(const currentPage of Array.from(Array(pageRequest.data.pagination.totalPages).keys())) {
+          requete.page = currentPage + 1;
           let response = await axios.get(utils.baseUrl + "/api/public/users?" + httpBuildQuery(requete));
-          otherPage = response.data.pagination.next ? true : false;
-          requete.page = requete.page + 1;
-          for (const etuUser of response.data.data) {
-            if (etuUser.discordTag !== undefined && etuUser.discordTag !== "") {
-              await assignFromWeb.etuToDiscord(
+          for(const etuUser of response.data.data) {
+            if (etuUser.discordTag) {
+              assignFromWeb.etuToDiscord(
                         etuUser,
                         etuUser.discordTag,
                         guild

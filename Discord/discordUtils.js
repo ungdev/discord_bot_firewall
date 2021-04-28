@@ -1,6 +1,6 @@
 let Discord = require("discord.js");
 
-module.exports.help = async function (/** module:"discord.js".Message */ msg) {
+module.exports.help = async function help(/** module:"discord.js".Message */ msg) {
   msg
     .reply(
       ":tools: Plusieurs fonctions accessibles. Contacter Ivann LARUELLE, ivann.laruelle@gmail.com, créateur de ce bot, en cas de problème"
@@ -194,21 +194,21 @@ module.exports.permissionsLireEcrireBasiques = permissionsLireEcrireBasiques;
 
 module.exports.permissionsLireEcrireProf = permissionsLireEcrireProf;
 
-module.exports.toutesPermissionsOverwrite = function (ouiOuNonOuNull) {
+module.exports.toutesPermissionsOverwrite = function toutesPermissionsOverwrite(ouiOuNonOuNull) {
   return createOverwrite(toutesPermissions, ouiOuNonOuNull);
 };
 
-module.exports.permissionsLireEcrireBasiquesOverwrite = function (
+module.exports.permissionsLireEcrireBasiquesOverwrite = function permissionsLireEcrireBasiquesOverwrite(
   ouiOuNonOuNull
 ) {
   return createOverwrite(permissionsLireEcrireBasiques, ouiOuNonOuNull);
 };
 
-module.exports.permissionsLireEcrireProfOverwrite = function (ouiOuNonOuNull) {
+module.exports.permissionsLireEcrireProfOverwrite = function permissionsLireEcrireProfOverwrite(ouiOuNonOuNull) {
   return createOverwrite(permissionsLireEcrireProf, ouiOuNonOuNull);
 };
 
-module.exports.getUserFromGuild = async function(/** string */ discordUsername, /** module:"discord.js".Guild */ guild) {
+module.exports.getUserFromGuild = async function getUserFromGuild(/** string */ discordUsername, /** module:"discord.js".Guild */ guild) {
   const username = discordUsername.split("#")[0];
   const discriminant = discordUsername.split("#")[1];
   return (await guild.members.fetch()).find(
@@ -218,7 +218,7 @@ module.exports.getUserFromGuild = async function(/** string */ discordUsername, 
   );
 }
 
-module.exports.assignPerm = function (
+module.exports.assignPerm = function assignPerm(
   /** module:"discord.js".GuildChannel */ channel,
   /** module:"discord.js".Role */ role,
   ouiOuNonOuNull
@@ -248,10 +248,12 @@ module.exports.assignPerm = function (
         )
         .catch(console.error);
       break;
+    default:
+      break;
   }
 };
 
-module.exports.delUE = async function (
+module.exports.delUE = async function delUE(
   /** module:"discord.js".GuildChannel */ channelToDelete,
   /** module:"discord.js".Message */ msg,
   /** String */ scope

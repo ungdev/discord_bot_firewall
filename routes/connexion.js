@@ -14,15 +14,15 @@ router.get("/", function (req, res) {
       client_id: process.env.SITE_ETU_CLIENT_ID,
       client_secret: process.env.SITE_ETU_CLIENT_SECRET,
     };
-    let access_token = "";
+    let accessToken = "";
     axios
       .post(utils.baseUrl + "/api/oauth/token?" + httpBuildQuery(donnees))
       .then(function (response) {
-        access_token = response.data.access_token.toString();
+        accessToken = response.data.access_token.toString();
         /** Si autorisation ok, on affiche le formulaire de saisie de l'identifiant discord */
-        if (access_token !== "") {
+        if (accessToken !== "") {
           res.render("formulaire", {
-            token: access_token,
+            token: accessToken,
             lienDiscord: process.env.LIEN_INVITATION_DISCORD,
           });
         } else res.send("Nous n'avons pas pu vous authentifier. <a href='/'>Revenir au départ</a>");

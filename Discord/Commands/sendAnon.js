@@ -1,10 +1,12 @@
-module.exports = async function (
+
+let logFile = require("../../logFile");
+
+module.exports = async function sendAnon(
   /** module:"discord.js".Message */ msg,
   parametres,
   currentUserAnonymousChannels,
   guildMember
 ) {
-  let logFile = require("../../logFile");
   if(parametres.length <= 3) {
     msg.reply("La commande est sous la forme "+process.env.BOT_PREFIX+" sendAnon channel message");
   }

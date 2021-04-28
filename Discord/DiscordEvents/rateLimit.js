@@ -1,4 +1,4 @@
-module.exports = async function (
+module.exports = async function rateLimit(
   rateLimitInfo
 ) {
   console.log("!!!!!!!!!!!!!!!!! ALERTE !!!!!!!!!!!!!!!!!!");

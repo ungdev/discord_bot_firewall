@@ -1,5 +1,23 @@
 require("dotenv").config();
 
+let rateLimit = require("./Discord/DiscordEvents/rateLimit");
+let ready = require("./Discord/DiscordEvents/ready");
+let guildMemberAdd = require("./Discord/DiscordEvents/guildMemberAdd");
+let message = require("./Discord/DiscordEvents/message");
+let voiceStateUpdate = require("./Discord/DiscordEvents/voiceStateUpdate");
+let presenceUpdate = require("./Discord/DiscordEvents/presenceUpdate");
+
+let cookieParser = require("cookie-parser");
+let createError = require("http-errors");
+let express = require("express");
+let path = require("path");
+let serveIndex = require("serve-index");
+
+let connexion = require("./routes/connexion");
+let attribuerRole = require("./routes/attribuerRole");
+let cron = require("./routes/cron");
+let home = require("./routes/home");
+
 /**
  *
  *
@@ -8,7 +26,7 @@ require("dotenv").config();
  *
  * */
 const Sentry = require("@sentry/node");
-const Tracing = require("@sentry/tracing");
+//const Tracing = require("@sentry/tracing");
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -55,10 +73,7 @@ if (!process.env.BOT_URL)
 if (!process.env.LIEN_INVITATION_DISCORD)
   process.env.LIEN_INVITATION_DISCORD = "pas de lien d'invitation";
 
-let createError = require("http-errors");
-let express = require("express");
 let app = express();
-let path = require("path");
 app.use(express.static(path.join(__dirname, "public")));
 /**
  *
@@ -75,19 +90,12 @@ const intents = new Discord.Intents([
 ]);
 const client = new Discord.Client({ ws: { intents } });
 
-let rateLimit = require("./Discord/DiscordEvents/rateLimit");
-
 if(process.env.WATCH_RATE_LIMIT) {
-  client.on("rateLimit", async (rateLimitInfo) => await rateLimit(rateLimitInfo));
+  client.on("rateLimit", (rateLimitInfo) => rateLimit(rateLimitInfo));
 }
 
 if(process.env.DISCORD_LISTEN === "1")
 {
-  let ready = require("./Discord/DiscordEvents/ready");
-  let guildMemberAdd = require("./Discord/DiscordEvents/guildMemberAdd");
-  let message = require("./Discord/DiscordEvents/message");
-  let voiceStateUpdate = require("./Discord/DiscordEvents/voiceStateUpdate");
-  let presenceUpdate = require("./Discord/DiscordEvents/presenceUpdate");
 
   /** Un tableau[channelTexte] = channelVocal associé */
   /** Utilisé pour vérifier si channel voix existe déjà pour un chan texte */
@@ -141,7 +149,6 @@ if(process.env.DISCORD_LISTEN === "1")
   if (process.env.DISCORD_CHAT_EXPORT_PATH &&
     process.env.DISCORD_CHAT_EXPORTER_EXE_PATH
   ) {
-    let serveIndex = require("serve-index");
     app.use(
       "/exports",
       express.static("public/exports"),
@@ -160,7 +167,6 @@ client.login(process.env.BOT_TOKEN).catch(console.error);
  *
  *  */
 if(process.env.WEB_LISTEN === "1") {
-  let cookieParser = require("cookie-parser");
 // view engine setup
   app.set("views", path.join(__dirname, "views"));
   app.set("view engine", "twig");
@@ -172,10 +178,10 @@ if(process.env.WEB_LISTEN === "1") {
   if (process.env.SITE_ETU_CLIENT_ID && 
     process.env.SITE_ETU_CLIENT_SECRET
   ) {
-    app.use("/connexion", require("./routes/connexion"));
-    app.use("/attribuerrole", require("./routes/attribuerrole")(client));
-    app.use("/cron/"+process.env.CRON_SECRET, require("./routes/cron")(client));
-    app.use("/", require("./routes/home"));
+    app.use("/connexion", connexion);
+    app.use("/attribuerrole", attribuerRole(client));
+    app.use("/cron/"+process.env.CRON_SECRET, cron(client));
+    app.use("/", home);
   } else {
     app.get("/", function (req, res) {
       res.send(

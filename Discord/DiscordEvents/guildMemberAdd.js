@@ -1,4 +1,4 @@
-module.exports = async function (
+module.exports = async function guildMemberAdd(
   /** 'module:"discord.js".GuildMember */ member
 ) {
   member

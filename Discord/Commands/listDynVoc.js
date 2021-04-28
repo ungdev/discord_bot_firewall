@@ -1,4 +1,4 @@
-module.exports = async function (
+module.exports = async function listDynVoc(
   /** module:"discord.js".Message */ msg,
   tableauChannelTexteAChannelVocal
 ) {
@@ -6,7 +6,7 @@ module.exports = async function (
     .send(":clock1: Début du listing des channels")
     .catch(console.error);
   let compteur = 0;
-  for (const key of Object.keys(tableauChannelTexteAChannelVocal)) {
+  Object.keys(tableauChannelTexteAChannelVocal).forEach(async(key) => {
     msg.channel
       .send(
         "Pour le canal texte <#" +
@@ -20,7 +20,7 @@ module.exports = async function (
       )
       .catch(console.error);
     compteur = compteur + 1;
-  }
+  });
   msg.channel
     .send(
       " :white_check_mark: Il y a " +

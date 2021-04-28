@@ -1,4 +1,4 @@
-module.exports = async function (/** module:"discord.js".Message */ msg) {
+module.exports = async function getZeroOne(/** module:"discord.js".Message */ msg) {
   msg.channel
     .send(
       ":clock1: Cette commande peut être longue, elle affichera un message pour signaler sa fin. Si elle ne le fait pas, contacter un administrateur."

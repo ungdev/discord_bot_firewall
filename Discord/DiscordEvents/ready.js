@@ -1,4 +1,4 @@
-module.exports = async function (/** 'module:"discord.js".Client */ client) {
+module.exports = async function ready(/** 'module:"discord.js".Client */ client) {
   /** On dit qu'il est en train de jouer à "gérer le serveur" sur l'url du BOT */
   client.user
     .setActivity("gérer le serveur", {

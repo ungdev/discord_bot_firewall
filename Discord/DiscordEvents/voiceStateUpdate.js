@@ -1,6 +1,8 @@
+/*eslint no-param-reassign: ["error", { "props": false }]*/
+
 let utils = require("../../utils");
 
-module.exports = async function (
+module.exports = async function voiceStateUpdate(
   /** module:"discord.js".VoiceState */ oldState,
   /** module:"discord.js".VoiceState */ newState,
   tableauChannelTexteAChannelVocal,
@@ -25,12 +27,13 @@ module.exports = async function (
       ] = tableauChannelsVocauxEnCours[oldState.member.id].slice();
       delete tableauChannelsVocauxEnCours[oldState.member.id];
     } else {
-      for (const id of tableauChannelsVocauxEnCours[oldState.member.id]) {
+      tableauChannelsVocauxEnCours[oldState.member.id].forEach(async (id) => {
         (await oldState.guild.channels.resolve(id))
-          .delete()
+          .delete().then(() => {
+            delete tableauChannelsVocauxEnCours[oldState.member.id];
+          })
           .catch(console.error);
-      }
-      delete tableauChannelsVocauxEnCours[oldState.member.id];
+      });
       if (
         utils.getKeyByValue(
           tableauChannelTexteAChannelVocal,

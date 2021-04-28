@@ -1,14 +1,64 @@
-module.exports.remove_non_ascii = function (str) {
+module.exports.removeNonASCII = function removeNonASCII(str) {
+  let realString = "";
   if (str === null || str === "") return false;
-  else str = str.toString();
+  else{
+    realString = str.toString();
+  }
 
-  return str.replace(/[^\x20-\x7E]/g, "");
+  return realString.replace(/[^\x20-\x7E]/g, "");
 };
 
 /** Merci StackOverflow */
-module.exports.getKeyByValue = function (object, value) {
+module.exports.getKeyByValue = function getKeyByValue(object, value) {
   return Object.keys(object).find((key) => object[key] === value);
 };
+
+module.exports.roleValide = async function roleValide(/** string */ roleName) {
+  if (roleName === "") return false;
+  if (roleName === "CV ING") return false;
+  if (
+    roleName === "CVF2" ||
+    roleName.startsWith("FB") ||
+    roleName.startsWith("FA")
+  )
+    return false;
+  if (roleName === "FOS4") return false;
+  if (roleName === "EPSEM") return false;
+  if (
+    roleName.startsWith("NPML") ||
+    roleName.startsWith("LINGUA") ||
+    roleName.startsWith("LX") ||
+    roleName.startsWith("UX") ||
+    roleName.startsWith("ATDOC")
+  )
+    return false;
+  if (
+    roleName.startsWith("TX") ||
+    roleName.startsWith("AC") ||
+    roleName.startsWith("ER")
+  )
+    return false;
+  if (
+    roleName.startsWith("PMCS") ||
+    roleName.startsWith("PMXX") ||
+    roleName.startsWith("PMTM") ||
+    roleName.startsWith("PMHT") ||
+    roleName.startsWith("PMEE") ||
+    roleName.startsWith("PMEC") ||
+    roleName.startsWith("PMME") ||
+    roleName.startsWith("PEXX") ||
+    roleName.startsWith("PEEE") ||
+    roleName.startsWith("PEEC") ||
+    roleName.startsWith("PETM") ||
+    roleName.startsWith("PEME") ||
+    roleName.startsWith("PEHT") ||
+    roleName.startsWith("PECS")
+  ) {
+    return false;
+  }
+
+  return true;
+}
 
 module.exports.author =
   "Le créateur de ce bot est Ivann LARUELLE, ivann.laruelle@gmail.com" +

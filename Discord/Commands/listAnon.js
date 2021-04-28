@@ -1,4 +1,4 @@
-module.exports = async function (
+module.exports = async function listAnon(
   /** module:"discord.js".Message */ msg,
   currentUserAnonymousChannels
 ) {

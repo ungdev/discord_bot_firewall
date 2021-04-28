@@ -46,7 +46,7 @@ let commandesAdmin = [
 
 let commandesPubliques = ["export", "joinvocal", "author", "pin", "unpin"];
 
-module.exports = async function (
+module.exports = async function message(
   /** module:"discord.js".Message */ msg,
   tableauChannelTexteAChannelVocal,
   tableauChannelsVocauxEnCours
@@ -150,6 +150,7 @@ module.exports = async function (
       if(process.env.ANONYMOUS_CHANNELS) {
         let /** module:"discord.js".Guild */ guild = await msg.client.guilds.resolve(process.env.SERVER_ID);
         guildMember = await getUserFromGuild(msg.author.tag, guild);
+        /* eslint-disable no-restricted-syntax, no-await-in-loop */
         for (const chan of process.env.ANONYMOUS_CHANNELS.split(",")) {
           let tableau = chan.split(":");
           anonymousChannels[tableau[0]] = tableau[1];
@@ -165,6 +166,7 @@ module.exports = async function (
             }
           }
         }
+        /* eslint-enable no-restricted-syntax, no-await-in-loop */
       }
       switch (parametres[1].toLowerCase()) {
         case "sendanon":

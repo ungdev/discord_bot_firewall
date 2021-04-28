@@ -1,6 +1,8 @@
+/*eslint no-param-reassign: ["error", { "props": false }]*/
+
 let discordUtils = require("../discordUtils");
 
-module.exports = async function (
+module.exports = async function joinVocal(
   /** module:"discord.js".Message */ msg,
   tableauChannelTexteAChannelVocal,
   tableauChannelsVocauxEnCours
@@ -180,9 +182,9 @@ module.exports = async function (
                 )
                 .catch(console.error);
               let channelEtudiants = msg.guild.channels.cache.find(
-                (channel) =>
-                  channel.type === "text" &&
-                  channel.name.toLowerCase() ===
+                (chan) =>
+                  chan.type === "text" &&
+                  chan.name.toLowerCase() ===
                     msg.mentions.roles.first().name.toLowerCase()
               );
               if (channelEtudiants)

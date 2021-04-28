@@ -1,4 +1,4 @@
-module.exports = async function (
+module.exports = async function getMemberRoles(
   /** module:"discord.js".Message */ msg
 ) {
   if (!msg.mentions.members.first()) {

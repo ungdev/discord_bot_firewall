@@ -1,6 +1,6 @@
 let discordUtils = require("../discordUtils");
 
-module.exports = async function (
+module.exports = async function addUE(
   /** module:"discord.js".Message */ msg,
   /** Array<String> */ parametres
 ) {

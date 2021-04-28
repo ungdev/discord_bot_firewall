@@ -1,4 +1,4 @@
-module.exports = async function (
+module.exports = async function presenceUpdate(
   /** 'module:"discord.js".Presence */ oldPresence,
   /** 'module:"discord.js".Presence */ newPresence,
   watchedMembers
