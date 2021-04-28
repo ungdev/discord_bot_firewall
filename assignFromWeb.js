@@ -7,7 +7,7 @@ module.exports.etuToDiscord = async function (
   /** 'module:"discord.js".Guild */ guild
 ) {
   /** On récupère son compte discord dans le serveur */
-  let membreDiscord = discordUtils.getUserFromGuild(discordUsername, guild);
+  let membreDiscord = await discordUtils.getUserFromGuild(discordUsername, guild);
   /** Si on l"a trouvé */
   if (membreDiscord) {
     let roles = (await guild.roles.fetch()).cache;

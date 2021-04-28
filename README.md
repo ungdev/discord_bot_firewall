@@ -14,6 +14,7 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
 * Attribue le rôle enseignant / étudiant
 * LoadBalancing (possibilité d'avoir un processus en écoute des messages discord, et trois autres en écoute web avec 4 tokens API différents de Discord)  
 * Renomme les gens Prénom NOM (+ " - Branche NIVEAU" pour les étudiants)
+* Deux routes avec secret pour les crons (`/cron/secret/action`) pour nettoyer les exports et lancer la synchronisation des utilisateurs  
 * Pour les étudiants : attribution des UEs + rôle selon la branche
 * Permet d'envoyer des messages anonymes (avec formatage et emojis) en MP au bot diffusés sur des channels, tout en enregistrant l'identité réelle des users dans un fichier log 
 * Gestion des anciens étudiants (marqués comme étudiants mais n'ayant pas de formation) avec pseudo et role dédiés  

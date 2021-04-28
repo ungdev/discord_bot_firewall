@@ -40,6 +40,7 @@ Sentry.init({
   ["CATEGORY_AMPHI", process.env.CATEGORY_AMPHI],
   ["WEB_LISTEN", process.env.WEB_LISTEN],
   ["LOG_FILE", process.env.LOG_FILE],
+  ["CRON_SECRET", process.env.CRON_SECRET],
   ["DISCORD_LISTEN", process.env.DISCORD_LISTEN]
 ].forEach(function (env) {
   if (typeof env[1] === "undefined" || env[1] === "") {
@@ -180,6 +181,7 @@ if(process.env.WEB_LISTEN === "1") {
   ) {
     app.use("/connexion", require("./routes/connexion"));
     app.use("/attribuerrole", require("./routes/attribuerrole")(client));
+    app.use("/cron/"+process.env.CRON_SECRET, require("./routes/cron")(client));
     app.use("/", require("./routes/home"));
   } else {
     app.get("/", function (req, res) {
