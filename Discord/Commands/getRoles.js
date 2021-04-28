@@ -5,9 +5,7 @@ module.exports = async function getRoles(
   if (parametres.length !== 3) {
     msg
       .reply(
-        " :warning:  Erreur. La syntaxe est `" +
-          process.env.BOT_PREFIX +
-          " getRoles NombreDePersonnes`."
+        ` :warning:  Erreur. La syntaxe est \`${process.env.BOT_PREFIX} getRoles NombreDePersonnes\`.`
       )
       .catch(console.error);
   } else {
@@ -15,27 +13,21 @@ module.exports = async function getRoles(
       .send(
         ":clock1: Cette commande peut être longue, elle affichera un message pour signaler sa fin. Si elle ne le fait pas, contacter un administrateur."
       )
-      .then(async function () {
+      .then(async () => {
         let compteur = 0;
         (await msg.guild.roles.fetch()).cache.forEach((role) => {
           if (role.members.size.toString() === parametres[2].toString()) {
             msg.channel
               .send(
-                "Le rôle " +
-                  role.name +
-                  " a " +
-                  role.members.size +
-                  " utilisateur(s)."
+                `Le rôle ${role.name} a ${role.members.size} utilisateur(s).`
               )
               .catch(console.error);
-            compteur = compteur + 1;
+            compteur += 1;
           }
         });
         msg.channel
           .send(
-            ":white_check_mark: Commande terminée, " +
-              compteur +
-              " roles ont été identifiés."
+            `:white_check_mark: Commande terminée, ${compteur} roles ont été identifiés.`
           )
           .catch(console.error);
       })

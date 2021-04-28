@@ -1,9 +1,8 @@
 module.exports.removeNonASCII = function removeNonASCII(str) {
   let realString = "";
   if (str === null || str === "") return false;
-  else{
-    realString = str.toString();
-  }
+
+  realString = str.toString();
 
   return realString.replace(/[^\x20-\x7E]/g, "");
 };
@@ -58,7 +57,7 @@ module.exports.roleValide = async function roleValide(/** string */ roleName) {
   }
 
   return true;
-}
+};
 
 module.exports.author =
   "Le créateur de ce bot est Ivann LARUELLE, ivann.laruelle@gmail.com" +

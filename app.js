@@ -1,22 +1,23 @@
 require("dotenv").config();
 
-let rateLimit = require("./Discord/DiscordEvents/rateLimit");
-let ready = require("./Discord/DiscordEvents/ready");
-let guildMemberAdd = require("./Discord/DiscordEvents/guildMemberAdd");
-let message = require("./Discord/DiscordEvents/message");
-let voiceStateUpdate = require("./Discord/DiscordEvents/voiceStateUpdate");
-let presenceUpdate = require("./Discord/DiscordEvents/presenceUpdate");
+const cookieParser = require("cookie-parser");
+const createError = require("http-errors");
+const express = require("express");
+const path = require("path");
+const serveIndex = require("serve-index");
+const Sentry = require("@sentry/node");
+const Discord = require("discord.js");
+const rateLimit = require("./Discord/DiscordEvents/rateLimit");
+const ready = require("./Discord/DiscordEvents/ready");
+const guildMemberAdd = require("./Discord/DiscordEvents/guildMemberAdd");
+const message = require("./Discord/DiscordEvents/message");
+const voiceStateUpdate = require("./Discord/DiscordEvents/voiceStateUpdate");
+const presenceUpdate = require("./Discord/DiscordEvents/presenceUpdate");
 
-let cookieParser = require("cookie-parser");
-let createError = require("http-errors");
-let express = require("express");
-let path = require("path");
-let serveIndex = require("serve-index");
-
-let connexion = require("./routes/connexion");
-let attribuerRole = require("./routes/attribuerRole");
-let cron = require("./routes/cron");
-let home = require("./routes/home");
+const connexion = require("./routes/connexion");
+const attribuerRole = require("./routes/attribuerRole");
+const cron = require("./routes/cron");
+const home = require("./routes/home");
 
 /**
  *
@@ -25,8 +26,7 @@ let home = require("./routes/home");
  *
  *
  * */
-const Sentry = require("@sentry/node");
-//const Tracing = require("@sentry/tracing");
+// const Tracing = require("@sentry/tracing");
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -59,21 +59,20 @@ Sentry.init({
   ["WEB_LISTEN", process.env.WEB_LISTEN],
   ["LOG_FILE", process.env.LOG_FILE],
   ["CRON_SECRET", process.env.CRON_SECRET],
-  ["DISCORD_LISTEN", process.env.DISCORD_LISTEN]
-].forEach(function (env) {
+  ["DISCORD_LISTEN", process.env.DISCORD_LISTEN],
+].forEach((env) => {
   if (!env[1]) {
-    console.error("La variable d'env " + env[0] + " n'est pas définie !");
+    console.error(`La variable d'env ${env[0]} n'est pas définie !`);
     process.exit(-1);
   }
 });
-if (!process.env.VACANCES)
-  process.env.VACANCES = "0";
+if (!process.env.VACANCES) process.env.VACANCES = "0";
 if (!process.env.BOT_URL)
   process.env.BOT_URL = "l'url publique du bot n'est pas définie";
 if (!process.env.LIEN_INVITATION_DISCORD)
   process.env.LIEN_INVITATION_DISCORD = "pas de lien d'invitation";
 
-let app = express();
+const app = express();
 app.use(express.static(path.join(__dirname, "public")));
 /**
  *
@@ -82,7 +81,6 @@ app.use(express.static(path.join(__dirname, "public")));
  *
  *
  * */
-let Discord = require("discord.js");
 
 const intents = new Discord.Intents([
   Discord.Intents.NON_PRIVILEGED,
@@ -90,23 +88,21 @@ const intents = new Discord.Intents([
 ]);
 const client = new Discord.Client({ ws: { intents } });
 
-if(process.env.WATCH_RATE_LIMIT) {
+if (process.env.WATCH_RATE_LIMIT) {
   client.on("rateLimit", (rateLimitInfo) => rateLimit(rateLimitInfo));
 }
 
-if(process.env.DISCORD_LISTEN === "1")
-{
-
+if (process.env.DISCORD_LISTEN === "1") {
   /** Un tableau[channelTexte] = channelVocal associé */
   /** Utilisé pour vérifier si channel voix existe déjà pour un chan texte */
-  let tableauChannelTexteAChannelVocal = [];
+  const tableauChannelTexteAChannelVocal = [];
 
   /** Structure : tableauChannelsVocauxEnCours[member.id] = listedesChannelsIDGenDyn */
   /** Utilisé pour supprimer les chan qui ont été générés dynamiquement */
-  let tableauChannelsVocauxEnCours = [];
+  const tableauChannelsVocauxEnCours = [];
 
   /** Quand le bot se lance */
-  client.on("ready", function () {
+  client.on("ready", () => {
     ready(client);
   });
   /**
@@ -124,14 +120,14 @@ if(process.env.DISCORD_LISTEN === "1")
     );
   });
 
-  if(process.env.WATCHED_MEMBERS) {
-    let watchedMembers = process.env.WATCHED_MEMBERS.split(",");
+  if (process.env.WATCHED_MEMBERS) {
+    const watchedMembers = process.env.WATCHED_MEMBERS.split(",");
     client.on("presenceUpdate", async (
       /** 'module:"discord.js".Presence */ oldPresence,
-      /** 'module:"discord.js".Presence */ newPresence) => {
+      /** 'module:"discord.js".Presence */ newPresence
+    ) => {
       await presenceUpdate(oldPresence, newPresence, watchedMembers);
-      }
-    )
+    });
   }
 
   client.on("voiceStateUpdate", async (
@@ -146,7 +142,8 @@ if(process.env.DISCORD_LISTEN === "1")
     );
   });
 
-  if (process.env.DISCORD_CHAT_EXPORT_PATH &&
+  if (
+    process.env.DISCORD_CHAT_EXPORT_PATH &&
     process.env.DISCORD_CHAT_EXPORTER_EXE_PATH
   ) {
     app.use(
@@ -166,8 +163,8 @@ client.login(process.env.BOT_TOKEN).catch(console.error);
  *
  *
  *  */
-if(process.env.WEB_LISTEN === "1") {
-// view engine setup
+if (process.env.WEB_LISTEN === "1") {
+  // view engine setup
   app.set("views", path.join(__dirname, "views"));
   app.set("view engine", "twig");
 
@@ -175,30 +172,27 @@ if(process.env.WEB_LISTEN === "1") {
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
 
-  if (process.env.SITE_ETU_CLIENT_ID && 
-    process.env.SITE_ETU_CLIENT_SECRET
-  ) {
+  if (process.env.SITE_ETU_CLIENT_ID && process.env.SITE_ETU_CLIENT_SECRET) {
     app.use("/connexion", connexion);
     app.use("/attribuerrole", attribuerRole(client));
-    app.use("/cron/"+process.env.CRON_SECRET, cron(client));
+    app.use(`/cron/${process.env.CRON_SECRET}`, cron(client));
     app.use("/", home);
   } else {
-    app.get("/", function (req, res) {
+    app.get("/", (req, res) => {
       res.send(
         "La connexion avec le site etu n'est pas possible en raison d'une mauvaise configuration du bot, ou alors <a href='https://etu.utt.fr'>le site etu</a> n'est pas accessible. Ressayez plus tard."
       );
     });
   }
-
 }
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
 // error handler
-app.use(function (err, req, res) {
+app.use((err, req, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};

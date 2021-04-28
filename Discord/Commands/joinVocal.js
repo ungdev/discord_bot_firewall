@@ -1,6 +1,6 @@
-/*eslint no-param-reassign: ["error", { "props": false }]*/
+/* eslint no-param-reassign: ["error", { "props": false }] */
 
-let discordUtils = require("../discordUtils");
+const discordUtils = require("../discordUtils");
 
 module.exports = async function joinVocal(
   /** module:"discord.js".Message */ msg,
@@ -42,7 +42,7 @@ module.exports = async function joinVocal(
         .catch(console.error);
     } else if (!(msg.channel.id in tableauChannelTexteAChannelVocal)) {
       msg.guild.channels
-        .create(msg.channel.name.toLowerCase() + " - etudes", {
+        .create(`${msg.channel.name.toLowerCase()} - etudes`, {
           parent: msg.channel.parentID,
           type: "voice",
           userLimit: 99,
@@ -60,7 +60,7 @@ module.exports = async function joinVocal(
             },
           ],
         })
-        .then(function (channel) {
+        .then((channel) => {
           if (!(msg.author.id in tableauChannelsVocauxEnCours))
             tableauChannelsVocauxEnCours[msg.author.id] = [];
           tableauChannelsVocauxEnCours[msg.author.id].push(channel.id);
@@ -97,7 +97,7 @@ module.exports = async function joinVocal(
     else nomChannel = msg.member.nickname;
     if (msg.mentions.roles.first())
       nomChannel = msg.mentions.roles.first().name.toLowerCase();
-    nomChannel = nomChannel + "-cours";
+    nomChannel += "-cours";
     let Permissions;
     if (msg.mentions.roles.first()) {
       Permissions = [
@@ -131,13 +131,13 @@ module.exports = async function joinVocal(
       ];
     }
     msg.guild.channels
-      .create(nomChannel + " - vocal", {
+      .create(`${nomChannel} - vocal`, {
         parent: process.env.CATEGORY_AMPHI,
         type: "voice",
         userLimit: 99,
         permissionOverwrites: Permissions,
       })
-      .then(function (channel) {
+      .then((channel) => {
         if (!(msg.member.id in tableauChannelsVocauxEnCours))
           tableauChannelsVocauxEnCours[msg.member.id] = [];
         tableauChannelsVocauxEnCours[msg.member.id].push(channel.id);
@@ -149,39 +149,35 @@ module.exports = async function joinVocal(
         parent: process.env.CATEGORY_AMPHI,
         permissionOverwrites: Permissions,
       })
-      .then(async function (channel) {
+      .then(async (channel) => {
         if (!(msg.member.id in tableauChannelsVocauxEnCours))
           tableauChannelsVocauxEnCours[msg.member.id] = [];
         tableauChannelsVocauxEnCours[msg.member.id].push(channel.id);
         (await msg.guild.channels.resolve(channel.id))
           .send(
-            ":speaking_head: <@" +
-              msg.member.id +
-              "> Votre amphi vient d'être créé. Vous disposez d'un canal textuel (celui que vous regardez, visible à gauche et qui commence par #), et d'un canal vocal où vous pouvez parler jusqu'à 100 personnes, et 50 maximum si vous partagez votre écran." +
-              "\n:wastebasket: **Les canaux voix et texte seront effacés dès que plus personne ne sera dans le canal vocal.**" +
-              "\n\n:writing_hand: Si vous souhaitez conserver le tchat, pensez à taper la commande `/ UE export`, **sans l'espace entre / et UE**. Seul un enseignant ou un modérateur/administrateur peut utiliser cette commande qui génére un fichier zip contenant tout la conversation du tchat textuel utilisable dans un navigateur web, même hors ligne." +
-              "\n\n:tools: Vous pouvez renommer vos salons sur la gauche qui portent votre nom pour leur donner le nom de l'UE par exemple (clic-droit sur le salon à gauche, modifier le salon puis enregistrer les changements)" +
-              "\n\n:toolbox: En bas à gauche, à côté de voix connectée, vous disposez de 5 boutons." +
-              "\nLes deux boutons au dessus permettent de diffuser votre écran (bouton flèche dans l'écran) ou de mettre fin à la communication (bouton téléphone avec la croix)." +
-              "\nLes trois boutons du bas permettent de couper votre micro (ne plus parler), ou votre casque (ne plus entendre), et d'accéder aux paramètres de Discord grâce à la roue crantée." +
-              "\n\n:grey_question: Tapez `/UE` pour voir la liste des commandes. N'hésitez pas à envoyer un message à la modération (tapez `@ Modération` sans espace) ou l'administration (`@ Administrateur`, sans espace) du serveur en cas de souci." +
-              "\n\n:school: Bon cours !\n\n"
+            `:speaking_head: <@${msg.member.id}> Votre amphi vient d'être créé. Vous disposez d'un canal textuel (celui que vous regardez, visible à gauche et qui commence par #), et d'un canal vocal où vous pouvez parler jusqu'à 100 personnes, et 50 maximum si vous partagez votre écran.` +
+              `\n:wastebasket: **Les canaux voix et texte seront effacés dès que plus personne ne sera dans le canal vocal.**` +
+              `\n\n:writing_hand: Si vous souhaitez conserver le tchat, pensez à taper la commande \`/ UE export\`, **sans l'espace entre / et UE**. Seul un enseignant ou un modérateur/administrateur peut utiliser cette commande qui génére un fichier zip contenant tout la conversation du tchat textuel utilisable dans un navigateur web, même hors ligne.` +
+              `\n\n:tools: Vous pouvez renommer vos salons sur la gauche qui portent votre nom pour leur donner le nom de l'UE par exemple (clic-droit sur le salon à gauche, modifier le salon puis enregistrer les changements)` +
+              `\n\n:toolbox: En bas à gauche, à côté de voix connectée, vous disposez de 5 boutons.` +
+              `\nLes deux boutons au dessus permettent de diffuser votre écran (bouton flèche dans l'écran) ou de mettre fin à la communication (bouton téléphone avec la croix).` +
+              `\nLes trois boutons du bas permettent de couper votre micro (ne plus parler), ou votre casque (ne plus entendre), et d'accéder aux paramètres de Discord grâce à la roue crantée.` +
+              `\n\n:grey_question: Tapez \`/UE\` pour voir la liste des commandes. N'hésitez pas à envoyer un message à la modération (tapez \`@ Modération\` sans espace) ou l'administration (\`@ Administrateur\`, sans espace) du serveur en cas de souci.` +
+              `\n\n:school: Bon cours !\n\n`
           )
-          .then(async function (message) {
+          .then(async (message) => {
             message.pin().catch(console.error);
             if (msg.mentions.roles.first()) {
               channel
                 .send(
-                  ":loudspeaker: Etudiants de <@&" +
-                    msg.mentions.roles.first().id +
-                    ">, votre enseignant " +
-                    (msg.member.nickname
-                      ? msg.member.nickname
-                      : msg.author.tag) +
-                    " vient de créer un amphi !"
+                  `:loudspeaker: Etudiants de <@&${
+                    msg.mentions.roles.first().id
+                  }>, votre enseignant ${
+                    msg.member.nickname ? msg.member.nickname : msg.author.tag
+                  } vient de créer un amphi !`
                 )
                 .catch(console.error);
-              let channelEtudiants = msg.guild.channels.cache.find(
+              const channelEtudiants = msg.guild.channels.cache.find(
                 (chan) =>
                   chan.type === "text" &&
                   chan.name.toLowerCase() ===
@@ -189,15 +185,11 @@ module.exports = async function joinVocal(
               );
               if (channelEtudiants)
                 channelEtudiants.send(
-                  ":school: <@&" +
-                    msg.mentions.roles.first().id +
-                    "> Votre enseignant " +
-                    (msg.member.nickname
-                      ? msg.member.nickname
-                      : msg.author.tag) +
-                    " vient de créer un amphi <#" +
-                    channel.id +
-                    ">"
+                  `:school: <@&${
+                    msg.mentions.roles.first().id
+                  }> Votre enseignant ${
+                    msg.member.nickname ? msg.member.nickname : msg.author.tag
+                  } vient de créer un amphi <#${channel.id}>`
                 );
             }
           });
@@ -206,18 +198,12 @@ module.exports = async function joinVocal(
   } else {
     msg
       .reply(
-        "Vous n'êtes ni étudiant, ni enseignant. Connectez vous sur " +
-          process.env.BOT_URL +
-          " pour vous faire attribuer vos droits sur le serveur."
+        `Vous n'êtes ni étudiant, ni enseignant. Connectez vous sur ${process.env.BOT_URL} pour vous faire attribuer vos droits sur le serveur.`
       )
       .catch(console.error);
     (await msg.guild.channels.resolve(process.env.CHANNEL_ADMIN_ID))
       .send(
-        " :octagonal_sign: Alerte ! " +
-          msg.author.tag +
-          " / " +
-          msg.member.nickname +
-          " a tenté de lancer un vocal en n'étant ni enseignant ni étudiant."
+        ` :octagonal_sign: Alerte ! ${msg.author.tag} / ${msg.member.nickname} a tenté de lancer un vocal en n'étant ni enseignant ni étudiant.`
       )
       .catch(console.error);
   }

@@ -6,35 +6,32 @@ module.exports = async function listDynVoc(
     .send(":clock1: Début du listing des channels")
     .catch(console.error);
   let compteur = 0;
-  Object.keys(tableauChannelTexteAChannelVocal).forEach(async(key) => {
+  Object.keys(tableauChannelTexteAChannelVocal).forEach(async (key) => {
     msg.channel
       .send(
-        "Pour le canal texte <#" +
-          (await msg.guild.channels.resolve(key.toString())).id +
-          "> dans la catégorie " +
+        `Pour le canal texte <#${
+          (await msg.guild.channels.resolve(key.toString())).id
+        }> dans la catégorie ${
           (
             await msg.guild.channels.resolve(
               (await msg.guild.channels.resolve(key.toString())).parentID
             )
           ).name
+        }`
       )
       .catch(console.error);
-    compteur = compteur + 1;
+    compteur += 1;
   });
   msg.channel
     .send(
-      " :white_check_mark: Il y a " +
-        compteur +
-        " channels vocaux lancés par les étudiants."
+      ` :white_check_mark: Il y a ${compteur} channels vocaux lancés par les étudiants.`
     )
     .catch(console.error);
   msg.channel
     .send(
-      "Il y a " +
-        msg.guild.channels.resolve(process.env.CATEGORY_AMPHI).children
-          .size /
-          2 +
-        " amphis en cours."
+      `Il y a ${
+        msg.guild.channels.resolve(process.env.CATEGORY_AMPHI).children.size / 2
+      } amphis en cours.`
     )
     .catch(console.error);
 };

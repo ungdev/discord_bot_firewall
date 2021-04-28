@@ -1,4 +1,4 @@
-let discordUtils = require("../discordUtils");
+const discordUtils = require("../discordUtils");
 
 module.exports = async function assignLireEcrireBasique(
   /** module:"discord.js".Message */ msg,
@@ -25,14 +25,10 @@ module.exports = async function assignLireEcrireBasique(
         " :clock1: Cette commande peut durer certain temps. Vous serez averti de sa fin. Si ce n'est pas le cas, alertez un administrateur."
       )
       .catch(console.error);
-    let channel = msg.guild.channels.resolve(parametres[2]);
+    const channel = msg.guild.channels.resolve(parametres[2]);
     if (channel.type === "category")
       channel.children.forEach((chan) =>
-        discordUtils.assignPerm(
-          chan,
-          msg.mentions.roles.first(),
-          parametres[4]
-        )
+        discordUtils.assignPerm(chan, msg.mentions.roles.first(), parametres[4])
       );
     else
       discordUtils.assignPerm(

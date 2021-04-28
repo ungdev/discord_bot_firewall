@@ -1,6 +1,6 @@
-/*eslint no-param-reassign: ["error", { "props": false }]*/
+/* eslint no-param-reassign: ["error", { "props": false }] */
 
-let utils = require("../../utils");
+const utils = require("../../utils");
 
 module.exports = async function voiceStateUpdate(
   /** module:"discord.js".VoiceState */ oldState,
@@ -29,7 +29,8 @@ module.exports = async function voiceStateUpdate(
     } else {
       tableauChannelsVocauxEnCours[oldState.member.id].forEach(async (id) => {
         (await oldState.guild.channels.resolve(id))
-          .delete().then(() => {
+          .delete()
+          .then(() => {
             delete tableauChannelsVocauxEnCours[oldState.member.id];
           })
           .catch(console.error);

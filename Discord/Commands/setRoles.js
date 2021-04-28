@@ -1,4 +1,6 @@
-module.exports = async function setRoles(/** module:"discord.js".Message */ msg) {
+module.exports = async function setRoles(
+  /** module:"discord.js".Message */ msg
+) {
   if ((await msg.member.fetch()).hasPermission("ADMINISTRATOR")) {
     if (!msg.mentions.members.first()) {
       msg.reply(

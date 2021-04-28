@@ -8,42 +8,43 @@ module.exports.etuToDiscord = async function etuToDiscord(
   /** 'module:"discord.js".Guild */ guild
 ) {
   /** On récupère son compte discord dans le serveur */
-  let membreDiscord = await discordUtils.getUserFromGuild(discordUsername, guild);
+  const membreDiscord = await discordUtils.getUserFromGuild(
+    discordUsername,
+    guild
+  );
   /** Si on l"a trouvé */
   if (membreDiscord) {
-    let roles = (await guild.roles.fetch()).cache;
+    const roles = (await guild.roles.fetch()).cache;
     /** Liste des id de rôles à attribuer */
     /** On définit son pseudo */
-    let pseudo =
-      capitalize.words(
-        membreSiteEtu /** string */.firstName
-          .toString()
-      ) +
-      " " +
-      membreSiteEtu /** string */.lastName
+    let pseudo = `${capitalize.words(
+      membreSiteEtu /** string */.firstName
         .toString()
-        .toUpperCase();
+    )} ${membreSiteEtu /** string */.lastName
+      .toString()
+      .toUpperCase()}`;
     if (/** bool */ membreSiteEtu.isStudent) {
       if (!membreSiteEtu.formation) {
         await membreDiscord.roles.add(process.env.ROLE_ANCIEN_ETUDIANT_ID);
-        pseudo +=
-          " - Ancien étu";
+        pseudo += " - Ancien étu";
       } else {
         /** On ajoute le rôle étudiant */
         await membreDiscord.roles.add(process.env.ROLE_ETUDIANT_ID);
         /** On définit un pseudo */
-        pseudo +=
-          " - " + /** string */ membreSiteEtu.branch + membreSiteEtu.level;
+        pseudo += ` - ${/** string */ membreSiteEtu.branch}${
+          membreSiteEtu.level
+        }`;
         /** On définit la liste des noms de rôles à attribuer (nom uvs + nom de branche) */
-        let tableauChainesToRoles = /** Array<String> */ membreSiteEtu.uvs;
+        const tableauChainesToRoles = /** Array<String> */ membreSiteEtu.uvs;
         tableauChainesToRoles.push(membreSiteEtu.branch);
 
         /** Pour tous les noms de rôle on récupère l'id du rôle et on l'ajoute à la liste des id de rôles à attribuer */
         tableauChainesToRoles.forEach(async (chaine) => {
           if (utils.roleValide(chaine)) {
-            let role = await roles.find(
+            const role = await roles.find(
               (roleToTest) =>
-              roleToTest.name.toUpperCase() === chaine.toString().toUpperCase()
+                roleToTest.name.toUpperCase() ===
+                chaine.toString().toUpperCase()
             );
             if (role) await membreDiscord.roles.add(role).catch(console.error);
             else {
@@ -51,17 +52,15 @@ module.exports.etuToDiscord = async function etuToDiscord(
               await guild.channels
                 .resolve(process.env.CHANNEL_ADMIN_ID)
                 .send(
-                  "Le rôle " +
-                  chaine +
-                  " va être créé pour l'utilisateur " +
-                  membreDiscord.user.tag +
-                  " " +
-                  pseudo
+                  `Le rôle ${chaine} va être créé pour l'utilisateur ${membreDiscord.user.tag} ${pseudo}`
                 );
               await guild.roles
                 .create({
                   data: { name: chaine.toString().toUpperCase() },
-                }).then((createdRole) => membreDiscord.roles.add(createdRole).catch(console.error))
+                })
+                .then((createdRole) =>
+                  membreDiscord.roles.add(createdRole).catch(console.error)
+                )
                 .catch(console.error);
             }
           }
@@ -74,18 +73,13 @@ module.exports.etuToDiscord = async function etuToDiscord(
       guild.channels
         .resolve(process.env.CHANNEL_ADMIN_ID)
         .send(
-          " :warning: Le pseudo " +
-            pseudo +
-            " de l'utilisateur " +
-            membreDiscord.user.tag +
-            " est trop long. Vérifiez son pseudo."
+          ` :warning: Le pseudo ${pseudo} de l'utilisateur ${membreDiscord.user.tag} est trop long. Vérifiez son pseudo.`
         );
       pseudo = pseudo.slice(0, 32);
     }
     await membreDiscord.setNickname(pseudo).catch(console.error);
     /** On affiche un message */
     return "Vos rôles ont été affectés. Si d'ici quelques heures rien ne change dans votre compte, merci de nous contacter.<br><br><b>Vous pouvez maintenant fermer cette fenêtre et retourner sur Discord.</b>";
-  } else
-  /** SI utilisateur non trouvé dans le serveur, message */
-    return "Utilisateur discord non trouvé dans le serveur. Avez-vous bien rejoint le serveur Discord ? <a href='/'>Revenir au départ</a>";
+  }
+  return "Utilisateur discord non trouvé dans le serveur. Avez-vous bien rejoint le serveur Discord ? <a href='/'>Revenir au départ</a>";
 };
