@@ -23,7 +23,7 @@ module.exports = async function sendAnon(
       .send(`[ANONYME]\n${parametres.slice(3, parametres.length).join(" ")}`)
       .then((msgAnon) => {
         logFile.logToFile(
-          `Le message ${msgAnon.id} a été envoyé par ${msg.author.tag} alias ${guildMember.displayName}`
+          `Le message ${msgAnon.id} a été envoyé par ${msg.author.tag} alias ${guildMember.displayName} sur le canal ${parametres[2]}.`
         );
         msg.reply("Message envoyé !");
       });
