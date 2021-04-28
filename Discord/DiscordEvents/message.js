@@ -147,7 +147,7 @@ module.exports = async function (
       let anonymousChannels = {};
       let currentUserAnonymousChannels = {};
       let guildMember;
-      if(typeof process.env.ANONYMOUS_CHANNELS !== "undefined" && process.env.ANONYMOUS_CHANNELS !== "") {
+      if(process.env.ANONYMOUS_CHANNELS) {
         let /** module:"discord.js".Guild */ guild = await msg.client.guilds.resolve(process.env.SERVER_ID);
         guildMember = await getUserFromGuild(msg.author.tag, guild);
         for (const chan of process.env.ANONYMOUS_CHANNELS.split(",")) {

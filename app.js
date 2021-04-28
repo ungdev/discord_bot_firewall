@@ -43,19 +43,16 @@ Sentry.init({
   ["CRON_SECRET", process.env.CRON_SECRET],
   ["DISCORD_LISTEN", process.env.DISCORD_LISTEN]
 ].forEach(function (env) {
-  if (typeof env[1] === "undefined" || env[1] === "") {
+  if (!env[1]) {
     console.error("La variable d'env " + env[0] + " n'est pas définie !");
     process.exit(-1);
   }
 });
-if (typeof process.env.VACANCES === "undefined" || process.env.VACANCES === "")
+if (!process.env.VACANCES)
   process.env.VACANCES = "0";
-if (typeof process.env.BOT_URL === "undefined" || process.env.BOT_URL === "")
+if (!process.env.BOT_URL)
   process.env.BOT_URL = "l'url publique du bot n'est pas définie";
-if (
-  typeof process.env.LIEN_INVITATION_DISCORD === "undefined" ||
-  process.env.LIEN_INVITATION_DISCORD === ""
-)
+if (!process.env.LIEN_INVITATION_DISCORD)
   process.env.LIEN_INVITATION_DISCORD = "pas de lien d'invitation";
 
 let createError = require("http-errors");
@@ -117,7 +114,7 @@ if(process.env.DISCORD_LISTEN === "1")
     );
   });
 
-  if(typeof process.env.WATCHED_MEMBERS !== "undefined" && process.env.WATCHED_MEMBERS !== "") {
+  if(process.env.WATCHED_MEMBERS) {
     let watchedMembers = process.env.WATCHED_MEMBERS.split(",");
     client.on("presenceUpdate", async (
       /** 'module:"discord.js".Presence */ oldPresence,
@@ -139,11 +136,8 @@ if(process.env.DISCORD_LISTEN === "1")
     );
   });
 
-  if (
-    typeof process.env.DISCORD_CHAT_EXPORT_PATH !== "undefined" &&
-    typeof process.env.DISCORD_CHAT_EXPORTER_EXE_PATH !== "undefined" &&
-    process.env.DISCORD_CHAT_EXPORT_PATH !== "" &&
-    process.env.DISCORD_CHAT_EXPORTER_EXE_PATH !== ""
+  if (process.env.DISCORD_CHAT_EXPORT_PATH &&
+    process.env.DISCORD_CHAT_EXPORTER_EXE_PATH
   ) {
     let serveIndex = require("serve-index");
     app.use(
@@ -173,11 +167,8 @@ if(process.env.WEB_LISTEN === "1") {
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
 
-  if (
-    typeof process.env.SITE_ETU_CLIENT_ID !== "undefined" &&
-    process.env.SITE_ETU_CLIENT_ID !== "" &&
-    typeof process.env.SITE_ETU_CLIENT_SECRET !== "undefined" &&
-    process.env.SITE_ETU_CLIENT_SECRET !== ""
+  if (process.env.SITE_ETU_CLIENT_ID && 
+    process.env.SITE_ETU_CLIENT_SECRET
   ) {
     app.use("/connexion", require("./routes/connexion"));
     app.use("/attribuerrole", require("./routes/attribuerrole")(client));
