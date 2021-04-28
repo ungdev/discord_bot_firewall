@@ -3,9 +3,14 @@ env:
   node: true
   commonjs: true
   es2021: true
+plugins:
+  - prettier
 extends:
   - airbnb-base
   - prettier
 parserOptions:
   ecmaVersion: 12
-rules: {}
+rules:
+  "prettier/prettier": "warn"
+  "prefer-template": "warn"
+  "prefer-const": "warn"
