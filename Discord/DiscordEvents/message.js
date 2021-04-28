@@ -21,6 +21,9 @@ let assignRole = require("../Commands/assignRole");
 let removeAllFromRole = require("../Commands/removeAllFromRole");
 let checkSameRoles = require("../Commands/checkSameRoles");
 let delSameRoles = require("../Commands/delSameRoles");
+let listAnon = require("../Commands/listAnon");
+let sendAnon = require("../Commands/sendAnon");
+const { getUserFromGuild } = require("../discordUtils");
 
 let commandesAdmin = [
   "delue",
@@ -141,12 +144,45 @@ module.exports = async function (
       }
     }
     if (msg.channel.type === "dm") {
-      msg
-        .reply(
-          " :octagonal_sign: Je ne prends aucune commande en Message Privé !"
-        )
-        .catch(console.error);
-      msg.channel.send(utils.author).catch(console.error);
+      let anonymousChannels = {};
+      let currentUserAnonymousChannels = {};
+      let guildMember;
+      if(typeof process.env.ANONYMOUS_CHANNELS !== "undefined" && process.env.ANONYMOUS_CHANNELS !== "") {
+        let /** module:"discord.js".Guild */ guild = await msg.client.guilds.resolve(process.env.SERVER_ID);
+        guildMember = await getUserFromGuild(msg.author.tag, guild);
+        for (const chan of process.env.ANONYMOUS_CHANNELS.split(",")) {
+          let tableau = chan.split(":");
+          anonymousChannels[tableau[0]] = tableau[1];
+          let /** module:"discord.js".Channel */ channel = await guild.channels.resolve(tableau[1]);
+          if(tableau.length === 2) {
+            if(channel.permissionsFor(guildMember).has("SEND_MESSAGES")) {
+              currentUserAnonymousChannels[tableau[0]] = tableau[1];
+            }
+          }
+          else {
+            if(guildMember.roles.cache.find((role) => role.id === tableau[2])) {
+              currentUserAnonymousChannels[tableau[0]] = tableau[1];
+            }
+          }
+        }
+      }
+      switch (parametres[1].toLowerCase()) {
+        case "sendanon":
+          await sendAnon(msg, parametres, currentUserAnonymousChannels, guildMember);
+          break;
+        case "listanon":
+          await listAnon(msg, currentUserAnonymousChannels);
+          break;
+        case "helpanon":
+          await discordUtils.helpAnon(msg);
+          break;
+        case "author":
+          msg.channel.send(utils.author).catch(console.error);
+          break;
+        default:
+            await discordUtils.help(msg);
+          break;
+      }
     }
   }
 };

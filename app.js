@@ -34,10 +34,12 @@ Sentry.init({
   ["CHANNEL_ADMIN_ID", process.env.CHANNEL_ADMIN_ID],
   ["ROLE_ENSEIGNANT_ID", process.env.ROLE_ENSEIGNANT_ID],
   ["ROLE_ETUDIANT_ID", process.env.ROLE_ETUDIANT_ID],
+  ["ROLE_ANCIEN_ETUDIANT_ID", process.env.ROLE_ANCIEN_ETUDIANT_ID],
   ["ROLE_VACANCES_ENSEIGNANT_ID", process.env.ROLE_VACANCES_ENSEIGNANT_ID],
   ["BOT_PREFIX", process.env.BOT_PREFIX],
   ["CATEGORY_AMPHI", process.env.CATEGORY_AMPHI],
   ["WEB_LISTEN", process.env.WEB_LISTEN],
+  ["LOG_FILE", process.env.LOG_FILE],
   ["DISCORD_LISTEN", process.env.DISCORD_LISTEN]
 ].forEach(function (env) {
   if (typeof env[1] === "undefined" || env[1] === "") {

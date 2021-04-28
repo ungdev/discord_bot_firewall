@@ -63,9 +63,10 @@ module.exports.help = async function (/** module:"discord.js".Message */ msg) {
         " delSameRoles`. Supprime les rôles présents plusieurs fois (même nom sans tenir compte de la casse) pour n'en garder qu'un.\n\n"
       ).catch(console.log);
   }
-  msg.channel
-    .send(
-      "\n`" +
+  if(msg.channel.type !== "dm") {
+    msg.channel
+      .send(
+        "\n`" +
         process.env.BOT_PREFIX +
         " export`. Exporte tout le channel dans lequel la commande est tapée, dans un html lisible offline. **Seuls ceux ayant un rôle >= Enseignant** peuvent taper cette commande n'importe où." +
         "\n`" +
@@ -77,9 +78,27 @@ module.exports.help = async function (/** module:"discord.js".Message */ msg) {
         "\n`" +
         process.env.BOT_PREFIX +
         " unpin messageID`. Permet de supprimer un message de la liste des messages pin (sans donner la permission `MANAGE_MESSAGES`)" +
-        "\n\n`" +
-        process.env.BOT_PREFIX +
-        " author` Affiche des informations diverses sur l'auteur de ce bot"
+        "\n\n`"
+      )
+      .catch(console.error);
+  }
+  else {
+      msg.channel
+        .send(
+          "\n`" +
+          process.env.BOT_PREFIX +
+          " listAnon`. pour lister les canaux dans lesquels vous pouvez écrire en anonyme" +
+          "\n`" +
+          process.env.BOT_PREFIX +
+          " sendAnon channel message`. Envoie un message anonyme (avec formatage et emojis) sur le channel listé avec listAnon. Veillez à bien mettre un caractère espace entre le channel et le début du message (pas de saut de ligne direct). *Les administrateurs pourront à tout moment lever votre anonymat grâce à des fichiers logs.*"
+        )
+        .catch(console.error);
+  }
+  msg.channel
+    .send(
+      "\n\n`" +
+      process.env.BOT_PREFIX +
+      " author` Affiche des informations diverses sur l'auteur de ce bot"
     )
     .catch(console.error);
 };
@@ -188,6 +207,16 @@ module.exports.permissionsLireEcrireBasiquesOverwrite = function (
 module.exports.permissionsLireEcrireProfOverwrite = function (ouiOuNonOuNull) {
   return createOverwrite(permissionsLireEcrireProf, ouiOuNonOuNull);
 };
+
+module.exports.getUserFromGuild = async function(/** string */ discordUsername, /** module:"discord.js".Guild */ guild) {
+  const username = discordUsername.split("#")[0];
+  const discriminant = discordUsername.split("#")[1];
+  return (await guild.members.fetch()).find(
+    (user) =>
+      user.user.username === username &&
+      user.user.discriminator === discriminant
+  );
+}
 
 module.exports.assignPerm = function (
   /** module:"discord.js".GuildChannel */ channel,

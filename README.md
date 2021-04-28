@@ -15,6 +15,8 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
 * LoadBalancing (possibilité d'avoir un processus en écoute des messages discord, et trois autres en écoute web avec 4 tokens API différents de Discord)  
 * Renomme les gens Prénom NOM (+ " - Branche NIVEAU" pour les étudiants)
 * Pour les étudiants : attribution des UEs + rôle selon la branche
+* Permet d'envoyer des messages anonymes (avec formatage et emojis) en MP au bot diffusés sur des channels, tout en enregistrant l'identité réelle des users dans un fichier log 
+* Gestion des anciens étudiants (marqués comme étudiants mais n'ayant pas de formation) avec pseudo et role dédiés  
 * Alerte lors de la connexion/déconnexion de certains membres désignés (comptes admin partagés, ...)
 * Création des rôles inexistants, signalement de la création sur un channel (si le rôle n'existe pas, il est créé et l'utilisateur recommence la manip)
 * Envoie un message automatique aux nouveaux qui rejoignent le serveur en leur disant d'aller sur le site
@@ -43,6 +45,9 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
         * `PREFIX assignRole @membre @role ajouter|supprimer` Ajoute ou supprime un rôle pour un membre, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres). Commande réservée aux administrateurs.
         * `PREFIX setRoles @membre @role1 @role2 ...` Efface tous les précédents rôles de l'utilisateur et lui affecte ceux indiqués, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres). Si aucun rôle n'est précisé, efface tous les rôles de l'utilisateur. Commande réservée aux administrateurs.
     * `PREFIX author` Affiche des informations sur l'auteur
+    * En MP au bot
+        * `PREFIX listAnon` pour lister les canaux dans lesquels vous pouvez écrire en anonyme
+        * `PREFIX sendAnon channel message` Envoie un message anonyme (avec formatage et emojis) sur le channel listé avec listAnon. Les administrateurs pourront à tout moment lever l'anonymat grâce à des fichiers logs.
     
 ## Installation
 
