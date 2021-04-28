@@ -80,8 +80,6 @@ if (process.env.NAME_OVERRIDE) {
   }
 }
 /* eslint-enable no-restricted-syntax */
-const app = express();
-app.use(express.static(path.join(__dirname, "public")));
 /**
  *
  *
@@ -149,17 +147,6 @@ if (process.env.DISCORD_LISTEN === "1") {
       tableauChannelsVocauxEnCours
     );
   });
-
-  if (
-    process.env.DISCORD_CHAT_EXPORT_PATH &&
-    process.env.DISCORD_CHAT_EXPORTER_EXE_PATH
-  ) {
-    app.use(
-      "/exports",
-      express.static("public/exports"),
-      serveIndex("public/exports", { icons: true })
-    );
-  }
 }
 
 client.login(process.env.BOT_TOKEN).catch(console.error);
@@ -171,6 +158,8 @@ client.login(process.env.BOT_TOKEN).catch(console.error);
  *
  *
  *  */
+const app = express();
+app.use(express.static(path.join(__dirname, "public")));
 if (process.env.WEB_LISTEN === "1") {
   // view engine setup
   app.set("views", path.join(__dirname, "views"));
@@ -191,6 +180,17 @@ if (process.env.WEB_LISTEN === "1") {
         "La connexion avec le site etu n'est pas possible en raison d'une mauvaise configuration du bot, ou alors <a href='https://etu.utt.fr'>le site etu</a> n'est pas accessible. Ressayez plus tard."
       );
     });
+  }
+
+  if (
+    process.env.DISCORD_CHAT_EXPORT_PATH &&
+    process.env.DISCORD_CHAT_EXPORTER_EXE_PATH
+  ) {
+    app.use(
+      "/exports",
+      express.static("public/exports"),
+      serveIndex("public/exports", { icons: true })
+    );
   }
 }
 
