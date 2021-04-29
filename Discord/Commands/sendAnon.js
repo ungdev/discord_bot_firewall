@@ -20,7 +20,7 @@ module.exports = async function sendAnon(
     msg.client.guilds
       .resolve(process.env.SERVER_ID)
       .channels.resolve(currentUserAnonymousChannels[parametres[2]])
-      .send(`[ANONYME]\n${parametres.slice(3, parametres.length).join(" ")}`)
+      .send(`[ANONYME] ${parametres.slice(3, parametres.length).join(" ")}`)
       .then((msgAnon) => {
         logFile.logToFile(
           `Le message ${msgAnon.id} a été envoyé par ${msg.author.tag} alias ${guildMember.displayName} sur le canal ${parametres[2]}.`
