@@ -1,0 +1,21 @@
+env:
+  browser: false
+  node: true
+  commonjs: true
+  es2021: true
+plugins:
+  - prettier
+extends:
+  - airbnb-base
+  - prettier
+parserOptions:
+  ecmaVersion: 12
+ignorePatterns:
+  - "public/"
+  - "views/"
+rules:
+  "prettier/prettier": "warn"
+  "prefer-template": "warn"
+  "prefer-const": "warn"
+  "no-console": "off"
+  "prefer-destructuring": "off"

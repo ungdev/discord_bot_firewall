@@ -1,6 +1,6 @@
-let discordUtils = require("../discordUtils");
+const discordUtils = require("../discordUtils");
 
-module.exports = async function (
+module.exports = async function addUE(
   /** module:"discord.js".Message */ msg,
   /** Array<String> */ parametres
 ) {
@@ -12,9 +12,7 @@ module.exports = async function (
   ) {
     msg
       .reply(
-        " :warning:  Erreur. La syntaxe est `" +
-          process.env.BOT_PREFIX +
-          " addUE @RoleUE <categoryID> texte | vocal | lesDeux`. La catégorie et le rôle doivent déjà exister."
+        ` :warning:  Erreur. La syntaxe est \`${process.env.BOT_PREFIX} addUE @RoleUE <categoryID> texte | vocal | lesDeux\`. La catégorie et le rôle doivent déjà exister.`
       )
       .catch(console.error);
   } else {
@@ -38,11 +36,11 @@ module.exports = async function (
             },
           ],
         })
-        .then(function (channel) {
+        .then((channel) => {
           channel.send(
-            "Bonjour <@&" +
-              msg.mentions.roles.first().id +
-              ">, votre channel texte vient d'être créé !"
+            `Bonjour <@&${
+              msg.mentions.roles.first().id
+            }>, votre channel texte vient d'être créé !`
           );
         })
         .catch(console.error);
@@ -53,7 +51,7 @@ module.exports = async function (
       parametres[4].toLowerCase() === "lesdeux"
     ) {
       msg.guild.channels
-        .create(msg.mentions.roles.first().name.toLowerCase() + " - vocal", {
+        .create(`${msg.mentions.roles.first().name.toLowerCase()} - vocal`, {
           parent: parametres[3],
           type: "voice",
           userLimit: 99,

@@ -1,4 +1,4 @@
-module.exports = async function (
+module.exports = async function kickAll(
   /** module:"discord.js".Message */ msg,
   /** Array<String> */ parametres
 ) {
@@ -6,39 +6,36 @@ module.exports = async function (
     if (parametres.length < 3)
       msg
         .reply(
-          "@everyone :warning: Cette commande est destructrice. Elle expulsera toute les personnes / bot / ... ayant un rôle inférieur au bot, ou n'étant pas admin. Tapez `" +
-            process.env.BOT_PREFIX +
-            " kickall SERVER_ID` pour confirmer.\n\n@everyone Surveillez !"
+          `@everyone :warning: Cette commande est destructrice. Elle expulsera toute les personnes / bot / ... ayant un rôle inférieur au bot, ou n'étant pas admin. Tapez \`${process.env.BOT_PREFIX} kickall SERVER_ID\` pour confirmer.\n\n@everyone Surveillez !`
         )
         .catch(console.error);
-    else {
-      if (parametres[2] === msg.guild.id) {
-        msg
-          .reply(
-            "@everyone Lancement de l'expulsion. :clock1: Cette commande peut être longue, le bot enverra un message quand ça sera fini."
-          )
-          .catch(console.error);
-        await msg.channel.send(
-          "Il y a " + (await msg.guild.fetch()).memberCount + " membres"
-        );
-        let compteur = 0;
-        (await msg.guild.members.fetch()).forEach(function (membre) {
-          if (!membre.hasPermission("ADMINISTRATOR")) {
-            membre.kick("commande kickall").catch(console.error);
-            compteur = compteur + 1;
-          } else msg.channel.send("L'utilisateur " + membre.user.tag + " n'a pas pu être expulsé.").catch(console.error);
-        });
-        await msg
-          .reply(
-            " :white_check_mark: " +
-              compteur +
-              " utilisateurs ont été expulsés. Il reste " +
-              (await msg.guild.members.fetch()).size +
-              " membres"
-          )
-          .catch(console.error);
-      } else msg.reply("L'ID ne correspond pas.").catch(console.error);
-    }
+    else if (parametres[2] === msg.guild.id) {
+      msg
+        .reply(
+          "@everyone Lancement de l'expulsion. :clock1: Cette commande peut être longue, le bot enverra un message quand ça sera fini."
+        )
+        .catch(console.error);
+      await msg.channel.send(
+        `Il y a ${(await msg.guild.fetch()).memberCount} membres`
+      );
+      let compteur = 0;
+      (await msg.guild.members.fetch()).forEach((membre) => {
+        if (!membre.hasPermission("ADMINISTRATOR")) {
+          membre.kick("commande kickall").catch(console.error);
+          compteur += 1;
+        } else
+          msg.channel
+            .send(`L'utilisateur ${membre.user.tag} n'a pas pu être expulsé.`)
+            .catch(console.error);
+      });
+      await msg
+        .reply(
+          ` :white_check_mark: ${compteur} utilisateurs ont été expulsés. Il reste ${
+            (await msg.guild.members.fetch()).size
+          } membres`
+        )
+        .catch(console.error);
+    } else msg.reply("L'ID ne correspond pas.").catch(console.error);
   } else {
     msg
       .reply(
@@ -54,11 +51,7 @@ module.exports = async function (
       )
       .catch(console.error);
     (await msg.guild.channels.resolve(process.env.CHANNEL_ADMIN_ID)).send(
-      "@everyone L'utilisateur " +
-        msg.member.nickname +
-        " / " +
-        msg.author.tag +
-        " a été expulsé."
+      `@everyone L'utilisateur ${msg.member.nickname} / ${msg.author.tag} a été expulsé.`
     );
   }
 };

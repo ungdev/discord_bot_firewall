@@ -13,8 +13,12 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
 * Connexion par le [site Etu](https://etu.utt.fr) via OAuth2 puis on indique son id discord (utilisateur#discriminant)
 * Attribue le rôle enseignant / étudiant
 * LoadBalancing (possibilité d'avoir un processus en écoute des messages discord, et trois autres en écoute web avec 4 tokens API différents de Discord)  
-* Renomme les gens Prénom NOM (+ " - Branche NIVEAU" pour les étudiants)
+* Renomme les gens Prénom NOM (+ " - Branche NIVEAU" pour les étudiants) avec possibilité de définir un nom custom par tag discord pour les noms trop longs
+* Deux routes avec secret pour les crons (`/cron/secret/action`) pour nettoyer les exports et lancer la synchronisation des utilisateurs  
 * Pour les étudiants : attribution des UEs + rôle selon la branche
+* Permet d'envoyer des messages anonymes (avec formatage et emojis) en MP au bot diffusés sur des channels, tout en enregistrant l'identité réelle des users dans un fichier log 
+* Gestion des anciens étudiants (marqués comme étudiants mais n'ayant pas de formation) avec pseudo et role dédiés  
+* Alerte lors de la connexion/déconnexion de certains membres désignés (comptes admin partagés, ...)
 * Création des rôles inexistants, signalement de la création sur un channel (si le rôle n'existe pas, il est créé et l'utilisateur recommence la manip)
 * Envoie un message automatique aux nouveaux qui rejoignent le serveur en leur disant d'aller sur le site
 * Sur le site, une petite notice qui explique aux gens comment installer le logiciel
@@ -23,7 +27,7 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
     * `PREFIX addUE @role <categoryID> texte | vocal | lesDeux` qui crée un chan texte et vocal avec les permissions qui vont bien et dans la catégorie indiquée, la commande ne peut être exécutée que depuis un channel précis
     * `PREFIX delUE #channelTexteUE vocal | tout` qui supprime les deux channels d'une UE, ainsi que son rôle, la commande ne peut être exécutée que depuis un channel précis.
     * `PREFIX delUEs <categoryID> vocal | tout` idem que `delUE` mais pour tous les channels d'une catégorie.
-    * `PREFIX getNb @ROLE` qui affiche le nombre de personnes dans le role correspondant.
+    * `PREFIX getNb @ROLE|role_id` qui affiche le nombre de personnes dans le role correspondant.
     * `PREFIX getRoles NombrePersonne` qui affiche la liste des rôle ne contenant que le nombre de personnes demandé
     * `PREFIX getZeroOne` qui affiche la liste des rôle ne contenant que 0 ou 1 personne.
     * `PREFIX assignLireEcrireBasiques channelID|categoryID @role oui|non|null` Permet d'assigner/supprimer/réinitialiser les permissions basiques de lecture écriture sur tous les channels d'une catégorie pour un rôle spécifique. Utile quand les permissions des channels ne sont pas synchro avec la catégorie, pour l'assignation de rôle de modération.
@@ -42,6 +46,9 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
         * `PREFIX assignRole @membre @role ajouter|supprimer` Ajoute ou supprime un rôle pour un membre, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres). Commande réservée aux administrateurs.
         * `PREFIX setRoles @membre @role1 @role2 ...` Efface tous les précédents rôles de l'utilisateur et lui affecte ceux indiqués, même si ce dernier n'est pas connecté (utile pour les serveurs > 1 000 membres). Si aucun rôle n'est précisé, efface tous les rôles de l'utilisateur. Commande réservée aux administrateurs.
     * `PREFIX author` Affiche des informations sur l'auteur
+    * En MP au bot
+        * `PREFIX listAnon` pour lister les canaux dans lesquels vous pouvez écrire en anonyme
+        * `PREFIX sendAnon channel message` Envoie un message anonyme (avec formatage et emojis) sur le channel listé avec listAnon. Les administrateurs pourront à tout moment lever l'anonymat grâce à des fichiers logs.
     
 ## Installation
 

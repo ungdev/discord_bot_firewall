@@ -1,4 +1,4 @@
-module.exports = async function (
+module.exports = async function unpin(
   /** module:"discord.js".Message */ msg,
   /** Array<String> */ parametres
 ) {
@@ -9,7 +9,7 @@ module.exports = async function (
       )
       .catch(console.error);
   else {
-    let message = await (await msg.channel.messages.fetchPinned()).get(
+    const message = await (await msg.channel.messages.fetchPinned()).get(
       parametres[2]
     );
     if (!message)

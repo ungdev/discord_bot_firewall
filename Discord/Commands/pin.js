@@ -1,4 +1,4 @@
-module.exports = async function (
+module.exports = async function pin(
   /** module:"discord.js".Message */ msg,
   /** Array<String> */ parametres
 ) {
@@ -7,7 +7,7 @@ module.exports = async function (
       .reply(" :warning: Vous devez spécifier l'ID du message à pin.")
       .catch(console.error);
   else {
-    let message = await msg.channel.messages.fetch(parametres[2]);
+    const message = await msg.channel.messages.fetch(parametres[2]);
     if (!message)
       msg
         .reply(

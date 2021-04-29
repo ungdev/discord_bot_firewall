@@ -1,6 +1,6 @@
-let utils = require("../discordUtils");
+const utils = require("../discordUtils");
 
-module.exports = async function (
+module.exports = async function delUEs(
   /** module:"discord.js".Message */ msg,
   /** Array<String> */ parametres
 ) {
@@ -14,9 +14,7 @@ module.exports = async function (
   ) {
     msg
       .reply(
-        " :warning: Erreur. La syntaxe est `" +
-          process.env.BOT_PREFIX +
-          " delUEs <categoryID> vocal | tout`."
+        ` :warning: Erreur. La syntaxe est \`${process.env.BOT_PREFIX} delUEs <categoryID> vocal | tout\`.`
       )
       .catch(console.error);
   } else {

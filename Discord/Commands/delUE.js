@@ -1,6 +1,6 @@
-let utils = require("../discordUtils");
+const utils = require("../discordUtils");
 
-module.exports = async function (
+module.exports = async function delUE(
   /** module:"discord.js".Message */ msg,
   /** Array<String> */ parametres
 ) {
@@ -14,9 +14,7 @@ module.exports = async function (
   ) {
     msg
       .reply(
-        " :warning: Erreur. La syntaxe est `" +
-          process.env.BOT_PREFIX +
-          " delUE #ueASupprimer vocal | tout`. Vous devez tagguer le channel texte de l'UE !"
+        ` :warning: Erreur. La syntaxe est \`${process.env.BOT_PREFIX} delUE #ueASupprimer vocal | tout\`. Vous devez tagguer le channel texte de l'UE !`
       )
       .catch(console.error);
   } else {

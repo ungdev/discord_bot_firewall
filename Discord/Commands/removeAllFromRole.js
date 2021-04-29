@@ -1,11 +1,11 @@
-module.exports = async function (/** module:"discord.js".Message */ msg) {
+module.exports = async function removeAllFromRole(
+  /** module:"discord.js".Message */ msg
+) {
   /** Retirer un rôle à tous les membres ayant ce rôle (le rôle existe toujours, mais plus personne ne l'a). */
   if (!msg.mentions.roles.first()) {
     msg
       .reply(
-        " :warning: Erreur. La syntaxe est `" +
-          process.env.BOT_PREFIX +
-          " removeAllFromRole @role`. Le rôle doit exister !"
+        ` :warning: Erreur. La syntaxe est \`${process.env.BOT_PREFIX} removeAllFromRole @role\`. Le rôle doit exister !`
       )
       .catch(console.error);
   } else {
