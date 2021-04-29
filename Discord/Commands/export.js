@@ -28,7 +28,7 @@ module.exports = async function exportChannel(
           `dotnet ${process.env.DISCORD_CHAT_EXPORTER_EXE_PATH} export -t ${process.env.BOT_TOKEN} -b -c ${msg.channel.id} -f HtmlDark -o ${process.env.DISCORD_CHAT_EXPORT_PATH}${nomChannel}.html > /dev/null`
         );
         shell.exec(
-          `wget --mirror --restrict-file-names=windows --page-requisites --adjust-extension --convert-links --execute robots=off --span-hosts -Dlocalhost,cdn.discordapp.com,cdnjs.cloudflare.com -P ${process.env.DISCORD_CHAT_EXPORT_PATH}${nomChannel} --user-agent mozilla http://localhost:8000/${nomChannel}.html 2>&1 | grep -i 'failed\\|error'`
+          `wget --mirror --restrict-file-names=windows --page-requisites --adjust-extension --convert-links --execute robots=off --span-hosts -Dlocalhost,cdn.discordapp.com,cdnjs.cloudflare.com -P ${process.env.DISCORD_CHAT_EXPORT_PATH}${nomChannel} --user-agent mozilla http://127.0.0.1:8000/${nomChannel}.html 2>&1 | grep -i 'failed\\|error'`
         );
         shell.exec(
           `touch ${process.env.DISCORD_CHAT_EXPORT_PATH}${nomChannel}/Ouvrez_le_dossier_localhost_et_ouvrez_le_fichier_html_dans_navigateur_web`
