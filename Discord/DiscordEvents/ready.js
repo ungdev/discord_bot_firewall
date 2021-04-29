@@ -3,9 +3,9 @@ module.exports = async function ready(
 ) {
   /** On dit qu'il est en train de jouer à "gérer le serveur" sur l'url du BOT */
   client.user
-    .setActivity("gérer le serveur", {
+    .setActivity(process.env.BOT_PREFIX, {
       type: "LISTENING",
-      url: process.env.BOT_PREFIX,
+      url: process.env.BOT_URL,
     })
     .catch(console.error);
   /** On alerte sur le chan dédié au bot du démarrage */
