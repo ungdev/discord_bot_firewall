@@ -2,6 +2,7 @@ const router = require("express").Router();
 const axios = require("axios");
 const httpBuildQuery = require("http-build-query");
 const shell = require("shelljs");
+const path = require("path");
 const utils = require("../utils");
 const assignFromWeb = require("../assignFromWeb");
 /* eslint-disable no-restricted-syntax, no-await-in-loop */
@@ -14,7 +15,7 @@ module.exports = function cron(
     res.send("ok");
     res.end();
     console.log("Nettoyage des exports !");
-    shell.exec(`rm -rf ${process.env.DISCORD_CHAT_EXPORT_PATH}*`);
+    shell.exec(`rm -rf ${path.join(__dirname, "..", "public", "exports")}/*`);
   });
 
   router.get("/sync", async (req, res) => {
