@@ -18,8 +18,8 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "@sentry/node": "^6.3.3",
-    "@sentry/tracing": "^6.3.3",
+    "@sentry/node": "^6.3.5",
+    "@sentry/tracing": "^6.3.5",
     "axios": "^0.21.1",
     "capitalize": "^2.0.3",
     "cookie-parser": "^1.4.4",
