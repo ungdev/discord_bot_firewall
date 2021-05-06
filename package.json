@@ -25,7 +25,7 @@
     "cookie-parser": "^1.4.4",
     "debug": "^4.3.1",
     "discord.js": "^12.5.3",
-    "dotenv": "^8.2.0",
+    "dotenv": "^9.0.0",
     "express": "^4.17.1",
     "http-build-query": "^0.7.0",
     "http-errors": "^1.8.0",
