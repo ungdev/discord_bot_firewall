@@ -79,6 +79,10 @@ if (process.env.NAME_OVERRIDE) {
     nameOverride[arrayUserAndName[0]] = arrayUserAndName[1];
   }
 }
+let bannedLoginUsers = [];
+if (process.env.BANNED_LOGIN_USERS) {
+  bannedLoginUsers = process.env.BANNED_LOGIN_USERS.split(",");
+}
 /* eslint-enable no-restricted-syntax */
 /**
  *
@@ -128,25 +132,31 @@ if (process.env.DISCORD_LISTEN === "1") {
 
   if (process.env.WATCHED_MEMBERS) {
     const watchedMembers = process.env.WATCHED_MEMBERS.split(",");
-    client.on("presenceUpdate", async (
-      /** 'module:"discord.js".Presence */ oldPresence,
-      /** 'module:"discord.js".Presence */ newPresence
-    ) => {
-      await presenceUpdate(oldPresence, newPresence, watchedMembers);
-    });
+    client.on(
+      "presenceUpdate",
+      async (
+        /** 'module:"discord.js".Presence */ oldPresence,
+        /** 'module:"discord.js".Presence */ newPresence
+      ) => {
+        await presenceUpdate(oldPresence, newPresence, watchedMembers);
+      }
+    );
   }
 
-  client.on("voiceStateUpdate", async (
-    /** module:"discord.js".VoiceState */ oldState,
-    /** module:"discord.js".VoiceState */ newState
-  ) => {
-    await voiceStateUpdate(
-      oldState,
-      newState,
-      tableauChannelTexteAChannelVocal,
-      tableauChannelsVocauxEnCours
-    );
-  });
+  client.on(
+    "voiceStateUpdate",
+    async (
+      /** module:"discord.js".VoiceState */ oldState,
+      /** module:"discord.js".VoiceState */ newState
+    ) => {
+      await voiceStateUpdate(
+        oldState,
+        newState,
+        tableauChannelTexteAChannelVocal,
+        tableauChannelsVocauxEnCours
+      );
+    }
+  );
 }
 
 client.login(process.env.BOT_TOKEN).catch(console.error);
@@ -171,8 +181,14 @@ if (process.env.WEB_LISTEN === "1") {
 
   if (process.env.SITE_ETU_CLIENT_ID && process.env.SITE_ETU_CLIENT_SECRET) {
     app.use("/connexion", connexion);
-    app.use("/attribuerrole", attribuerRole(client, nameOverride));
-    app.use(`/cron/${process.env.CRON_SECRET}`, cron(client, nameOverride));
+    app.use(
+      "/attribuerrole",
+      attribuerRole(client, nameOverride, bannedLoginUsers)
+    );
+    app.use(
+      `/cron/${process.env.CRON_SECRET}`,
+      cron(client, nameOverride, bannedLoginUsers)
+    );
     app.use("/", home);
   } else {
     app.get("/", (req, res) => {

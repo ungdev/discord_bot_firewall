@@ -14,7 +14,9 @@ module.exports = async function listDynVoc(
         }> dans la catégorie ${
           (
             await msg.guild.channels.resolve(
-              (await msg.guild.channels.resolve(key.toString())).parentID
+              (
+                await msg.guild.channels.resolve(key.toString())
+              ).parentID
             )
           ).name
         }`

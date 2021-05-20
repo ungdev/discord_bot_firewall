@@ -22,9 +22,8 @@ module.exports = async function voiceStateUpdate(
         !(oldState.channel.members.first().id in tableauChannelsVocauxEnCours)
       )
         tableauChannelsVocauxEnCours[oldState.channel.members.first().id] = [];
-      tableauChannelsVocauxEnCours[
-        oldState.channel.members.first().id
-      ] = tableauChannelsVocauxEnCours[oldState.member.id].slice();
+      tableauChannelsVocauxEnCours[oldState.channel.members.first().id] =
+        tableauChannelsVocauxEnCours[oldState.member.id].slice();
       delete tableauChannelsVocauxEnCours[oldState.member.id];
     } else {
       tableauChannelsVocauxEnCours[oldState.member.id].forEach(async (id) => {

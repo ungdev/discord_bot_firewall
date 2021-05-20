@@ -148,23 +148,23 @@ module.exports = async function message(
       const currentUserAnonymousChannels = {};
       let guildMember;
       if (process.env.ANONYMOUS_CHANNELS) {
-        const /** module:"discord.js".Guild */ guild = await msg.client.guilds.resolve(
-            process.env.SERVER_ID
-          );
+        const /** module:"discord.js".Guild */ guild =
+            await msg.client.guilds.resolve(process.env.SERVER_ID);
         guildMember = await getUserFromGuild(msg.author.tag, guild);
         /* eslint-disable no-restricted-syntax, no-await-in-loop */
         for await (const chan of process.env.ANONYMOUS_CHANNELS.split(",")) {
           const tableau = chan.split(":");
           anonymousChannels[tableau[0]] = tableau[1];
-          const /** module:"discord.js".Channel */ channel = await guild.channels.resolve(
-              tableau[1]
-            );
+          const /** module:"discord.js".Channel */ channel =
+              await guild.channels.resolve(tableau[1]);
           if (tableau.length === 2) {
-            if (await channel.permissionsFor(guildMember).has("SEND_MESSAGES")) {
+            if (
+              await channel.permissionsFor(guildMember).has("SEND_MESSAGES")
+            ) {
               currentUserAnonymousChannels[tableau[0]] = tableau[1];
             }
           } else if (
-            await guildMember.roles.cache.get(tableau[2]) !== undefined
+            (await guildMember.roles.cache.get(tableau[2])) !== undefined
           ) {
             currentUserAnonymousChannels[tableau[0]] = tableau[1];
           }
