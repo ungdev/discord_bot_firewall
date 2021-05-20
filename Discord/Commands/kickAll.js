@@ -31,7 +31,9 @@ module.exports = async function kickAll(
       await msg
         .reply(
           ` :white_check_mark: ${compteur} utilisateurs ont été expulsés. Il reste ${
-            (await msg.guild.members.fetch()).size
+            (
+              await msg.guild.members.fetch()
+            ).size
           } membres`
         )
         .catch(console.error);

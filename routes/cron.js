@@ -9,7 +9,8 @@ const assignFromWeb = require("../assignFromWeb");
 
 module.exports = function cron(
   /** module:"discord.js".Client" */ client,
-  nameOverride
+  nameOverride,
+  bannedLoginUsers
 ) {
   router.get("/cleanExports", (req, res) => {
     res.send("ok");
@@ -52,7 +53,7 @@ module.exports = function cron(
           `${utils.baseUrl}/api/public/users?${httpBuildQuery(requete)}`
         );
         for (const etuUser of response.data.data) {
-          if (etuUser.discordTag) {
+          if (etuUser.discordTag && !bannedLoginUsers.includes(etuUser.login)) {
             assignFromWeb
               .etuToDiscord(etuUser, etuUser.discordTag, guild, nameOverride)
               .catch(console.error);

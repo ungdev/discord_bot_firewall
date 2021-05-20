@@ -155,17 +155,15 @@ module.exports.toutesPermissionsOverwrite = function toutesPermissionsOverwrite(
   return createOverwrite(toutesPermissions, ouiOuNonOuNull);
 };
 
-module.exports.permissionsLireEcrireBasiquesOverwrite = function permissionsLireEcrireBasiquesOverwrite(
-  ouiOuNonOuNull
-) {
-  return createOverwrite(permissionsLireEcrireBasiques, ouiOuNonOuNull);
-};
+module.exports.permissionsLireEcrireBasiquesOverwrite =
+  function permissionsLireEcrireBasiquesOverwrite(ouiOuNonOuNull) {
+    return createOverwrite(permissionsLireEcrireBasiques, ouiOuNonOuNull);
+  };
 
-module.exports.permissionsLireEcrireProfOverwrite = function permissionsLireEcrireProfOverwrite(
-  ouiOuNonOuNull
-) {
-  return createOverwrite(permissionsLireEcrireProf, ouiOuNonOuNull);
-};
+module.exports.permissionsLireEcrireProfOverwrite =
+  function permissionsLireEcrireProfOverwrite(ouiOuNonOuNull) {
+    return createOverwrite(permissionsLireEcrireProf, ouiOuNonOuNull);
+  };
 
 module.exports.getUserFromGuild = async function getUserFromGuild(
   /** string */ discordUsername,

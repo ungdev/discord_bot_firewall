@@ -6,7 +6,8 @@ const assignFromWeb = require("../assignFromWeb");
 
 module.exports = function attribuerRole(
   /** module:"discord.js".Client" */ client,
-  nameOverride
+  nameOverride,
+  bannedLoginUsers
 ) {
   router.get("/", (req, res) => {
     /** On vérifie qu'on a toutes les infos du formulaire */
@@ -33,14 +34,23 @@ module.exports = function attribuerRole(
             /** Si on arrive à savoir si l'user est étu ou pas */
             if (typeof membreSiteEtu.isStudent !== "undefined") {
               const guild = client.guilds.cache.get(process.env.SERVER_ID);
-              res.send(
-                await assignFromWeb.etuToDiscord(
-                  membreSiteEtu,
-                  req.query.discordUsername,
-                  guild,
-                  nameOverride
-                )
-              );
+              if (!bannedLoginUsers.includes(membreSiteEtu.login)) {
+                res.send(
+                  await assignFromWeb.etuToDiscord(
+                    membreSiteEtu,
+                    req.query.discordUsername,
+                    guild,
+                    nameOverride
+                  )
+                );
+              } else {
+                guild.channels
+                  .resolve(process.env.CHANNEL_ADMIN_ID)
+                  .send(
+                    `:rotating_light: L'utilisateur banni ${membreSiteEtu.login} a essayé de se connecter avec l'identifiant ${req.query.discordUsername}`
+                  );
+                res.send("Connexion impossible car vous avez été banni.");
+              }
             } else res.send(utils.texteBug);
             /** Si le token n'a pas pu être validé (tentative de hacking, ...), affiche un message */
           })

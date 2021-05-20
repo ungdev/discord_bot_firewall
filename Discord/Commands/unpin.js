@@ -9,9 +9,9 @@ module.exports = async function unpin(
       )
       .catch(console.error);
   else {
-    const message = await (await msg.channel.messages.fetchPinned()).get(
-      parametres[2]
-    );
+    const message = await (
+      await msg.channel.messages.fetchPinned()
+    ).get(parametres[2]);
     if (!message)
       msg
         .reply(
