@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@sentry/node": "^6.4.1",
-    "@sentry/tracing": "^6.4.1",
+    "@sentry/tracing": "^6.10.0",
     "axios": "^0.21.1",
     "capitalize": "^2.0.3",
     "cookie-parser": "^1.4.4",
