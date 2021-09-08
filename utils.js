@@ -28,7 +28,9 @@ module.exports.roleValide = async function roleValide(/** string */ roleName) {
     roleName.startsWith("LINGUA") ||
     roleName.startsWith("LX") ||
     roleName.startsWith("UX") ||
-    roleName.startsWith("ATDOC")
+    roleName.startsWith("ATDOC") ||
+    roleName.startsWith("APPTC") ||
+    roleName.startsWith("SST")
   )
     return false;
   if (
