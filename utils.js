@@ -18,7 +18,8 @@ module.exports.roleValide = async function roleValide(/** string */ roleName) {
   if (
     roleName === "CVF2" ||
     roleName.startsWith("FB") ||
-    roleName.startsWith("FA")
+    roleName.startsWith("FA") ||
+    roleName.startsWith("FC")
   )
     return false;
   if (roleName === "FOS4") return false;
