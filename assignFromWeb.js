@@ -47,6 +47,7 @@ module.exports.etuToDiscord = async function etuToDiscord(
         /** Pour tous les noms de rôle on récupère l'id du rôle et on l'ajoute à la liste des id de rôles à attribuer */
         tableauChainesToRoles.forEach(async (chaine) => {
           if (await utils.roleValide(chaine.toUpperCase())) {
+            chaine = await utils.renameRole(chaine.toUpperCase());
             const role = await roles.find(
               (roleToTest) =>
                 roleToTest.name.toUpperCase() ===
