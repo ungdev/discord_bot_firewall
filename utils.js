@@ -19,7 +19,9 @@ module.exports.roleValide = async function roleValide(/** string */ roleName) {
     roleName === "CVF2" ||
     roleName.startsWith("FB") ||
     roleName.startsWith("FA") ||
-    roleName.startsWith("FC")
+    roleName.startsWith("FC") ||
+    roleName.startsWith("EX") ||
+    roleName.startsWith("DD")
   )
     return false;
   if (roleName === "FOS4") return false;
@@ -62,6 +64,14 @@ module.exports.roleValide = async function roleValide(/** string */ roleName) {
   }
 
   return true;
+};
+
+module.exports.renameRole = async function renameRole(/** string */ roleName) {
+  if (roleName.endsWith("A")) {
+    return roleName.substr(0, roleName.length - 1);
+  }
+
+  return roleName;
 };
 
 module.exports.author =
