@@ -76,6 +76,8 @@ module.exports.renameRole = async function renameRole(/** string */ roleName) {
   if (roleName.startsWith("LC")) return "LC";
   if (roleName.startsWith("KO")) return "KO";
 
+  if (roleName.startsWith("ISI_C")) return "ISI_C";
+
   if (roleName === "GE21R") return "GE21";
 
   return roleName;
