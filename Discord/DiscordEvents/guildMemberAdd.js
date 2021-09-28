@@ -1,5 +1,5 @@
 module.exports = async function guildMemberAdd(
-  /** 'module:"discord.js".GuildMember */ member
+  /** 'import("discord.js").GuildMember */ member
 ) {
   member
     .send(

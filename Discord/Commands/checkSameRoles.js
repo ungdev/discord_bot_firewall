@@ -1,7 +1,7 @@
 module.exports = async function checkSameRoles(
-  /** module:"discord.js".Message */ msg
+  /** import("discord.js").Message */ msg
 ) {
-  const roles = (await msg.guild.roles.fetch()).cache;
+  const roles = (await msg.guild.roles.fetch());
   const rolesSignales = [];
   roles.forEach((roleEnCours) => {
     const found = roles.find(
@@ -20,7 +20,5 @@ module.exports = async function checkSameRoles(
 
   await Promise.all(rolesSignales);
 
-  msg.channel
-    .send(":white_check_mark: La commande est terminée")
-    .catch(console.error);
+  msg.react('✅').catch(console.error);
 };

@@ -1,16 +1,16 @@
-var input = document.querySelector('#discord-username');
+const input = document.querySelector("#discord-username");
 
 if (input) {
-  var maskedInputController = vanillaTextMask.maskInput({
+  const maskedInputController = vanillaTextMask.maskInput({
     inputElement: input,
     guide: false,
     mask: function(value, params) {
-      var index = value.indexOf('#');
+      const index = value.indexOf("#");
 
-      var result = new Array(index !== -1 ? index : value.length).fill(/[^#]/);
+      let result = new Array(index !== -1 ? index : value.length).fill(/[^#]/);
 
       if (index !== -1) {
-        result.push('#');
+        result.push("#");
 
         if (value.length - index - 1 > 0) {
           result = result.concat(
@@ -24,16 +24,16 @@ if (input) {
   });
 }
 
-var rgpdCheckbox = document.querySelector('#checkRGPD');
-var submitButton = document.querySelector('#submit-button');
+const rgpdCheckbox = document.querySelector("#checkRGPD");
+const submitButton = document.querySelector("#submit-button");
 
 if (rgpdCheckbox && submitButton) {
-  var handleUpdate = () => {
+  const handleUpdate = () => {
     if (rgpdCheckbox && submitButton) {
       if (rgpdCheckbox.checked) {
-        submitButton.removeAttribute('disabled');
+        submitButton.removeAttribute("disabled");
       } else {
-        submitButton.setAttribute('disabled', 'true');
+        submitButton.setAttribute("disabled", "true");
       }
     }
   };

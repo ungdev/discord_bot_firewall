@@ -4,13 +4,13 @@ const path = require("path");
 const utils = require("../../utils");
 
 module.exports = async function exportChannel(
-  /** module:"discord.js".Message */ msg
+  /** import("discord.js").Message */ msg
 ) {
   if (
     !process.env.DISCORD_CHAT_EXPORT_PATH ||
     !process.env.DISCORD_CHAT_EXPORTER_EXE_PATH
   ) {
-    msg.reply(
+    await msg.reply(
       " :warning: L'exécution actuelle ne prend pas en charge l'export."
     );
   } else if (

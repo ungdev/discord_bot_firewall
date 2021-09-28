@@ -1,5 +1,5 @@
 module.exports = async function unpin(
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").Message */ msg,
   /** Array<String> */ parametres
 ) {
   if (parametres.length < 3)
@@ -19,5 +19,6 @@ module.exports = async function unpin(
         )
         .catch(console.error);
     else message.unpin().catch(console.error);
+    msg.react('✅').catch(console.error);
   }
 };

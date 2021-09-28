@@ -3,17 +3,17 @@
 const discordUtils = require("../discordUtils");
 
 module.exports = async function joinVocal(
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").Message */ msg,
   tableauChannelTexteAChannelVocal,
   tableauChannelsVocauxEnCours
 ) {
-  if (!msg.member.voice.channelID)
+  if (!msg.member.voice.channelId)
     msg
       .reply(
         " :warning: Erreur ! Vous devez déjà être dans un canal vocal pour exécuter cette commande, sans quoi je ne pourrais vous déplacer automatiquement dans le nouveau canal vocal !"
       )
       .catch(console.error);
-  else if (!msg.channel.parentID)
+  else if (!msg.channel.parentId)
     msg
       .reply(
         " :warning: Erreur ! Vous devez taper cette commande dans un channel texte dans une catégorie."
@@ -26,8 +26,8 @@ module.exports = async function joinVocal(
       )
       .catch(console.error);
   } else if (
-    (await msg.member.fetch()).roles.cache
-      .keyArray()
+    [(await msg.member.fetch()).roles.cache
+      .keys()]
       .includes(process.env.ROLE_ETUDIANT_ID)
   ) {
     if (
@@ -43,24 +43,16 @@ module.exports = async function joinVocal(
     } else if (!(msg.channel.id in tableauChannelTexteAChannelVocal)) {
       msg.guild.channels
         .create(`${msg.channel.name.toLowerCase()} - etudes`, {
-          parent: msg.channel.parentID,
-          type: "voice",
-          userLimit: 99,
-          permissionOverwrites: [
-            {
-              id: msg.guild.roles.everyone,
-              deny: discordUtils.toutesPermissions,
-            },
-            {
-              id: (await msg.guild.roles.fetch()).cache.find(
-                (role) =>
-                  role.name.toUpperCase() === msg.channel.name.toUpperCase()
-              ).id,
-              allow: discordUtils.permissionsLireEcrireBasiques,
-            },
-          ],
+          parent: msg.channel.parentId,
+          type: "GUILD_VOICE",
+          userLimit: 99
         })
-        .then((channel) => {
+        .then(async (channel) => {
+          await channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
+          await channel.permissionOverwrites.edit((await msg.guild.roles.fetch()).find(
+            (role) =>
+              role.name.toUpperCase() === msg.channel.name.toUpperCase()
+          ).id, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
           if (!(msg.author.id in tableauChannelsVocauxEnCours))
             tableauChannelsVocauxEnCours[msg.author.id] = [];
           tableauChannelsVocauxEnCours[msg.author.id].push(channel.id);
@@ -74,12 +66,12 @@ module.exports = async function joinVocal(
         .setChannel(tableauChannelTexteAChannelVocal[msg.channel.id])
         .catch(console.error);
   } else if (
-    (await msg.member.fetch()).roles.cache
-      .keyArray()
+    [(await msg.member.fetch()).roles.cache
+      .keys()]
       .includes(process.env.ROLE_ENSEIGNANT_ID) &&
     process.env.VACANCES === "1" &&
-    !(await msg.member.fetch()).roles.cache
-      .keyArray()
+    ![(await msg.member.fetch()).roles.cache
+      .keys()]
       .includes(process.env.ROLE_VACANCES_ENSEIGNANT_ID)
   ) {
     msg
@@ -88,9 +80,8 @@ module.exports = async function joinVocal(
       )
       .catch(console.error);
   } else if (
-    (await msg.member.fetch()).roles.cache
-      .keyArray()
-      .includes(process.env.ROLE_ENSEIGNANT_ID)
+    [(await msg.member.fetch()).roles.cache
+      .keys()].includes(process.env.ROLE_ENSEIGNANT_ID)
   ) {
     let nomChannel;
     if (!msg.member.nickname) nomChannel = msg.member.user.username;
@@ -98,46 +89,20 @@ module.exports = async function joinVocal(
     if (msg.mentions.roles.first())
       nomChannel = msg.mentions.roles.first().name.toLowerCase();
     nomChannel += "-cours";
-    let Permissions;
-    if (msg.mentions.roles.first()) {
-      Permissions = [
-        {
-          id: msg.guild.roles.everyone,
-          deny: discordUtils.toutesPermissions,
-        },
-        {
-          id: msg.mentions.roles.first().id,
-          allow: discordUtils.permissionsLireEcrireBasiques,
-        },
-        {
-          id: process.env.ROLE_ENSEIGNANT_ID,
-          allow: discordUtils.permissionsLireEcrireProf,
-        },
-      ];
-    } else {
-      Permissions = [
-        {
-          id: msg.guild.roles.everyone,
-          deny: discordUtils.toutesPermissions,
-        },
-        {
-          id: process.env.ROLE_ENSEIGNANT_ID,
-          allow: discordUtils.permissionsLireEcrireProf,
-        },
-        {
-          id: process.env.ROLE_ETUDIANT_ID,
-          allow: discordUtils.permissionsLireEcrireBasiques,
-        },
-      ];
-    }
     msg.guild.channels
       .create(`${nomChannel} - vocal`, {
         parent: process.env.CATEGORY_AMPHI,
-        type: "voice",
-        userLimit: 99,
-        permissionOverwrites: Permissions,
+        type: "GUILD_VOICE",
+        userLimit: 99
       })
       .then((channel) => {
+        channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
+        channel.permissionOverwrites.edit(process.env.ROLE_ENSEIGNANT_ID, discordUtils.permissionsLireEcrireProfOverwrite(true));
+        if (msg.mentions.roles.first()) {
+          channel.permissionOverwrites.edit(msg.mentions.roles.first(), discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
+        } else {
+          channel.permissionOverwrites.edit(process.env.ROLE_ETUDIANT_ID, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
+        }
         if (!(msg.member.id in tableauChannelsVocauxEnCours))
           tableauChannelsVocauxEnCours[msg.member.id] = [];
         tableauChannelsVocauxEnCours[msg.member.id].push(channel.id);
@@ -147,9 +112,15 @@ module.exports = async function joinVocal(
     msg.guild.channels
       .create(nomChannel, {
         parent: process.env.CATEGORY_AMPHI,
-        permissionOverwrites: Permissions,
       })
       .then(async (channel) => {
+        await channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
+        await channel.permissionOverwrites.edit(process.env.ROLE_ENSEIGNANT_ID, discordUtils.permissionsLireEcrireProfOverwrite(true));
+        if (msg.mentions.roles.first()) {
+          await channel.permissionOverwrites.edit(msg.mentions.roles.first(), discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
+        } else {
+          await channel.permissionOverwrites.edit(process.env.ROLE_ETUDIANT_ID, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
+        }
         if (!(msg.member.id in tableauChannelsVocauxEnCours))
           tableauChannelsVocauxEnCours[msg.member.id] = [];
         tableauChannelsVocauxEnCours[msg.member.id].push(channel.id);
@@ -179,7 +150,7 @@ module.exports = async function joinVocal(
                 .catch(console.error);
               const channelEtudiants = msg.guild.channels.cache.find(
                 (chan) =>
-                  chan.type === "text" &&
+                  chan.type === "GUILD_TEXT" &&
                   chan.name.toLowerCase() ===
                     msg.mentions.roles.first().name.toLowerCase()
               );

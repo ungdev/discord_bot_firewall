@@ -1,6 +1,6 @@
 module.exports = async function presenceUpdate(
-  /** 'module:"discord.js".Presence */ oldPresence,
-  /** 'module:"discord.js".Presence */ newPresence,
+  /** 'import("discord.js").Presence */ oldPresence,
+  /** 'import("discord.js").Presence */ newPresence,
   watchedMembers
 ) {
   if (watchedMembers.includes(newPresence.user.tag)) {

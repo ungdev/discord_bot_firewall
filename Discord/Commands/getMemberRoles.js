@@ -1,8 +1,8 @@
 module.exports = async function getMemberRoles(
-  /** module:"discord.js".Message */ msg
+  /** import("discord.js").Message */ msg
 ) {
   if (!msg.mentions.members.first()) {
-    msg.reply(
+    await msg.reply(
       ":warning: La syntaxe de cette commande est `getMemberRoles @membre`"
     );
   } else {

@@ -5,7 +5,7 @@ const utils = require("../utils");
 const assignFromWeb = require("../assignFromWeb");
 
 module.exports = function attribuerRole(
-  /** module:"discord.js".Client" */ client,
+  /** import("discord.js").Client" */ client,
   nameOverride,
   bannedLoginUsers
 ) {

@@ -1,9 +1,11 @@
+const { Permissions } = require("discord.js");
+
 module.exports = async function setRoles(
-  /** module:"discord.js".Message */ msg
+  /** import("discord.js").Message */ msg
 ) {
-  if ((await msg.member.fetch()).hasPermission("ADMINISTRATOR")) {
+  if ((await msg.member.fetch()).permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
     if (!msg.mentions.members.first()) {
-      msg.reply(
+      await msg.reply(
         ":warning: La syntaxe de cette commande est `setRoles @membre @role1 @role2 @role3 ... Si aucun rôle n'est précisé, efface tous les rôles de l'utilisateur.`"
       );
     } else {
@@ -11,9 +13,7 @@ module.exports = async function setRoles(
         .first()
         .roles.set(msg.mentions.roles)
         .catch(console.error);
-      msg.channel
-        .send(":white_check_mark: L'opération a été réalisée avec succès.")
-        .catch(console.error);
+      msg.react('✅').catch(console.error);
     }
   } else {
     msg

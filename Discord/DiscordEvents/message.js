@@ -25,6 +25,8 @@ const listAnon = require("../Commands/listAnon");
 const sendAnon = require("../Commands/sendAnon");
 const { getUserFromGuild } = require("../discordUtils");
 
+const { Permissions } = require("discord.js");
+
 const commandesAdmin = [
   "delue",
   "delues",
@@ -47,7 +49,7 @@ const commandesAdmin = [
 const commandesPubliques = ["export", "joinvocal", "author", "pin", "unpin"];
 
 module.exports = async function message(
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").Message */ msg,
   tableauChannelTexteAChannelVocal,
   tableauChannelsVocauxEnCours
 ) {
@@ -115,7 +117,7 @@ module.exports = async function message(
           break;
       }
     }
-    if (msg.channel.type !== "dm") {
+    if (msg.channel.type !== "DM") {
       switch (parametres[1].toLowerCase()) {
         case "export":
           await exportChannel(msg);
@@ -143,23 +145,23 @@ module.exports = async function message(
           break;
       }
     }
-    if (msg.channel.type === "dm") {
+    if (msg.channel.type === "DM") {
       const anonymousChannels = {};
       const currentUserAnonymousChannels = {};
       let guildMember;
       if (process.env.ANONYMOUS_CHANNELS) {
-        const /** module:"discord.js".Guild */ guild =
+        const /** import("discord.js").Guild */ guild =
             await msg.client.guilds.resolve(process.env.SERVER_ID);
         guildMember = await getUserFromGuild(msg.author.tag, guild);
         /* eslint-disable no-restricted-syntax, no-await-in-loop */
         for await (const chan of process.env.ANONYMOUS_CHANNELS.split(",")) {
           const tableau = chan.split(":");
           anonymousChannels[tableau[0]] = tableau[1];
-          const /** module:"discord.js".Channel */ channel =
+          const /** import("discord.js").Channel */ channel =
               await guild.channels.resolve(tableau[1]);
           if (tableau.length === 2) {
             if (
-              await channel.permissionsFor(guildMember).has("SEND_MESSAGES")
+              await channel.permissionsFor(guildMember).has(Permissions.FLAGS.SEND_MESSAGES)
             ) {
               currentUserAnonymousChannels[tableau[0]] = tableau[1];
             }
@@ -182,9 +184,6 @@ module.exports = async function message(
           break;
         case "listanon":
           await listAnon(msg, currentUserAnonymousChannels);
-          break;
-        case "helpanon":
-          await discordUtils.helpAnon(msg);
           break;
         case "author":
           msg.channel.send(utils.author).catch(console.error);

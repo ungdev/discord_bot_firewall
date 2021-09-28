@@ -1,5 +1,5 @@
 module.exports = async function getRoles(
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").Message */ msg,
   /** Array<String> */ parametres
 ) {
   if (parametres.length !== 3) {
@@ -15,7 +15,7 @@ module.exports = async function getRoles(
       )
       .then(async () => {
         let compteur = 0;
-        (await msg.guild.roles.fetch()).cache.forEach((role) => {
+        (await msg.guild.roles.fetch()).forEach((role) => {
           if (role.members.size.toString() === parametres[2].toString()) {
             msg.channel
               .send(

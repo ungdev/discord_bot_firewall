@@ -1,8 +1,10 @@
+const { Permissions } = require("discord.js");
+
 module.exports = async function kickAll(
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").Message */ msg,
   /** Array<String> */ parametres
 ) {
-  if ((await msg.member.fetch()).hasPermission("ADMINISTRATOR")) {
+  if ((await msg.member.fetch()).permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
     if (parametres.length < 3)
       msg
         .reply(
@@ -20,7 +22,7 @@ module.exports = async function kickAll(
       );
       let compteur = 0;
       (await msg.guild.members.fetch()).forEach((membre) => {
-        if (!membre.hasPermission("ADMINISTRATOR")) {
+        if (!membre.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
           membre.kick("commande kickall").catch(console.error);
           compteur += 1;
         } else
