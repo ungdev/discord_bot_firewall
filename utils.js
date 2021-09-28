@@ -28,7 +28,7 @@ module.exports.roleValide = async function roleValide(/** string */ roleName) {
   if (roleName === "EPSEM") return false;
   if (
     roleName.startsWith("NPML") ||
-    roleName.startsWith("LV2BI") ||
+    roleName.startsWith("LV2B1") ||
     roleName.startsWith("LINGUA") ||
     roleName.startsWith("LX") ||
     roleName.startsWith("UX") ||
