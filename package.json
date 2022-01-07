@@ -31,7 +31,7 @@
     "http-errors": "^1.8.0",
     "morgan": "^1.10.0",
     "serve-index": "^1.9.1",
-    "shelljs": "^0.8.4",
+    "shelljs": "^0.8.5",
     "twig": "^1.15.4",
     "uniqid": "^5.4.0"
   },
