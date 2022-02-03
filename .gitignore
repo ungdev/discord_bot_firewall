@@ -1,8 +1,8 @@
 .env
-/node_modules
+node_modules/
 docker-compose.yaml
 /log/
 .env.local*
 
-.idea
-.vscode
+.idea/
+.vscode/
