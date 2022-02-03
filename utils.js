@@ -52,14 +52,7 @@ module.exports.roleValide = async function roleValide(/** string */ roleName) {
     roleName.startsWith("PMHT") ||
     roleName.startsWith("PMEE") ||
     roleName.startsWith("PMEC") ||
-    roleName.startsWith("PMME") ||
-    roleName.startsWith("PEXX") ||
-    roleName.startsWith("PEEE") ||
-    roleName.startsWith("PEEC") ||
-    roleName.startsWith("PETM") ||
-    roleName.startsWith("PEME") ||
-    roleName.startsWith("PEHT") ||
-    roleName.startsWith("PECS")
+    roleName.startsWith("PMME")
   ) {
     return false;
   }
@@ -79,7 +72,19 @@ module.exports.renameRole = async function renameRole(/** string */ roleName) {
 
   if (roleName.startsWith("ISI_C")) return "ISI_C";
 
-  if (roleName === "GE21R") return "GE21";
+  if (
+    roleName.startsWith("PEXX") ||
+    roleName.startsWith("PEEE") ||
+    roleName.startsWith("PEEC") ||
+    roleName.startsWith("PETM") ||
+    roleName.startsWith("PEME") ||
+    roleName.startsWith("PEHT") ||
+    roleName.startsWith("PECS")
+  ) {
+    return "PE"
+  }
+
+  //if (roleName === "GE21R") return "GE21";
 
   return roleName;
 };
