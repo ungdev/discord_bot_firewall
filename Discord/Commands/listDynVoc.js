@@ -1,5 +1,5 @@
 module.exports = async function listDynVoc(
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").Message */ msg,
   tableauChannelTexteAChannelVocal
 ) {
   msg.channel
@@ -16,7 +16,7 @@ module.exports = async function listDynVoc(
             await msg.guild.channels.resolve(
               (
                 await msg.guild.channels.resolve(key.toString())
-              ).parentID
+              ).parentId
             )
           ).name
         }`

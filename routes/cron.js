@@ -8,7 +8,7 @@ const assignFromWeb = require("../assignFromWeb");
 /* eslint-disable no-restricted-syntax, no-await-in-loop */
 
 module.exports = function cron(
-  /** module:"discord.js".Client" */ client,
+  /** import("discord.js").Client" */ client,
   nameOverride,
   bannedLoginUsers
 ) {
@@ -29,11 +29,10 @@ module.exports = function cron(
       client_id: process.env.SITE_ETU_CLIENT_ID,
       client_secret: process.env.SITE_ETU_CLIENT_SECRET,
     };
-    let accessToken = "";
     const requestToken = await axios.post(
       `${utils.baseUrl}/api/oauth/token?${httpBuildQuery(donnees)}`
     );
-    accessToken = requestToken.data.access_token.toString();
+    let accessToken = requestToken.data.access_token.toString();
     if (accessToken !== "") {
       const requete = {
         wantsJoinUTTDiscord: true,

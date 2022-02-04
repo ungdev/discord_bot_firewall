@@ -1,25 +1,26 @@
 module.exports = async function delSameRoles(
-  /** module:"discord.js".Message */ msg
+  /** import("discord.js").Message */ msg
 ) {
-  const roles = (await msg.guild.roles.fetch()).cache;
+  const roles = (await msg.guild.roles.fetch());
+  let deletedRoles = [];
   roles.forEach(async (roleEnCours) => {
-    const rolesActualises = await (await msg.guild.roles.fetch()).cache;
+    const rolesActualises = await (await msg.guild.roles.fetch());
     const found = rolesActualises.find(
       (role) =>
-        roleEnCours[1].name.toUpperCase() === role.name.toUpperCase() &&
-        roleEnCours[1].id !== role.id
+        roleEnCours.name.toUpperCase() === role.name.toUpperCase() &&
+        roleEnCours.id !== role.id &&
+        !deletedRoles.includes(roleEnCours.name)
     );
     if (found) {
       await msg.channel
         .send(
-          `Le role ${roleEnCours[1].name} existe en plusieurs fois et va être effacé.`
+          `Le role ${roleEnCours.name} existe en plusieurs fois et va être effacé.`
         )
         .catch(console.error);
-      await roleEnCours[1].delete("En double").catch(console.log);
+      deletedRoles.push(roleEnCours.name);
+      await roleEnCours.delete("En double").catch(console.log);
     }
   });
 
-  msg.channel
-    .send(":white_check_mark: La commande est terminée")
-    .catch(console.error);
+  msg.react('✅').catch(console.error);
 };

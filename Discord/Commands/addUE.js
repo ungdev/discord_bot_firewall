@@ -1,7 +1,7 @@
 const discordUtils = require("../discordUtils");
 
 module.exports = async function addUE(
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").Message */ msg,
   /** Array<String> */ parametres
 ) {
   /** S'il n'y a pas 3 paramètres dont la mention d'un role ni de ce qui doit être créé */
@@ -24,19 +24,11 @@ module.exports = async function addUE(
     ) {
       msg.guild.channels
         .create(msg.mentions.roles.first().name.toLowerCase(), {
-          parent: parametres[3],
-          permissionOverwrites: [
-            {
-              id: msg.guild.roles.everyone,
-              deny: discordUtils.toutesPermissions,
-            },
-            {
-              id: msg.mentions.roles.first().id,
-              allow: discordUtils.permissionsLireEcrireBasiques,
-            },
-          ],
+          parent: parametres[3]
         })
         .then((channel) => {
+          channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
+          channel.permissionOverwrites.edit(msg.mentions.roles.first().id, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
           channel.send(
             `Bonjour <@&${
               msg.mentions.roles.first().id
@@ -53,23 +45,14 @@ module.exports = async function addUE(
       msg.guild.channels
         .create(`${msg.mentions.roles.first().name.toLowerCase()} - vocal`, {
           parent: parametres[3],
-          type: "voice",
-          userLimit: 99,
-          permissionOverwrites: [
-            {
-              id: msg.guild.roles.everyone,
-              deny: discordUtils.toutesPermissions,
-            },
-            {
-              id: msg.mentions.roles.first().id,
-              allow: discordUtils.permissionsLireEcrireBasiques,
-            },
-          ],
-        })
+          type: "GUILD_VOICE",
+          userLimit: 99
+        }).then((channel => {
+        channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
+        channel.permissionOverwrites.edit(msg.mentions.roles.first().id, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
+      }))
         .catch(console.error);
     }
-    msg.channel
-      .send(":white_check_mark: Si la catégorie existe, c'est fait !")
-      .catch(console.error);
+    msg.react('✅').catch(console.error);
   }
 };

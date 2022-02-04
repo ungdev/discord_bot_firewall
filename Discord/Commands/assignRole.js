@@ -1,15 +1,17 @@
+const { Permissions } = require("discord.js");
+
 module.exports = async function assignRole(
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").Message */ msg,
   /** Array<String> */ parametres
 ) {
-  if ((await msg.member.fetch()).hasPermission("ADMINISTRATOR")) {
+  if ((await msg.member.fetch()).permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
     if (
       !msg.mentions.members.first() ||
       !msg.mentions.roles.first() ||
       !parametres[4] ||
       !["ajouter", "supprimer"].includes(parametres[4])
     ) {
-      msg.reply(
+      await msg.reply(
         ":warning: La syntaxe de cette commande est `assignRole @membre @role ajouter|supprimer`"
       );
     } else {
@@ -23,9 +25,7 @@ module.exports = async function assignRole(
           .first()
           .roles.remove(msg.mentions.roles.first())
           .catch(console.error);
-      msg.channel
-        .send(":white_check_mark: L'opération a été réalisée avec succès.")
-        .catch(console.error);
+      msg.react('✅').catch(console.error);
     }
   } else {
     msg

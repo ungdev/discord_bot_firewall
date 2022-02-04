@@ -1,5 +1,5 @@
 module.exports = async function getZeroOne(
-  /** module:"discord.js".Message */ msg
+  /** import("discord.js").Message */ msg
 ) {
   msg.channel
     .send(
@@ -7,7 +7,7 @@ module.exports = async function getZeroOne(
     )
     .then(async () => {
       let compteur = 0;
-      (await msg.guild.roles.fetch()).cache.forEach((role) => {
+      (await msg.guild.roles.fetch()).forEach((role) => {
         if (role.members.size === 0 || role.members.size === 1) {
           msg.channel
             .send(`Le rôle ${role.name} a ${role.members.size} utilisateurs.`)

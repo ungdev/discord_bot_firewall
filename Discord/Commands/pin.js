@@ -1,5 +1,5 @@
 module.exports = async function pin(
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").Message */ msg,
   /** Array<String> */ parametres
 ) {
   if (parametres.length < 3)
@@ -14,6 +14,9 @@ module.exports = async function pin(
           " :warning: Votre message n'a pas pu être trouvé dans ce channel. Vous devez spécifier l'ID du message."
         )
         .catch(console.error);
-    else message.pin().catch(console.error);
+    else {
+      message.pin().catch(console.error);
+      msg.react('✅').catch(console.error);
+    }
   }
 };

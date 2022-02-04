@@ -1,7 +1,7 @@
 const utils = require("../discordUtils");
 
 module.exports = async function delUE(
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").Message */ msg,
   /** Array<String> */ parametres
 ) {
   /** Suppression d'une UE en indiquant son channel texte */
@@ -19,5 +19,6 @@ module.exports = async function delUE(
       .catch(console.error);
   } else {
     await utils.delUE(msg.mentions.channels.first(), msg, parametres[3]);
+    msg.react('✅').catch(console.error);
   }
 };

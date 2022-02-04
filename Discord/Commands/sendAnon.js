@@ -1,13 +1,13 @@
 const logFile = require("../../logFile");
 
 module.exports = async function sendAnon(
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").Message */ msg,
   parametres,
   currentUserAnonymousChannels,
   guildMember
 ) {
   if (parametres.length <= 3) {
-    msg.reply(
+    await msg.reply(
       `La commande est sous la forme ${process.env.BOT_PREFIX} sendAnon channel message`
     );
   } else if (
@@ -25,7 +25,7 @@ module.exports = async function sendAnon(
         logFile.logToFile(
           `Le message ${msgAnon.id} a été envoyé par ${msg.author.tag} alias ${guildMember.displayName} sur le canal ${parametres[2]}.`
         );
-        msg.reply("Message envoyé !");
+        msg.react('✅').catch(console.error);
       });
   }
 };

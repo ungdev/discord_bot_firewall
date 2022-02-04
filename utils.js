@@ -28,6 +28,7 @@ module.exports.roleValide = async function roleValide(/** string */ roleName) {
   if (roleName === "EPSEM") return false;
   if (
     roleName.startsWith("NPML") ||
+    roleName.startsWith("LV2B1") ||
     roleName.startsWith("LINGUA") ||
     roleName.startsWith("LX") ||
     roleName.startsWith("UX") ||
@@ -51,14 +52,7 @@ module.exports.roleValide = async function roleValide(/** string */ roleName) {
     roleName.startsWith("PMHT") ||
     roleName.startsWith("PMEE") ||
     roleName.startsWith("PMEC") ||
-    roleName.startsWith("PMME") ||
-    roleName.startsWith("PEXX") ||
-    roleName.startsWith("PEEE") ||
-    roleName.startsWith("PEEC") ||
-    roleName.startsWith("PETM") ||
-    roleName.startsWith("PEME") ||
-    roleName.startsWith("PEHT") ||
-    roleName.startsWith("PECS")
+    roleName.startsWith("PMME")
   ) {
     return false;
   }
@@ -67,9 +61,30 @@ module.exports.roleValide = async function roleValide(/** string */ roleName) {
 };
 
 module.exports.renameRole = async function renameRole(/** string */ roleName) {
-  if (roleName.endsWith("A")) {
-    return roleName.substr(0, roleName.length - 1);
+  if (roleName.endsWith("A")) return roleName.substr(0, roleName.length - 1);
+
+  if (roleName.startsWith("LS")) return "LS";
+  if (roleName.startsWith("LE")) return "LE";
+  if (roleName.startsWith("IT")) return "IT";
+  if (roleName.startsWith("LG")) return "LG";
+  if (roleName.startsWith("LC")) return "LC";
+  if (roleName.startsWith("KO")) return "KO";
+
+  if (roleName.startsWith("ISI_C")) return "ISI_C";
+
+  if (
+    roleName.startsWith("PEXX") ||
+    roleName.startsWith("PEEE") ||
+    roleName.startsWith("PEEC") ||
+    roleName.startsWith("PETM") ||
+    roleName.startsWith("PEME") ||
+    roleName.startsWith("PEHT") ||
+    roleName.startsWith("PECS")
+  ) {
+    return "PE"
   }
+
+  //if (roleName === "GE21R") return "GE21";
 
   return roleName;
 };

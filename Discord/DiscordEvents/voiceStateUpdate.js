@@ -3,21 +3,21 @@
 const utils = require("../../utils");
 
 module.exports = async function voiceStateUpdate(
-  /** module:"discord.js".VoiceState */ oldState,
-  /** module:"discord.js".VoiceState */ newState,
+  /** import("discord.js").VoiceState */ oldState,
+  /** import("discord.js").VoiceState */ newState,
   tableauChannelTexteAChannelVocal,
   tableauChannelsVocauxEnCours
 ) {
   if (
-    oldState.channelID &&
-    oldState.channelID !== newState.channelID &&
-    oldState.channelID !== process.env.CHANNEL_CREATION_AMPHI &&
+    oldState.channelId &&
+    oldState.channelId !== newState.channelId &&
+    oldState.channelId !== process.env.CHANNEL_CREATION_AMPHI &&
     oldState.member.id in tableauChannelsVocauxEnCours &&
     tableauChannelsVocauxEnCours[oldState.member.id].includes(
-      oldState.channelID
+      oldState.channelId
     )
   ) {
-    if (oldState.channel.members.keyArray().length > 0) {
+    if ([oldState.channel.members.keys()].length > 0) {
       if (
         !(oldState.channel.members.first().id in tableauChannelsVocauxEnCours)
       )
@@ -37,13 +37,13 @@ module.exports = async function voiceStateUpdate(
       if (
         utils.getKeyByValue(
           tableauChannelTexteAChannelVocal,
-          oldState.channelID
+          oldState.channelId
         )
       ) {
         delete tableauChannelTexteAChannelVocal[
           utils.getKeyByValue(
             tableauChannelTexteAChannelVocal,
-            oldState.channelID
+            oldState.channelId
           )
         ];
       }

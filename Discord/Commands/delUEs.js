@@ -1,7 +1,7 @@
 const utils = require("../discordUtils");
 
 module.exports = async function delUEs(
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").Message */ msg,
   /** Array<String> */ parametres
 ) {
   /** Suppression d'une UE en indiquant son channel texte */
@@ -21,5 +21,6 @@ module.exports = async function delUEs(
     msg.guild.channels.cache
       .get(parametres[2])
       .children.forEach((channel) => utils.delUE(channel, msg, parametres[3]));
+    msg.react('✅').catch(console.error);
   }
 };

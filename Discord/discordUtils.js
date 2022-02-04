@@ -1,7 +1,5 @@
-const Discord = require("discord.js");
-
 module.exports.help = async function help(
-  /** module:"discord.js".Message */ msg
+  /** import("discord.js").Message */ msg
 ) {
   msg
     .reply(
@@ -34,7 +32,7 @@ module.exports.help = async function help(
       )
       .catch(console.log);
   }
-  if (msg.channel.type !== "dm") {
+  if (msg.channel.type !== "DM") {
     msg.channel
       .send(
         `\n\`${process.env.BOT_PREFIX} export\`. Exporte tout le channel dans lequel la commande est tapée, dans un html lisible offline. **Seuls ceux ayant un rôle >= Enseignant** peuvent taper cette commande n'importe où.` +
@@ -61,113 +59,86 @@ module.exports.help = async function help(
 /** Ci après des liste de permissions utilisées lors de la création de channels */
 /** https://discord.js.org/#/docs/main/stable/class/Permissions?scrollTo=s-FLAGS */
 
-const toutesPermissions = new Discord.Permissions([
-  "CREATE_INSTANT_INVITE",
-  "KICK_MEMBERS",
-  "BAN_MEMBERS",
-  "STREAM",
-  "MANAGE_CHANNELS",
-  "MANAGE_GUILD",
-  "ADD_REACTIONS",
-  "VIEW_AUDIT_LOG",
-  "PRIORITY_SPEAKER",
-  "VIEW_CHANNEL",
-  "SEND_MESSAGES",
-  "SEND_TTS_MESSAGES",
-  "MANAGE_MESSAGES",
-  "EMBED_LINKS",
-  "ATTACH_FILES",
-  "READ_MESSAGE_HISTORY",
-  "MENTION_EVERYONE",
-  "USE_EXTERNAL_EMOJIS",
-  "CONNECT",
-  "SPEAK",
-  "MUTE_MEMBERS",
-  "DEAFEN_MEMBERS",
-  "MOVE_MEMBERS",
-  "USE_VAD",
-  "CHANGE_NICKNAME",
-  "MANAGE_NICKNAMES",
-  "MANAGE_ROLES",
-  "MANAGE_WEBHOOKS",
-  "MANAGE_EMOJIS",
-  "VIEW_GUILD_INSIGHTS",
-]);
-
-const permissionsLireEcrireBasiques = new Discord.Permissions([
-  "ADD_REACTIONS",
-  "STREAM",
-  "VIEW_CHANNEL",
-  "SEND_MESSAGES",
-  "SEND_TTS_MESSAGES",
-  "EMBED_LINKS",
-  "ATTACH_FILES",
-  "READ_MESSAGE_HISTORY",
-  "MENTION_EVERYONE",
-  "CONNECT",
-  "SPEAK",
-  "USE_VAD",
-]);
-
-const permissionsLireEcrireProf = new Discord.Permissions([
-  "ADD_REACTIONS",
-  "PRIORITY_SPEAKER",
-  "STREAM",
-  "VIEW_CHANNEL",
-  "SEND_MESSAGES",
-  "SEND_TTS_MESSAGES",
-  "MANAGE_MESSAGES",
-  "EMBED_LINKS",
-  "ATTACH_FILES",
-  "READ_MESSAGE_HISTORY",
-  "MENTION_EVERYONE",
-  "CONNECT",
-  "SPEAK",
-  "USE_VAD",
-]);
-
-/**
- *
- * @param Permissions
- * @param ouiOuNonOuNull
- * @returns module:"discord.js".PermissionsOverwriteOption
- */
-function createOverwrite(
-  /** module:"discord.js".Permissions */ Permissions,
-  ouiOuNonOuNull
-) {
-  const /** module:"discord.js".PermissionsOverwriteOption */ dict = [];
-  Permissions.toArray().forEach((perm) => {
-    dict[perm] = ouiOuNonOuNull;
-  });
-  return dict;
-}
-
-module.exports.toutesPermissions = toutesPermissions;
-
-module.exports.permissionsLireEcrireBasiques = permissionsLireEcrireBasiques;
-
-module.exports.permissionsLireEcrireProf = permissionsLireEcrireProf;
-
 module.exports.toutesPermissionsOverwrite = function toutesPermissionsOverwrite(
   ouiOuNonOuNull
 ) {
-  return createOverwrite(toutesPermissions, ouiOuNonOuNull);
+  return {
+    "CREATE_INSTANT_INVITE": ouiOuNonOuNull,
+    "KICK_MEMBERS": ouiOuNonOuNull,
+    "BAN_MEMBERS": ouiOuNonOuNull,
+    "STREAM": ouiOuNonOuNull,
+    "MANAGE_CHANNELS": ouiOuNonOuNull,
+    "MANAGE_GUILD": ouiOuNonOuNull,
+    "ADD_REACTIONS": ouiOuNonOuNull,
+    "VIEW_AUDIT_LOG": ouiOuNonOuNull,
+    "PRIORITY_SPEAKER": ouiOuNonOuNull,
+    "VIEW_CHANNEL": ouiOuNonOuNull,
+    "SEND_MESSAGES": ouiOuNonOuNull,
+    "SEND_TTS_MESSAGES": ouiOuNonOuNull,
+    "MANAGE_MESSAGES": ouiOuNonOuNull,
+    "EMBED_LINKS": ouiOuNonOuNull,
+    "ATTACH_FILES": ouiOuNonOuNull,
+    "READ_MESSAGE_HISTORY": ouiOuNonOuNull,
+    "MENTION_EVERYONE": ouiOuNonOuNull,
+    "USE_EXTERNAL_EMOJIS": ouiOuNonOuNull,
+    "CONNECT": ouiOuNonOuNull,
+    "SPEAK": ouiOuNonOuNull,
+    "MUTE_MEMBERS": ouiOuNonOuNull,
+    "DEAFEN_MEMBERS": ouiOuNonOuNull,
+    "MOVE_MEMBERS": ouiOuNonOuNull,
+    "USE_VAD": ouiOuNonOuNull,
+    "CHANGE_NICKNAME": ouiOuNonOuNull,
+    "MANAGE_NICKNAMES": ouiOuNonOuNull,
+    "MANAGE_ROLES": ouiOuNonOuNull,
+    "MANAGE_WEBHOOKS": ouiOuNonOuNull,
+    "MANAGE_EMOJIS_AND_STICKERS": ouiOuNonOuNull,
+    "VIEW_GUILD_INSIGHTS": ouiOuNonOuNull
+  }
 };
 
 module.exports.permissionsLireEcrireBasiquesOverwrite =
   function permissionsLireEcrireBasiquesOverwrite(ouiOuNonOuNull) {
-    return createOverwrite(permissionsLireEcrireBasiques, ouiOuNonOuNull);
+    return {
+      "ADD_REACTIONS": ouiOuNonOuNull,
+      "STREAM": ouiOuNonOuNull,
+      "VIEW_CHANNEL": ouiOuNonOuNull,
+      "SEND_MESSAGES": ouiOuNonOuNull,
+      "SEND_TTS_MESSAGES": ouiOuNonOuNull,
+      "EMBED_LINKS": ouiOuNonOuNull,
+      "ATTACH_FILES": ouiOuNonOuNull,
+      "READ_MESSAGE_HISTORY": ouiOuNonOuNull,
+      "MENTION_EVERYONE": ouiOuNonOuNull,
+      "CONNECT": ouiOuNonOuNull,
+      "SPEAK": ouiOuNonOuNull,
+      "USE_VAD": ouiOuNonOuNull
+    }
+
   };
 
 module.exports.permissionsLireEcrireProfOverwrite =
   function permissionsLireEcrireProfOverwrite(ouiOuNonOuNull) {
-    return createOverwrite(permissionsLireEcrireProf, ouiOuNonOuNull);
+    return {
+      "ADD_REACTIONS": ouiOuNonOuNull,
+      "PRIORITY_SPEAKER": ouiOuNonOuNull,
+      "STREAM": ouiOuNonOuNull,
+      "VIEW_CHANNEL": ouiOuNonOuNull,
+      "SEND_MESSAGES": ouiOuNonOuNull,
+      "SEND_TTS_MESSAGES": ouiOuNonOuNull,
+      "MANAGE_MESSAGES": ouiOuNonOuNull,
+      "EMBED_LINKS": ouiOuNonOuNull,
+      "ATTACH_FILES": ouiOuNonOuNull,
+      "READ_MESSAGE_HISTORY": ouiOuNonOuNull,
+      "MENTION_EVERYONE": ouiOuNonOuNull,
+      "CONNECT": ouiOuNonOuNull,
+      "SPEAK": ouiOuNonOuNull,
+      "USE_VAD": ouiOuNonOuNull
+    }
+
   };
 
 module.exports.getUserFromGuild = async function getUserFromGuild(
   /** string */ discordUsername,
-  /** module:"discord.js".Guild */ guild
+  /** import("discord.js").Guild */ guild
 ) {
   const username = discordUsername.split("#")[0];
   const discriminant = discordUsername.split("#")[1];
@@ -179,14 +150,14 @@ module.exports.getUserFromGuild = async function getUserFromGuild(
 };
 
 module.exports.assignPerm = function assignPerm(
-  /** module:"discord.js".GuildChannel */ channel,
-  /** module:"discord.js".Role */ role,
+  /** import("discord.js").GuildChannel */ channel,
+  /** import("discord.js").Role */ role,
   ouiOuNonOuNull
 ) {
   switch (ouiOuNonOuNull) {
     case "oui":
       channel
-        .updateOverwrite(
+        .permissionOverwrites.edit(
           role,
           module.exports.permissionsLireEcrireBasiquesOverwrite(true)
         )
@@ -194,7 +165,7 @@ module.exports.assignPerm = function assignPerm(
       break;
     case "non":
       channel
-        .updateOverwrite(
+        .permissionOverwrites.edit(
           role,
           module.exports.permissionsLireEcrireBasiquesOverwrite(false)
         )
@@ -202,7 +173,7 @@ module.exports.assignPerm = function assignPerm(
       break;
     case "null":
       channel
-        .updateOverwrite(
+        .permissionOverwrites.edit(
           role,
           module.exports.permissionsLireEcrireBasiquesOverwrite(null)
         )
@@ -214,8 +185,8 @@ module.exports.assignPerm = function assignPerm(
 };
 
 module.exports.delUE = async function delUE(
-  /** module:"discord.js".GuildChannel */ channelToDelete,
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").GuildChannel */ channelToDelete,
+  /** import("discord.js").Message */ msg,
   /** String */ scope
 ) {
   if (scope.toLowerCase() === "vocal") {
@@ -228,13 +199,13 @@ module.exports.delUE = async function delUE(
             channel.name
               .toLowerCase()
               .includes(`${channelToDelete.name.toLowerCase()} `)) &&
-          channel.type === "voice"
+          channel.type === "GUILD_VOICE"
       )
       .delete(`Demandé par ${msg.author.tag} ${msg.author.username}`)
       .catch(console.error);
   }
   if (scope.toLowerCase() === "tout") {
-    (await msg.guild.roles.fetch()).cache
+    (await msg.guild.roles.fetch())
       .find(
         (role) => role.name.toUpperCase() === channelToDelete.name.toUpperCase()
       )

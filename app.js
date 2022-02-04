@@ -92,11 +92,15 @@ if (process.env.BANNED_LOGIN_USERS) {
  *
  * */
 
-const intents = new Discord.Intents([
-  Discord.Intents.NON_PRIVILEGED,
-  Discord.Intents.PRIVILEGED,
-]);
-const client = new Discord.Client({ ws: { intents } });
+const intents = [
+  Discord.Intents.FLAGS.GUILD_MEMBERS,
+  Discord.Intents.FLAGS.GUILD_VOICE_STATES,
+  Discord.Intents.FLAGS.GUILD_PRESENCES,
+  Discord.Intents.FLAGS.GUILD_MESSAGES,
+  Discord.Intents.FLAGS.DIRECT_MESSAGES,
+  Discord.Intents.FLAGS.GUILDS
+];
+const client = new Discord.Client({ intents: intents, partials: ["CHANNEL"] });
 
 if (process.env.WATCH_RATE_LIMIT) {
   client.on("rateLimit", (rateLimitInfo) => rateLimit(rateLimitInfo));
@@ -118,11 +122,11 @@ if (process.env.DISCORD_LISTEN === "1") {
   /**
    * Quand un utilisateur rejoint le serveur, on lui envoie un message de bienvenue pour lui dire de se connecter au site etu
    */
-  client.on("guildMemberAdd", (/** GuildMember */ member) => {
+  client.on("guildMemberAdd", (/** import("discord.js").GuildMember */ member) => {
     guildMemberAdd(member);
   });
   /** Si le bot reçoit un message en privé, ou sur l'un des channels qu'il peut voir */
-  client.on("message", async (/** module:"discord.js".Message */ msg) => {
+  client.on("messageCreate", async (/** import("discord.js").Message */ msg) => {
     await message(
       msg,
       tableauChannelTexteAChannelVocal,
@@ -135,8 +139,8 @@ if (process.env.DISCORD_LISTEN === "1") {
     client.on(
       "presenceUpdate",
       async (
-        /** 'module:"discord.js".Presence */ oldPresence,
-        /** 'module:"discord.js".Presence */ newPresence
+        /** 'import("discord.js").Presence */ oldPresence,
+        /** 'import("discord.js").Presence */ newPresence
       ) => {
         await presenceUpdate(oldPresence, newPresence, watchedMembers);
       }
@@ -146,8 +150,8 @@ if (process.env.DISCORD_LISTEN === "1") {
   client.on(
     "voiceStateUpdate",
     async (
-      /** module:"discord.js".VoiceState */ oldState,
-      /** module:"discord.js".VoiceState */ newState
+      /** import("discord.js").VoiceState */ oldState,
+      /** import("discord.js").VoiceState */ newState
     ) => {
       await voiceStateUpdate(
         oldState,

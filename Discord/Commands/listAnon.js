@@ -1,5 +1,5 @@
 module.exports = async function listAnon(
-  /** module:"discord.js".Message */ msg,
+  /** import("discord.js").Message */ msg,
   currentUserAnonymousChannels
 ) {
   if (Object.keys(currentUserAnonymousChannels).length === 0) {
@@ -7,7 +7,7 @@ module.exports = async function listAnon(
       .reply("Il n'y a pas de channels anonymes disponibles")
       .catch(console.error);
   } else {
-    msg.reply(
+    await msg.reply(
       `Les channels disponibles sont : ${Object.keys(
         currentUserAnonymousChannels
       ).join(", ")}`

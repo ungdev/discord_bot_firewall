@@ -5,7 +5,7 @@ const utils = require("./utils");
 module.exports.etuToDiscord = async function etuToDiscord(
   membreSiteEtu,
   /** string */ discordUsername,
-  /** 'module:"discord.js".Guild */ guild,
+  /** 'import("discord.js").Guild */ guild,
   nameOverride
 ) {
   /** On récupère son compte discord dans le serveur */
@@ -15,7 +15,7 @@ module.exports.etuToDiscord = async function etuToDiscord(
   );
   /** Si on l"a trouvé */
   if (membreDiscord) {
-    const roles = (await guild.roles.fetch()).cache;
+    const roles = (await guild.roles.fetch());
     /** Liste des id de rôles à attribuer */
     /** On définit son pseudo */
     let pseudo = "";
@@ -62,9 +62,9 @@ module.exports.etuToDiscord = async function etuToDiscord(
                   `Le rôle ${chaine} va être créé pour l'utilisateur ${membreDiscord.user.tag} ${pseudo}`
                 );
               await guild.roles
-                .create({
-                  data: { name: chaine.toString().toUpperCase() },
-                })
+                .create(
+                  { name: chaine.toString().toUpperCase() },
+                )
                 .then((createdRole) =>
                   membreDiscord.roles.add(createdRole).catch(console.error)
                 )
