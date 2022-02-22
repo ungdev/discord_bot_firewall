@@ -19,7 +19,7 @@ module.exports = async function addUEs(
     let ues = [];
     const ues_list = process.env.UES_LIST;
     for (const ues_branche of ues_list.split(";")) {
-      if (ues_branche.split(":")[0].toUpperCase() === parametres[3].toUpperCase()) {
+      if (ues_branche.split(":")[0].toUpperCase() === parametres[2].toUpperCase()) {
         ues = ues_branche.split(":")[1].split(",");
       }
     }
@@ -27,11 +27,11 @@ module.exports = async function addUEs(
     /** RT:Cat1,Cat2:Cperf;GI */
     let categories = [];
     let cperf = "";
-    const configs = process.env.BRANCH_LIST;
+    const configs = process.env.CATEGORIES_LIST;
     for (const config of configs.split(";")) {
-      if (config.split(":")[0].toUpperCase() === parametres[3].toUpperCase()) {
-        categories = config.split(":")[1].split(",")
-        cperf = config.split(":")[2]
+      if (config.split(":")[0].toUpperCase() === parametres[2].toUpperCase()) {
+        categories = config.split(":")[1].split(",");
+        cperf = config.split(":")[2];
       }
     }
 
@@ -40,12 +40,9 @@ module.exports = async function addUEs(
       msg.reply(" :warning: Aucune branche trouvée !").catch(console.error);
     } else {
       const roles = (await msg.guild.roles.fetch());
-      let channelsCounts = []
-      for (const categorie of categories) {
+      let channelsCounts = [];
+      for (const categorie in categories) {
         channelsCounts[categorie] = msg.guild.channels.cache.get(categories[categorie]).children.size;
-      }
-      if (cperf.length > 0) {
-        const roleCperf = await roles.resolve(cperf);
       }
 
       let i = 0;
@@ -57,27 +54,27 @@ module.exports = async function addUEs(
             ue.toUpperCase()
         );
         if(!role) {
-          msg.channel.send("Pas de rôle pour "+ue);
+          msg.channel.send(` :grey_question: Pas de rôle pour ${ue}`);
         }
         else {
           while (channelsCounts[i] + parametres[3].toLowerCase() === "lesdeux" ? 2 : 1 > maxSize && i < categories.length) {
             i = i + 1;
           }
           if(i >= categories.length) {
-            msg.reply("ERREUR ! PAS ASSEZ D'ESPACE.");
+            msg.reply(` :bangbang: Limite de canaux par catégories atteinte (maximum ${maxSize}) pour toutes les catégories spécifiées. Arrêt de la création de canaux.`).catch(console.error);
             return;
           }
           if (
             parametres[3].toLowerCase() === "texte" ||
             parametres[3].toLowerCase() === "lesdeux"
           ) {
-            if(! message.guild.channels.cache.find(channel => channel.name.toLowerCase() === ue.toLowerCase())) {
+            if(!msg.guild.channels.cache.find(channel => channel.name.toLowerCase() === ue.toLowerCase())) {
               msg.guild.channels
                 .create(ue.toLowerCase(), {
                   parent: categories[i]
                 })
                 .then((channel) => {
-                  channelsCounts[i] = channelsCounts[i] + 1;
+                  channelsCounts[i] += 1;
                   channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
                   channel.permissionOverwrites.edit(role, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
                   if(cperf.length > 0) {
@@ -85,13 +82,14 @@ module.exports = async function addUEs(
                   }
                   channel.send(
                     `Bonjour <@&${
-                      msg.mentions.roles.first().id
+                      role.id
                     }>, votre channel texte vient d'être créé !`
                   );
+                  msg.channel.send(` :white_check_mark: Canal texte ${ue.toLowerCase()} créé`).catch(console.error);
                 })
                 .catch(console.error);
             } else {
-              msg.channel.send("Le canal "+ue.toLowerCase()+" existe déjà !");
+              msg.channel.send(` :zzz: Le canal texte ${ue.toLowerCase()} existe déjà !`);
             }
 
           }
@@ -100,28 +98,40 @@ module.exports = async function addUEs(
             parametres[3].toLowerCase() === "vocal" ||
             parametres[3].toLowerCase() === "lesdeux"
           ) {
-            if(! message.guild.channels.cache.find(channel => channel.name.toLowerCase() === ue.toLowerCase() + " - vocal")) {
+            if(!msg.guild.channels.cache.find(channel => channel.name.toLowerCase() === ue.toLowerCase() + " - vocal")) {
               msg.guild.channels
                 .create(`${ue.toLowerCase()} - vocal`, {
                   parent: categories[i],
                   type: "GUILD_VOICE",
                   userLimit: 99
                 }).then((channel => {
-                channelsCounts[i] = channelsCounts[i] + 1;
-                channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
-                channel.permissionOverwrites.edit(msg.mentions.roles.first().id, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
-                if(cperf.length > 0) {
-                  channel.permissionOverwrites.edit(cperf, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
-                }
+                  channelsCounts[i] += 1;
+                  channel.permissionOverwrites.edit(
+                    msg.guild.roles.everyone,
+                    discordUtils.toutesPermissionsOverwrite(false)
+                  );
+                  channel.permissionOverwrites.edit(
+                    role.id,
+                    discordUtils.permissionsLireEcrireBasiquesOverwrite(true)
+                  );
+                  if (cperf.length > 0) {
+                    channel.permissionOverwrites.edit(
+                      cperf,
+                      discordUtils.permissionsLireEcrireBasiquesOverwrite(true)
+                    );
+                  }
+                  msg.channel
+                    .send(
+                      ` :white_check_mark: Canal vocal ${ue.toLowerCase()} - vocal créé`
+                    )
+                    .catch(console.error);
               }))
                 .catch(console.error);
             }
             else {
-              msg.channel.send("Le channel "+ue.toLowerCase() + " - vocal existe déjà.")
+              msg.channel.send(` :zzz: Le canal vocal ${ue.toLowerCase()  } - vocal existe déjà.`)
             }
-
           }
-          msg.channel.send('Done pour '+ue.toLowerCase()).catch(console.error);
         }
       }
     }
