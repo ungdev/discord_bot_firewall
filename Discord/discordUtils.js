@@ -142,7 +142,7 @@ module.exports.getUserFromGuild = async function getUserFromGuild(
 ) {
   const username = discordUsername.split("#")[0];
   const discriminant = discordUsername.split("#")[1];
-  return (await guild.members.fetch()).find(
+  return guild.members.cache.find(
     (user) =>
       user.user.username === username &&
       user.user.discriminator === discriminant
