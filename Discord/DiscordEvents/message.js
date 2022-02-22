@@ -23,6 +23,7 @@ const checkSameRoles = require("../Commands/checkSameRoles");
 const delSameRoles = require("../Commands/delSameRoles");
 const listAnon = require("../Commands/listAnon");
 const sendAnon = require("../Commands/sendAnon");
+const addUes = require("../Commands/addUEs");
 const { getUserFromGuild } = require("../discordUtils");
 
 const { Permissions } = require("discord.js");
@@ -31,6 +32,7 @@ const commandesAdmin = [
   "delue",
   "delues",
   "addue",
+  "addues",
   "removeallfromrole",
   "kickall",
   "getnb",
@@ -64,6 +66,9 @@ module.exports = async function message(
       switch (parametres[1].toLowerCase()) {
         case "addue":
           await addUe(msg, parametres);
+          break;
+        case "addues":
+          await addUes(msg, parametres);
           break;
         case "delue":
           await delUe(msg, parametres);
