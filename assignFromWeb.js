@@ -20,6 +20,7 @@ module.exports.etuToDiscord = async function etuToDiscord(
     /** Liste des id de rôles à attribuer */
     /** On définit son pseudo */
     let pseudo = "";
+    console.log(`Traitement de ${membreSiteEtu.firstName} ${membreSiteEtu.lastName}`)
     if (Object.keys(nameOverride).includes(discordUsername)) {
       pseudo = nameOverride[discordUsername];
     } else {
@@ -46,17 +47,17 @@ module.exports.etuToDiscord = async function etuToDiscord(
         tableauChainesToRoles.push(membreSiteEtu.branch);
         const rolesDone = [];
 
-        for (let chaine of tableauChainesToRoles) {
+        tableauChainesToRoles.forEach(async (chaine) => {
           if (await utils.roleValide(chaine.toUpperCase())) {
             chaine = await utils.renameRole(chaine.toUpperCase());
-            if (!rolesDone.includes(chaine.toString().toUpperCase()))
+            if (!rolesDone.includes(chaine.toUpperCase()))
             {
               let role = await roles.find(
                 (roleToTest) =>
                   roleToTest.name.toUpperCase() ===
-                  chaine.toString().toUpperCase()
+                  chaine.toUpperCase()
               );
-              if(!role && Object.keys(additionalRoles).includes(chaine.toString().toUpperCase())) role = additionalRoles[chaine.toString().toUpperCase()]
+              if(!role && Object.keys(additionalRoles).includes(chaine.toUpperCase())) role = additionalRoles[chaine.toUpperCase()]
               if (role) await membreDiscord.roles.add(role).catch(console.error);
               else {
                 /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
@@ -67,16 +68,16 @@ module.exports.etuToDiscord = async function etuToDiscord(
                   );
                 await guild.roles
                   .create(
-                    { name: chaine.toString().toUpperCase() },
+                    { name: chaine.toUpperCase() },
                   )
                   .then(async (createdRole) => {
                     membreDiscord.roles.add(createdRole).catch(console.error);
                     await guild.roles.fetch(createdRole.id);
-                    additionalRoles[chaine.toString().toUpperCase()] = createdRole.id;
+                    additionalRoles[chaine.toUpperCase()] = createdRole.id;
                   }
                   )
                   .catch(console.error);
-                rolesDone.push(chaine.toString().toUpperCase());
+                rolesDone.push(chaine.toUpperCase());
             }
             }
           }
