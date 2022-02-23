@@ -5,7 +5,6 @@ const shell = require("shelljs");
 const path = require("path");
 const utils = require("../utils");
 const assignFromWeb = require("../assignFromWeb");
-const { add } = require("nodemon/lib/rules");
 /* eslint-disable no-restricted-syntax, no-await-in-loop */
 
 module.exports = function cron(
@@ -61,7 +60,7 @@ module.exports = function cron(
               .catch(console.error);
             compteur += 1;
           }
-          await utils.sleep(10);
+          //await utils.sleep(10);
         }
       }
       console.log(`${compteur} utilisateurs traités.`);
