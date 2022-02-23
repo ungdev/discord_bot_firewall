@@ -106,6 +106,8 @@ if (process.env.WATCH_RATE_LIMIT) {
   client.on("rateLimit", (rateLimitInfo) => rateLimit(rateLimitInfo));
 }
 
+const additionalRoles = {}
+
 if (process.env.DISCORD_LISTEN === "1") {
   /** Un tableau[channelTexte] = channelVocal associé */
   /** Utilisé pour vérifier si channel voix existe déjà pour un chan texte */
@@ -187,11 +189,11 @@ if (process.env.WEB_LISTEN === "1") {
     app.use("/connexion", connexion);
     app.use(
       "/attribuerrole",
-      attribuerRole(client, nameOverride, bannedLoginUsers)
+      attribuerRole(client, nameOverride, bannedLoginUsers, additionalRoles)
     );
     app.use(
       `/cron/${process.env.CRON_SECRET}`,
-      cron(client, nameOverride, bannedLoginUsers)
+      cron(client, nameOverride, bannedLoginUsers, additionalRoles)
     );
     app.use("/", home);
   } else {

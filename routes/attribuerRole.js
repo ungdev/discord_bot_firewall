@@ -7,7 +7,8 @@ const assignFromWeb = require("../assignFromWeb");
 module.exports = function attribuerRole(
   /** import("discord.js").Client" */ client,
   nameOverride,
-  bannedLoginUsers
+  bannedLoginUsers,
+  additionalRoles
 ) {
   router.get("/", (req, res) => {
     /** On vérifie qu'on a toutes les infos du formulaire */
@@ -41,7 +42,8 @@ module.exports = function attribuerRole(
                     membreSiteEtu,
                     req.query.discordUsername,
                     guild,
-                    nameOverride
+                    nameOverride,
+                    additionalRoles
                   )
                 );
               } else {
