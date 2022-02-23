@@ -33,6 +33,12 @@ module.exports.roleValide = async function roleValide(/** string */ roleName) {
     return true;
 };
 
+module.exports.sleep = async function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
 module.exports.renameRole = async function renameRole(/** string */ roleName) {
     if (roleName.endsWith("A")) return roleName.substr(0, roleName.length - 1);
 
