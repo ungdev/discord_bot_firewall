@@ -50,14 +50,13 @@ module.exports.etuToDiscord = async function etuToDiscord(
         tableauChainesToRoles.forEach(async (chaine) => {
           if (await utils.roleValide(chaine.toUpperCase())) {
             chaine = await utils.renameRole(chaine.toUpperCase());
-            if (!rolesDone.includes(chaine.toUpperCase()))
-            {
+            if (!rolesDone.includes(chaine.toUpperCase())) {
               let role = await roles.find(
                 (roleToTest) =>
                   roleToTest.name.toUpperCase() ===
                   chaine.toUpperCase()
               );
-              if(!role && Object.keys(additionalRoles).includes(chaine.toUpperCase())) role = additionalRoles[chaine.toUpperCase()]
+              if (!role && Object.keys(additionalRoles).includes(chaine.toUpperCase())) role = additionalRoles[chaine.toUpperCase()]
               if (role) await membreDiscord.roles.add(role).catch(console.error);
               else {
                 /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
@@ -71,17 +70,17 @@ module.exports.etuToDiscord = async function etuToDiscord(
                     { name: chaine.toUpperCase() },
                   )
                   .then(async (createdRole) => {
-                    membreDiscord.roles.add(createdRole).catch(console.error);
-                    await guild.roles.fetch(createdRole.id);
-                    additionalRoles[chaine.toUpperCase()] = createdRole.id;
-                  }
+                      membreDiscord.roles.add(createdRole).catch(console.error);
+                      await guild.roles.fetch(createdRole.id);
+                      additionalRoles[chaine.toUpperCase()] = createdRole.id;
+                    }
                   )
                   .catch(console.error);
                 rolesDone.push(chaine.toUpperCase());
-            }
+              }
             }
           }
-        }
+        });
       }
     } else await membreDiscord.roles.add(process.env.ROLE_ENSEIGNANT_ID);
     /** Si pas étudiant, le seul rôle est le rôle prof */
