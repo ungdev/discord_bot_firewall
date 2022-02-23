@@ -10,7 +10,6 @@ module.exports.etuToDiscord = async function etuToDiscord(
   nameOverride,
   additionalRoles
 ) {
-  await guild.members.fetch();
   /** On récupère son compte discord dans le serveur */
   const membreDiscord = await discordUtils.getUserFromGuild(
     discordUsername,
@@ -58,7 +57,7 @@ module.exports.etuToDiscord = async function etuToDiscord(
                   roleToTest.name.toUpperCase() ===
                   chaine.toString().toUpperCase()
               );
-              if(!role && Object.keys(additionalRoles).includes(chaine.toString().toUpperCase())) role = additionnalRoles[chaine.toString().toUpperCase()]
+              if(!role && Object.keys(additionalRoles).includes(chaine.toString().toUpperCase())) role = additionalRoles[chaine.toString().toUpperCase()]
               if (role) await membreDiscord.roles.add(role).catch(console.error);
               else {
                 /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
