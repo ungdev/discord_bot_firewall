@@ -34,6 +34,7 @@ module.exports = function attribuerRole(
             /** Si on arrive à savoir si l'user est étu ou pas */
             if (typeof membreSiteEtu.isStudent !== "undefined") {
               const guild = client.guilds.cache.get(process.env.SERVER_ID);
+              await guild.members.fetch();
               if (!bannedLoginUsers.includes(membreSiteEtu.login)) {
                 res.send(
                   await assignFromWeb.etuToDiscord(
