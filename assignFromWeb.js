@@ -48,8 +48,7 @@ module.exports.etuToDiscord = async function etuToDiscord(
         tableauChainesToRoles.push(membreSiteEtu.branch);
         const rolesDone = [];
 
-        /** Pour tous les noms de rôle on récupère l'id du rôle et on l'ajoute à la liste des id de rôles à attribuer */
-        tableauChainesToRoles.forEach(async (chaine) => {
+        for (let chaine of tableauChainesToRoles) {
           if (await utils.roleValide(chaine.toUpperCase())) {
             chaine = await utils.renameRole(chaine.toUpperCase());
             if (!rolesDone.includes(chaine.toString().toUpperCase()))
@@ -82,7 +81,7 @@ module.exports.etuToDiscord = async function etuToDiscord(
             }
             }
           }
-        });
+        }
       }
     } else await membreDiscord.roles.add(process.env.ROLE_ENSEIGNANT_ID);
     /** Si pas étudiant, le seul rôle est le rôle prof */
