@@ -43,32 +43,37 @@ module.exports.etuToDiscord = async function etuToDiscord(
         /** On définit la liste des noms de rôles à attribuer (nom uvs + nom de branche) */
         const tableauChainesToRoles = /** Array<String> */ membreSiteEtu.uvs;
         tableauChainesToRoles.push(membreSiteEtu.branch);
+        const rolesDone = [];
 
         /** Pour tous les noms de rôle on récupère l'id du rôle et on l'ajoute à la liste des id de rôles à attribuer */
         tableauChainesToRoles.forEach(async (chaine) => {
           if (await utils.roleValide(chaine.toUpperCase())) {
             chaine = await utils.renameRole(chaine.toUpperCase());
-            const role = await roles.find(
-              (roleToTest) =>
-                roleToTest.name.toUpperCase() ===
-                chaine.toString().toUpperCase()
-            );
-            if (role) await membreDiscord.roles.add(role).catch(console.error);
-            else {
-              /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
-              await guild.channels
-                .resolve(process.env.CHANNEL_ADMIN_ID)
-                .send(
-                  `Le rôle ${chaine} va être créé pour l'utilisateur ${membreDiscord.user.tag} ${pseudo}`
-                );
-              await guild.roles
-                .create(
-                  { name: chaine.toString().toUpperCase() },
-                )
-                .then((createdRole) =>
-                  membreDiscord.roles.add(createdRole).catch(console.error)
-                )
-                .catch(console.error);
+            if (!rolesDone.includes(chaine.toString().toUpperCase()))
+            {
+              const role = await roles.find(
+                (roleToTest) =>
+                  roleToTest.name.toUpperCase() ===
+                  chaine.toString().toUpperCase()
+              );
+              if (role) await membreDiscord.roles.add(role).catch(console.error);
+              else {
+                /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
+                await guild.channels
+                  .resolve(process.env.CHANNEL_ADMIN_ID)
+                  .send(
+                    `Le rôle ${chaine} va être créé pour l'utilisateur ${membreDiscord.user.tag} ${pseudo}`
+                  );
+                await guild.roles
+                  .create(
+                    { name: chaine.toString().toUpperCase() },
+                  )
+                  .then((createdRole) =>
+                    membreDiscord.roles.add(createdRole).catch(console.error)
+                  )
+                  .catch(console.error);
+                rolesDone.push(chaine.toString().toUpperCase());
+            }
             }
           }
         });
