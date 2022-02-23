@@ -40,6 +40,7 @@ module.exports = function cron(
         page: 1,
       };
       const guild = client.guilds.cache.get(process.env.SERVER_ID);
+      await guild.members.fetch();
       let compteur = 0;
       const pageRequest = await axios.get(
         `${utils.baseUrl}/api/public/users?${httpBuildQuery(requete)}`
