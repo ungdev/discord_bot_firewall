@@ -61,7 +61,7 @@ module.exports = function cron(
               .catch(console.error);
             compteur += 1;
           }
-          await utils.sleep(2500);
+          await utils.sleep(10);
         }
       }
       console.log(`${compteur} utilisateurs traités.`);
