@@ -10,58 +10,61 @@ module.exports = async function addUEs(
   ) {
     msg
       .reply(
-        ` :warning:  Erreur. La syntaxe est \`${process.env.BOT_PREFIX} addUEs categorie texte | vocal | lesDeux\`.`
+        ` :warning:  Erreur. La syntaxe est \`${process.env.BOT_PREFIX} addUEs <branche> texte | vocal | lesDeux\`.`
       )
       .catch(console.error);
   } else {
     /** Si tout va bien */
     /** RT:RE12,RE16;GI:MT14,... */
     let ues = [];
-    const ues_list = process.env.UES_LIST;
-    for (const ues_branche of ues_list.split(";")) {
-      if (ues_branche.split(":")[0].toUpperCase() === parametres[2].toUpperCase()) {
-        ues = ues_branche.split(":")[1].split(",");
+    const uesPerBranch = process.env.UES_PER_BRANCH;
+    for (const currentUEsForBranch of uesPerBranch.split(";")) {
+      if (
+        currentUEsForBranch.split(":")[0].toUpperCase() ===
+        parametres[2].toUpperCase()
+      ) {
+        ues = currentUEsForBranch.split(":")[1].split(",");
       }
     }
 
     /** RT:Cat1,Cat2:Cperf;GI */
-    let categories = [];
-    let cperf = "";
-    const configs = process.env.CATEGORIES_LIST;
-    for (const config of configs.split(";")) {
-      if (config.split(":")[0].toUpperCase() === parametres[2].toUpperCase()) {
-        categories = config.split(":")[1].split(",");
-        cperf = config.split(":")[2];
+    let currentCategories = [];
+    let currentElectedRole = "";
+    const branchCategoriesAndElectedRole = process.env.BRANCH_CATEGORIES_AND_ELECTED_ROLE;
+    for (const currentBranchCategoriesAndElectedRole of branchCategoriesAndElectedRole.split(";")) {
+      if (currentBranchCategoriesAndElectedRole.split(":")[0].toUpperCase() === parametres[2].toUpperCase()) {
+        currentCategories = currentBranchCategoriesAndElectedRole.split(":")[1].split(",");
+        currentElectedRole = currentBranchCategoriesAndElectedRole.split(":")[2];
       }
     }
 
 
-    if (ues.length === 0 || categories.length === 0) {
+    if (ues.length === 0 || currentCategories.length === 0) {
       msg.reply(" :warning: Aucune branche trouvée !").catch(console.error);
     } else {
       const roles = (await msg.guild.roles.fetch());
-      let channelsCounts = [];
-      for (const categorie in categories) {
-        channelsCounts[categorie] = msg.guild.channels.cache.get(categories[categorie]).children.size;
+      const channelsCounts = [];
+      for (const category in currentCategories) {
+        channelsCounts[category] = msg.guild.channels.cache.get(currentCategories[category]).children.size;
       }
 
       let i = 0;
-      const maxSize = 50;
+      const maxChannelsPerCategory = 50;
       for (const ue of ues) {
-        const role = await roles.find(
+        const ueRole = await roles.find(
           (roleToTest) =>
             roleToTest.name.toUpperCase() ===
             ue.toUpperCase()
         );
-        if(!role) {
+        if(!ueRole) {
           msg.channel.send(` :grey_question: Pas de rôle pour ${ue}`);
         }
         else {
-          while (channelsCounts[i] + parametres[3].toLowerCase() === "lesdeux" ? 2 : 1 > maxSize && i < categories.length) {
+          while (channelsCounts[i] + parametres[3].toLowerCase() === "lesdeux" ? 2 : 1 > maxChannelsPerCategory && i < currentCategories.length) {
             i = i + 1;
           }
-          if(i >= categories.length) {
-            msg.reply(` :bangbang: Limite de canaux par catégories atteinte (maximum ${maxSize}) pour toutes les catégories spécifiées. Arrêt de la création de canaux.`).catch(console.error);
+          if(i >= currentCategories.length) {
+            msg.reply(` :bangbang: Limite de canaux par catégories atteinte (maximum ${maxChannelsPerCategory}) pour toutes les catégories spécifiées. Arrêt de la création de canaux.`).catch(console.error);
             return;
           }
           if (
@@ -71,18 +74,18 @@ module.exports = async function addUEs(
             if(!msg.guild.channels.cache.find(channel => channel.name.toLowerCase() === ue.toLowerCase())) {
               msg.guild.channels
                 .create(ue.toLowerCase(), {
-                  parent: categories[i]
+                  parent: currentCategories[i]
                 })
                 .then((channel) => {
                   channelsCounts[i] += 1;
                   channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
-                  channel.permissionOverwrites.edit(role, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
-                  if(cperf.length > 0) {
-                    channel.permissionOverwrites.edit(cperf, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
+                  channel.permissionOverwrites.edit(ueRole, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
+                  if(currentElectedRole.length > 0) {
+                    channel.permissionOverwrites.edit(currentElectedRole, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
                   }
                   channel.send(
                     `Bonjour <@&${
-                      role.id
+                      ueRole.id
                     }>, votre channel texte vient d'être créé !`
                   );
                   msg.channel.send(` :white_check_mark: Canal texte ${ue.toLowerCase()} créé`).catch(console.error);
@@ -101,7 +104,7 @@ module.exports = async function addUEs(
             if(!msg.guild.channels.cache.find(channel => channel.name.toLowerCase() === ue.toLowerCase() + " - vocal")) {
               msg.guild.channels
                 .create(`${ue.toLowerCase()} - vocal`, {
-                  parent: categories[i],
+                  parent: currentCategories[i],
                   type: "GUILD_VOICE",
                   userLimit: 99
                 }).then((channel => {
@@ -111,12 +114,12 @@ module.exports = async function addUEs(
                     discordUtils.toutesPermissionsOverwrite(false)
                   );
                   channel.permissionOverwrites.edit(
-                    role.id,
+                    ueRole.id,
                     discordUtils.permissionsLireEcrireBasiquesOverwrite(true)
                   );
-                  if (cperf.length > 0) {
+                  if (currentElectedRole.length > 0) {
                     channel.permissionOverwrites.edit(
-                      cperf,
+                      currentElectedRole,
                       discordUtils.permissionsLireEcrireBasiquesOverwrite(true)
                     );
                   }

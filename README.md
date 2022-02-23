@@ -26,6 +26,7 @@ Ce bot permet également d'exporter en hors ligne tout le contenu d'un channel e
 * Génération dynamique de channels vocaux et texte. L'utilisateur se place sur un channel vocal précis, et il est transporté dans un channel vocal créé (utile pour créer des salles de cours à la volée). Les channels texte seront supprimés quand la denrière personne aura quitté le vocal.
 * Commandes :
     * `PREFIX addUE @role <categoryID> texte | vocal | lesDeux` qui crée un chan texte et vocal avec les permissions qui vont bien et dans la catégorie indiquée, la commande ne peut être exécutée que depuis un channel précis
+    * `PREFIX addUEs <branche> texte | vocal | lesDeux` qui, s'ils n'existent pas déjà, crée un chan texte et vocal pour toutes les UEs ayant un rôle existant pour la branche indiquée selon les informations fournies dans `UES_PER_BRANCH` et `BRANCH_CATEGORIES_AND_ELECTED_ROLE`, et leur affectera les bonnes permissions (rôle de l'UE et éventuellement élus étudiants) 
     * `PREFIX delUE #channelTexteUE vocal | tout` qui supprime les deux channels d'une UE, ainsi que son rôle, la commande ne peut être exécutée que depuis un channel précis.
     * `PREFIX delUEs <categoryID> vocal | tout` idem que `delUE` mais pour tous les channels d'une catégorie.
     * `PREFIX getNb @ROLE|role_id` qui affiche le nombre de personnes dans le role correspondant.
