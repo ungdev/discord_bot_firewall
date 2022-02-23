@@ -13,15 +13,15 @@ module.exports.getKeyByValue = function getKeyByValue(object, value) {
 };
 
 module.exports.roleValide = async function roleValide(/** string */ roleName) {
-    const unvalidRoles = ["", "CV ING", "CVF2", "FOS4", "EPSEM"];
+    const unvalidRoles = ["", "CVF2", "FOS4", "EPSEM"];
     for (const role of unvalidRoles) {
         if (roleName === role) {
             return false;
         }
     }
     const partiallyUnvalidRoles = [
-        "FB", "FA", "FC", "EX", "DD", "NPML", "LV2B1", "LINGUA",
-        "LX", "UX", "ATDOC", "APPTC", "SST", "ST", "MDPI", "TX",
+        "FB", "FA", "FC", "EX", "DD", "NPML", "LV2B1", "LINGUA", "EM", "UM",
+        "LX", "UX", "ATDOC", "APPTC", "SST", "ST", "MDPI", "TX", "EX",
         "AC", "ER", "PMCS", "PMXX", "PMTM", "PMHT", "PMEE", "PMEC", "PMME"
     ]
     for (const role of partiallyUnvalidRoles) {
@@ -36,7 +36,7 @@ module.exports.roleValide = async function roleValide(/** string */ roleName) {
 module.exports.renameRole = async function renameRole(/** string */ roleName) {
     if (roleName.endsWith("A")) return roleName.substr(0, roleName.length - 1);
 
-    for (const starting of ["LS", "LE", "IT", "LG", "LC", "KO"])
+    for (const starting of ["LS", "LE", "IT", "LG", "LC", "KO","LX"])
         if (roleName.startsWith(starting))
             return starting;
 
