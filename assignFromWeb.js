@@ -1,7 +1,6 @@
 const capitalize = require("capitalize");
 const discordUtils = require("./Discord/discordUtils");
 const utils = require("./utils");
-const { add } = require("nodemon/lib/rules");
 
 module.exports.etuToDiscord = async function etuToDiscord(
   membreSiteEtu,
