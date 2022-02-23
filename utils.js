@@ -42,6 +42,8 @@ module.exports.renameRole = async function renameRole(/** string */ roleName) {
 
     if (roleName.startsWith("ISI_C")) return "ISI_C";
 
+    if (roleName.startsWith("OCR")) return "OCR";
+
     const rolesPE = ["PEXX", "PEEE", "PEEC", "PETM", "PEME", "PEHT", "PECS"];
     for (const starting of rolesPE)
         if (roleName.startsWith(starting))
