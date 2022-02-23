@@ -5,12 +5,14 @@ const shell = require("shelljs");
 const path = require("path");
 const utils = require("../utils");
 const assignFromWeb = require("../assignFromWeb");
+const { add } = require("nodemon/lib/rules");
 /* eslint-disable no-restricted-syntax, no-await-in-loop */
 
 module.exports = function cron(
   /** import("discord.js").Client" */ client,
   nameOverride,
-  bannedLoginUsers
+  bannedLoginUsers,
+  additionalRoles
 ) {
   router.get("/cleanExports", (req, res) => {
     res.send("ok");
@@ -55,11 +57,11 @@ module.exports = function cron(
         for (const etuUser of response.data.data) {
           if (etuUser.discordTag && !bannedLoginUsers.includes(etuUser.login)) {
             assignFromWeb
-              .etuToDiscord(etuUser, etuUser.discordTag, guild, nameOverride)
+              .etuToDiscord(etuUser, etuUser.discordTag, guild, nameOverride, additionalRoles)
               .catch(console.error);
             compteur += 1;
           }
-          await utils.sleep(2500);
+          await utils.sleep(10);
         }
       }
       console.log(`${compteur} utilisateurs traités.`);

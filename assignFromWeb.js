@@ -1,12 +1,14 @@
 const capitalize = require("capitalize");
 const discordUtils = require("./Discord/discordUtils");
 const utils = require("./utils");
+const { add } = require("nodemon/lib/rules");
 
 module.exports.etuToDiscord = async function etuToDiscord(
   membreSiteEtu,
   /** string */ discordUsername,
   /** 'import("discord.js").Guild */ guild,
-  nameOverride
+  nameOverride,
+  additionalRoles
 ) {
   await guild.members.fetch();
   /** On récupère son compte discord dans le serveur */
@@ -14,7 +16,7 @@ module.exports.etuToDiscord = async function etuToDiscord(
     discordUsername,
     guild
   );
-  /** Si on l"a trouvé */
+  /** Si on l'a trouvé */
   if (membreDiscord) {
     const roles = (await guild.roles.fetch());
     /** Liste des id de rôles à attribuer */
@@ -46,17 +48,17 @@ module.exports.etuToDiscord = async function etuToDiscord(
         tableauChainesToRoles.push(membreSiteEtu.branch);
         const rolesDone = [];
 
-        /** Pour tous les noms de rôle on récupère l'id du rôle et on l'ajoute à la liste des id de rôles à attribuer */
-        tableauChainesToRoles.forEach(async (chaine) => {
+        for (let chaine of tableauChainesToRoles) {
           if (await utils.roleValide(chaine.toUpperCase())) {
             chaine = await utils.renameRole(chaine.toUpperCase());
             if (!rolesDone.includes(chaine.toString().toUpperCase()))
             {
-              const role = await roles.find(
+              let role = await roles.find(
                 (roleToTest) =>
                   roleToTest.name.toUpperCase() ===
                   chaine.toString().toUpperCase()
               );
+              if(!role && Object.keys(additionalRoles).includes(chaine.toString().toUpperCase())) role = additionnalRoles[chaine.toString().toUpperCase()]
               if (role) await membreDiscord.roles.add(role).catch(console.error);
               else {
                 /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
@@ -69,15 +71,17 @@ module.exports.etuToDiscord = async function etuToDiscord(
                   .create(
                     { name: chaine.toString().toUpperCase() },
                   )
-                  .then((createdRole) =>
-                    membreDiscord.roles.add(createdRole).catch(console.error)
+                  .then((createdRole) => {
+                      membreDiscord.roles.add(createdRole).catch(console.error);
+                      additionalRoles[chaine.toString().toUpperCase()] = role.id;
+                  }
                   )
                   .catch(console.error);
                 rolesDone.push(chaine.toString().toUpperCase());
             }
             }
           }
-        });
+        }
       }
     } else await membreDiscord.roles.add(process.env.ROLE_ENSEIGNANT_ID);
     /** Si pas étudiant, le seul rôle est le rôle prof */
