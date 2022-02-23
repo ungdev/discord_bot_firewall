@@ -73,7 +73,7 @@ module.exports.etuToDiscord = async function etuToDiscord(
                   .then(async (createdRole) => {
                     membreDiscord.roles.add(createdRole).catch(console.error);
                     await guild.roles.fetch(createdRole.id);
-                    additionalRoles[chaine.toString().toUpperCase()] = role.id;
+                    additionalRoles[chaine.toString().toUpperCase()] = createdRole.id;
                   }
                   )
                   .catch(console.error);
