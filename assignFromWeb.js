@@ -8,6 +8,7 @@ module.exports.etuToDiscord = async function etuToDiscord(
   /** 'import("discord.js").Guild */ guild,
   nameOverride
 ) {
+  await guild.members.fetch();
   /** On récupère son compte discord dans le serveur */
   const membreDiscord = await discordUtils.getUserFromGuild(
     discordUsername,
