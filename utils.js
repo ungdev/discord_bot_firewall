@@ -21,8 +21,8 @@ module.exports.roleValide = async function roleValide(/** string */ roleName) {
     }
     const partiallyUnvalidRoles = [
         "FB", "FA", "FC", "EX", "DD", "NPML", "LV2B1", "LINGUA", "EM", "UM",
-        "LX", "UX", "ATDOC", "APPTC", "SST", "ST", "MDPI", "TX", "EX",
-        "AC", "ER", "PMCS", "PMXX", "PMTM", "PMHT", "PMEE", "PMEC", "PMME"
+        "LX", "UX", "ATDOC", "APPTC", "SST", "ST", "MDPI", "TX", "EX", "MIC",
+        "AC", "ER", "PMCS", "PMXX", "PMTM", "PMHT", "PMEE", "PMEC", "PMME", "AST"
     ]
     for (const role of partiallyUnvalidRoles) {
         if (roleName.startsWith(role)) {
