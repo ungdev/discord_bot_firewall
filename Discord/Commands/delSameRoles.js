@@ -18,7 +18,7 @@ module.exports = async function delSameRoles(
         )
         .catch(console.error);
       deletedRoles.push(roleEnCours.name);
-      await roleEnCours.delete("En double").catch(console.log);
+      await roleEnCours.delete("En double").catch(console.error);
     }
   });
 
