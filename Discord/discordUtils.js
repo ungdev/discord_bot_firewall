@@ -31,7 +31,7 @@ module.exports.help = async function help(
           `\n\`${process.env.BOT_PREFIX} removeAllFromRole @role\`. Prend toutes les personnes ayant le rôle et leur retire. Permet de s'assurer que plus personne n'a un rôle précis.` +
           `\n\`${process.env.BOT_PREFIX} delSameRoles\`. Supprime les rôles présents plusieurs fois (même nom sans tenir compte de la casse) pour n'en garder qu'un.\n\n`
       )
-      .catch(console.log);
+      .catch(console.error);
   }
   if (msg.channel.type !== "DM") {
     msg.channel

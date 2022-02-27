@@ -1,3 +1,5 @@
+// noinspection ES6MissingAwait
+
 const capitalize = require("capitalize");
 const discordUtils = require("./Discord/discordUtils");
 const utils = require("./utils");
@@ -20,7 +22,7 @@ module.exports.etuToDiscord = async function etuToDiscord(
     /** Liste des id de rôles à attribuer */
     /** On définit son pseudo */
     let pseudo = "";
-    console.log(`Traitement de ${membreSiteEtu.firstName} ${membreSiteEtu.lastName}`)
+    console.log(`Traitement de ${discordUsername} - ${membreSiteEtu.firstName} ${membreSiteEtu.lastName}`)
     if (Object.keys(nameOverride).includes(discordUsername)) {
       pseudo = nameOverride[discordUsername];
     } else {
@@ -38,50 +40,50 @@ module.exports.etuToDiscord = async function etuToDiscord(
       } else {
         /** On ajoute le rôle étudiant */
         await membreDiscord.roles.add(process.env.ROLE_ETUDIANT_ID);
-        /** On définit un pseudo */
-        pseudo += ` - ${/** string */ membreSiteEtu.branch}${
-          membreSiteEtu.level
-        }`;
-        /** On définit la liste des noms de rôles à attribuer (nom uvs + nom de branche) */
         const tableauChainesToRoles = /** Array<String> */ membreSiteEtu.uvs;
-        tableauChainesToRoles.push(membreSiteEtu.branch);
+        /** On définit un pseudo */
+        let formations = [];
+        for (let nombre in membreSiteEtu.branch_list) {
+          tableauChainesToRoles.push(membreSiteEtu.branch_list[nombre]);
+          formations.push(`${membreSiteEtu.branch_list[nombre]}${membreSiteEtu.level_list[nombre]}`);
+        }
+        pseudo += ` - ${formations.join("/")}`;
+        /** On définit la liste des noms de rôles à attribuer (nom uvs + nom de branche) */
         const rolesDone = [];
 
         tableauChainesToRoles.forEach(async (chaine) => {
-          if (await utils.roleValide(chaine.toUpperCase())) {
+          chaine = chaine.toUpperCase();
+          if (await utils.roleValide(chaine) && !rolesDone.includes(await utils.renameRole(chaine))) {
             chaine = await utils.renameRole(chaine.toUpperCase());
-            if (!rolesDone.includes(chaine.toUpperCase()))
-            {
-              let role = await roles.find(
-                (roleToTest) =>
-                  roleToTest.name.toUpperCase() ===
-                  chaine.toUpperCase()
-              );
-              if(!role && Object.keys(additionalRoles).includes(chaine.toUpperCase())) role = additionalRoles[chaine.toUpperCase()]
-              if (role) await membreDiscord.roles.add(role).catch(console.error);
-              else {
-                /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
-                await guild.channels
-                  .resolve(process.env.CHANNEL_ADMIN_ID)
-                  .send(
-                    `Le rôle ${chaine} va être créé pour l'utilisateur ${membreDiscord.user.tag} ${pseudo}`
-                  );
-                await guild.roles
-                  .create(
-                    { name: chaine.toUpperCase() },
-                  )
-                  .then(async (createdRole) => {
-                    membreDiscord.roles.add(createdRole).catch(console.error);
-                    await guild.roles.fetch(createdRole.id);
-                    additionalRoles[chaine.toUpperCase()] = createdRole.id;
-                  }
-                  )
-                  .catch(console.error);
-                rolesDone.push(chaine.toUpperCase());
-            }
+            let role = await roles.find(
+              (roleToTest) =>
+                roleToTest.name.toUpperCase() ===
+                chaine.toUpperCase()
+            );
+            if (!role && Object.keys(additionalRoles).includes(chaine.toUpperCase())) role = additionalRoles[chaine.toUpperCase()];
+            if (role) {
+              await membreDiscord.roles.add(role).catch(console.error);
+            } else {
+              /** Si le rôle n'existe pas, on le crée et on alerte sur le chan texte dédié au bot. */
+              await guild.channels
+                .resolve(process.env.CHANNEL_ADMIN_ID)
+                .send(
+                  `Le rôle ${chaine} va être créé pour l'utilisateur ${membreDiscord.user.tag} ${pseudo}`
+                );
+              await guild.roles
+                .create(
+                  { name: chaine.toUpperCase() },
+                )
+                .then(async (createdRole) => {
+                  membreDiscord.roles.add(createdRole).catch(console.error);
+                  await guild.roles.fetch(createdRole.id);
+                  additionalRoles[chaine.toUpperCase()] = createdRole.id;
+                })
+                .catch(console.error);
+              rolesDone.push(chaine.toUpperCase());
             }
           }
-        }
+        });
       }
     } else await membreDiscord.roles.add(process.env.ROLE_ENSEIGNANT_ID);
     /** Si pas étudiant, le seul rôle est le rôle prof */
