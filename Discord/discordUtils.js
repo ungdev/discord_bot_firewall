@@ -222,3 +222,43 @@ module.exports.delUE = async function delUE(
     )
     .catch(console.error);
 };
+
+
+module.exports = async function CreateUeChannel(
+    /** import("discord.js").Guild */ guild,
+    /** String */ name,
+    /** import("discord.js").Role */ role,
+    /** String */ category = "",
+    /** import("discord.js").ChannelTypes */ channelType = ChannelTypes.GUILD_TEXT
+) {
+    switch (channelType) {
+        case ChannelTypes.GUILD_TEXT:
+            guild.channels
+                .create(name, {
+                    parent: category,
+                    reason: "création de salon d'UE"
+                })
+                .then((channel) => {
+                    channel.permissionOverwrites.edit(guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
+                    channel.permissionOverwrites.edit(role.id, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
+                    channel.send(
+                        `Bonjour <@&${
+                            role.id
+                        }>, votre channel texte vient d'être créé !`
+                    );
+                }).catch(console.error);
+            break;
+        case ChannelTypes.GUILD_VOICE:
+            guild.channels
+                .create(`${name} - vocal`, {
+                    reason: "création de vocal d'UE",
+                    parent: category,
+                    type: "GUILD_VOICE",
+                    userLimit: 99
+                }).then((channel => {
+                channel.permissionOverwrites.edit(guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
+                channel.permissionOverwrites.edit(role.id, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
+            })).catch(console.error);
+            break;
+    }
+}
