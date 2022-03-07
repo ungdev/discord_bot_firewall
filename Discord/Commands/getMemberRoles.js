@@ -6,7 +6,9 @@ module.exports = async function getMemberRoles(
             ":warning: La syntaxe de cette commande est `getMemberRoles @membre`"
         );
     } else {
-        const roles = msg.mentions.members.first().roles.cache.map(role => role.name);
+        const roles = member.roles.cache
+            .filter(role => role.name !== "@everyone")
+            .map(role => role.name);
         await msg.channel.send(
             `:white_check_mark: L'utilisateur a ${roles.length} roles : ${roles.join(", ")}`
         ).catch(console.error);
