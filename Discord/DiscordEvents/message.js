@@ -1,52 +1,43 @@
 const utils = require("../../utils");
 const discordUtils = require("../discordUtils");
 
-const addUe = require("../Commands/addUE");
-const assignLireEcrireBasiques = require("../Commands/assignLireEcrireBasiques");
-const delUe = require("../Commands/delUE");
-const delUEs = require("../Commands/delUEs");
 const exportChannel = require("../Commands/export");
-const getNb = require("../Commands/getNb");
-const getRoles = require("../Commands/getRoles");
-const getUrl = require("../Commands/getUrl");
-const getZeroOne = require("../Commands/getZeroOne");
 const joinVocal = require("../Commands/joinVocal");
-const kickAll = require("../Commands/kickAll");
 const listDynVoc = require("../Commands/listDynVoc");
 const pin = require("../Commands/pin");
 const unpin = require("../Commands/unpin");
-const setRoles = require("../Commands/setRoles");
-const getMemberRoles = require("../Commands/getMemberRoles");
-const assignRole = require("../Commands/assignRole");
-const removeAllFromRole = require("../Commands/removeAllFromRole");
-const checkSameRoles = require("../Commands/checkSameRoles");
-const delSameRoles = require("../Commands/delSameRoles");
 const listAnon = require("../Commands/listAnon");
 const sendAnon = require("../Commands/sendAnon");
-const addUes = require("../Commands/addUEs");
 const { getUserFromGuild } = require("../discordUtils");
 
 const { Permissions } = require("discord.js");
+const {author} = require("../../utils");
 
-const commandesAdmin = [
-  "delue",
-  "delues",
-  "addue",
-  "addues",
-  "removeallfromrole",
-  "kickall",
-  "getnb",
-  "getroles",
-  "getzeroone",
-  "geturl",
-  "listdynvoc",
-  "assignlireecrirebasiques",
-  "assignrole",
-  "getmemberroles",
-  "setroles",
-  "checksameroles",
-  "delsameroles",
-];
+
+// Commandes réservées aux admins qui ne prennent pas de paramètre additionnel
+const adminCommandsNoArgs = {
+  "checksameroles": require("../Commands/checkSameRoles"),
+  "delsameroles": require("../Commands/delSameRoles"),
+  "getzeroone": require("../Commands/getZeroOne"),
+  "geturl": require("../Commands/getUrl"),
+  "getmemberroles": require("../Commands/getMemberRoles"),
+  "setroles": require("../Commands/setRoles"),
+  "removeallfromrole" : require("../Commands/removeAllFromRole"),
+}
+
+// Commandes réservées aux admins qui ne prennent des paramètres additionnels
+const adminCommands = {
+  "delue": require("../Commands/delUE"),
+  "delues": require("../Commands/delUEs"),
+  "addue": require("../Commands/addUE"),
+  "addues": require("../Commands/addUEs"),
+  "removeallfromrole": require("../Commands/removeAllFromRole"),
+  "kickall": require("../Commands/kickAll"),
+  "getnb": require("../Commands/getNb"),
+  "getroles": require("../Commands/getRoles"),
+  "assignrole": require("../Commands/assignRole"),
+  "assignlireecrirebasiques": require("../Commands/assignLireEcrireBasiques"),
+}
 
 const commandesPubliques = ["export", "joinvocal", "author", "pin", "unpin"];
 
@@ -59,71 +50,23 @@ module.exports = async function message(
     msg.content.toLowerCase().startsWith(process.env.BOT_PREFIX.toLowerCase())
   ) {
     /** On découpe la ligne de commande par les espaces */
-    /** index 0 : le préfix, index 1 : la commande, index 2,3,... : les vrais paramètres */
+    /** index 0 : le préfixe, index 1 : la commande, index 2,3,... : les vrais paramètres */
     const parametres = msg.content.split(" ");
-    if (parametres.length === 1) parametres[1] = "help";
+    let cmdName = parametres[1].toLowerCase();
+    if (parametres.length === 1) cmdName = "help";
     if (msg.channel.id === process.env.CHANNEL_ADMIN_ID) {
-      switch (parametres[1].toLowerCase()) {
-        case "addue":
-          await addUe(msg, parametres);
-          break;
-        case "addues":
-          await addUes(msg, parametres);
-          break;
-        case "delue":
-          await delUe(msg, parametres);
-          break;
-        case "checksameroles":
-          await checkSameRoles(msg);
-          break;
-        case "delsameroles":
-          await delSameRoles(msg);
-          break;
-        case "delues":
-          await delUEs(msg, parametres);
-          break;
-        case "getnb":
-          await getNb(msg, parametres);
-          break;
-        case "getroles":
-          await getRoles(msg, parametres);
-          break;
-        case "getzeroone":
-          await getZeroOne(msg);
-          break;
-        case "assignlireecrirebasiques":
-          await assignLireEcrireBasiques(msg, parametres);
-          break;
-        case "geturl":
-          await getUrl(msg);
-          break;
-        case "kickall":
-          await kickAll(msg, parametres);
-          break;
-        case "listdynvoc":
-          await listDynVoc(msg, tableauChannelTexteAChannelVocal);
-          break;
-        case "setroles":
-          await setRoles(msg);
-          break;
-        case "getmemberroles":
-          await getMemberRoles(msg);
-          break;
-        case "assignrole":
-          await assignRole(msg, parametres);
-          break;
-        case "removeallfromrole":
-          await removeAllFromRole(msg);
-          break;
-        default:
-          if (!commandesPubliques.includes(parametres[1].toLowerCase())) {
-            parametres[1] = "help";
-          }
-          break;
+      if (adminCommands[cmdName] !== undefined) {
+        await adminCommands[cmdName](msg, parametres);
+      } else if (adminCommandsNoArgs[cmdName] !== undefined) {
+        await adminCommandsNoArgs[cmdName](msg);
+      } else if (cmdName === "listdynvoc") {
+        await listDynVoc(msg, tableauChannelTexteAChannelVocal);
+      } else if (!commandesPubliques.includes(parametres[1].toLowerCase())) {
+        cmdName = "help";
       }
     }
     if (msg.channel.type !== "DM") {
-      switch (parametres[1].toLowerCase()) {
+      switch (cmdName) {
         case "export":
           await exportChannel(msg);
           break;
@@ -141,10 +84,10 @@ module.exports = async function message(
           );
           break;
         case "author":
-          msg.channel.send(utils.author).catch(console.error);
+          msg.channel.send(author).catch(console.error);
           break;
         default:
-          if (!commandesAdmin.includes(parametres[1].toLowerCase())) {
+          if (adminCommands[cmdName] === undefined && adminCommandsNoArgs[cmdName] === undefined) {
             await discordUtils.help(msg);
           }
           break;
@@ -178,7 +121,7 @@ module.exports = async function message(
         }
         /* eslint-enable no-restricted-syntax, no-await-in-loop */
       }
-      switch (parametres[1].toLowerCase()) {
+      switch (cmdName) {
         case "sendanon":
           await sendAnon(
             msg,
