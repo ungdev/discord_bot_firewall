@@ -25,8 +25,8 @@ const home = require("./routes/home");
  *
  *
  * */
-import * as Sentry from "@sentry/node";
-import "@sentry/tracing";
+const Sentry = require("@sentry/node");
+const SentryTracing = require("@sentry/tracing");
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
 
