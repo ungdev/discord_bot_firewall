@@ -13,7 +13,7 @@ module.exports.getKeyByValue = function getKeyByValue(object, value) {
 };
 
 module.exports.roleValide = async function roleValide(/** string */ roleName) {
-    const unvalidRoles = ["", "CVF2", "FOS4", "EPSEM"];
+    const unvalidRoles = ["", "CVF2", "FOS4", "EPSEM", "BESST"];
     for (const role of unvalidRoles) {
         if (roleName === role) {
             return false;

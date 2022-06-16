@@ -5,7 +5,6 @@ const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const serveIndex = require("serve-index");
-const Sentry = require("@sentry/node");
 const Discord = require("discord.js");
 const rateLimit = require("./Discord/DiscordEvents/rateLimit");
 const ready = require("./Discord/DiscordEvents/ready");
@@ -26,8 +25,8 @@ const home = require("./routes/home");
  *
  *
  * */
-// const Tracing = require("@sentry/tracing");
-
+import * as Sentry from "@sentry/node";
+import "@sentry/tracing";
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
 
