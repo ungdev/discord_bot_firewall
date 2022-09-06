@@ -10,7 +10,8 @@ const assignFromWeb = require("../assignFromWeb");
 module.exports = function cron(
   /** import("discord.js").Client" */ client,
   nameOverride,
-  bannedLoginUsers
+  bannedLoginUsers,
+  additionalRoles
 ) {
   router.get("/cleanExports", (req, res) => {
     res.send("ok");
@@ -55,9 +56,10 @@ module.exports = function cron(
         for (const etuUser of response.data.data) {
           if (etuUser.discordTag && !bannedLoginUsers.includes(etuUser.login)) {
             assignFromWeb
-              .etuToDiscord(etuUser, etuUser.discordTag, guild, nameOverride)
+              .etuToDiscord(etuUser, etuUser.discordTag, guild, nameOverride, additionalRoles)
               .catch(console.error);
             compteur += 1;
+            console.log(compteur);
           }
         }
       }

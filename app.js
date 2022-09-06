@@ -5,7 +5,6 @@ const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const serveIndex = require("serve-index");
-const Sentry = require("@sentry/node");
 const Discord = require("discord.js");
 const rateLimit = require("./Discord/DiscordEvents/rateLimit");
 const ready = require("./Discord/DiscordEvents/ready");
@@ -26,8 +25,8 @@ const home = require("./routes/home");
  *
  *
  * */
-// const Tracing = require("@sentry/tracing");
-
+const Sentry = require("@sentry/node");
+const SentryTracing = require("@sentry/tracing");
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
 
@@ -105,6 +104,8 @@ const client = new Discord.Client({ intents: intents, partials: ["CHANNEL"] });
 if (process.env.WATCH_RATE_LIMIT) {
   client.on("rateLimit", (rateLimitInfo) => rateLimit(rateLimitInfo));
 }
+
+const additionalRoles = {}
 
 if (process.env.DISCORD_LISTEN === "1") {
   /** Un tableau[channelTexte] = channelVocal associé */
@@ -187,11 +188,11 @@ if (process.env.WEB_LISTEN === "1") {
     app.use("/connexion", connexion);
     app.use(
       "/attribuerrole",
-      attribuerRole(client, nameOverride, bannedLoginUsers)
+      attribuerRole(client, nameOverride, bannedLoginUsers, additionalRoles)
     );
     app.use(
       `/cron/${process.env.CRON_SECRET}`,
-      cron(client, nameOverride, bannedLoginUsers)
+      cron(client, nameOverride, bannedLoginUsers, additionalRoles)
     );
     app.use("/", home);
   } else {
