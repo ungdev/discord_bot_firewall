@@ -143,6 +143,9 @@ module.exports = async function message(
         case "author":
           msg.channel.send(utils.author).catch(console.error);
           break;
+        case "certif":
+          await certif(msg);
+          break;
         default:
           if (!commandesAdmin.includes(parametres[1].toLowerCase())) {
             await discordUtils.help(msg);
