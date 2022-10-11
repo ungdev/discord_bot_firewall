@@ -18,7 +18,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "@sentry/node": "^7.0.0",
+    "@sentry/node": "^7.15.0",
     "@sentry/tracing": "^7.0.0",
     "axios": "^0.26.0",
     "capitalize": "^2.0.3",
