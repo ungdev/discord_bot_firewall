@@ -34,7 +34,7 @@ module.exports = async function addUEs(
     for (const currentBranchCategoriesAndElectedRole of branchCategoriesAndElectedRole.split(";")) {
       if (currentBranchCategoriesAndElectedRole.split(":")[0].toUpperCase() === parametres[2].toUpperCase()) {
         currentCategories = currentBranchCategoriesAndElectedRole.split(":")[1].split(",");
-        currentElectedRole = currentBranchCategoriesAndElectedRole.split(":")[2];
+        currentElectedRoles = currentBranchCategoriesAndElectedRole.split(":")[2].split(",");
       }
     }
 
@@ -80,7 +80,7 @@ module.exports = async function addUEs(
                   channelsCounts[i] += 1;
                   channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
                   channel.permissionOverwrites.edit(ueRole, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
-                  if(currentElectedRole.length > 0) {
+                  for (const currentElectedRole of currentElectedRoles) {
                     channel.permissionOverwrites.edit(currentElectedRole, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
                   }
                   channel.send(
@@ -117,7 +117,7 @@ module.exports = async function addUEs(
                     ueRole.id,
                     discordUtils.permissionsLireEcrireBasiquesOverwrite(true)
                   );
-                  if (currentElectedRole.length > 0) {
+                  for (const currentElectedRole of currentElectedRoles) {
                     channel.permissionOverwrites.edit(
                       currentElectedRole,
                       discordUtils.permissionsLireEcrireBasiquesOverwrite(true)
