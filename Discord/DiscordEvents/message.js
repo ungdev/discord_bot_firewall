@@ -24,6 +24,7 @@ const delSameRoles = require("../Commands/delSameRoles");
 const listAnon = require("../Commands/listAnon");
 const sendAnon = require("../Commands/sendAnon");
 const addUes = require("../Commands/addUEs");
+const certif = require("../Commands/certif");
 const { getUserFromGuild } = require("../discordUtils");
 
 const { Permissions } = require("discord.js");
