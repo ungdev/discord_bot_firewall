@@ -39,7 +39,7 @@ module.exports.help = async function help(
         `\n\`${process.env.BOT_PREFIX} export\`. Exporte tout le channel dans lequel la commande est tapée, dans un html lisible offline. **Seuls ceux ayant un rôle >= Enseignant** peuvent taper cette commande n'importe où.` +
           `\n\`${process.env.BOT_PREFIX} joinVocal\`. Pour les étudiants, crée ou rejoint le channel vocal de l'UE correspondant au channel texte, auquel seuls les étudiants de l'UE ont accès. Pour les enseignants, crée un amphi vocal et textuel que tout le monde peut rejoindre. Si vous rajoutez \`@NOM_UE\` à la fin de la commande, crée un amphi visible seulement par vous, les étudiants de l'UE et tous les enseignants (pour faciliter les cours à plusieurs enseignants).` +
           `\n\`${process.env.BOT_PREFIX} pin messageID\`. Permet d'ajouter un message à la liste des messages pin (sans donner la permission \`MANAGE_MESSAGES\`)` +
-          `\n\`${process.env.BOT_PREFIX} unpin messageID\`. Permet de supprimer un message de la liste des messages pin (sans donner la permission \`MANAGE_MESSAGES\`)`
+          `\n\`${process.env.BOT_PREFIX} unpin messageID\`. Permet de supprimer un message de la liste des messages pin (sans donner la permission \`MANAGE_MESSAGES\`)` +
           `\n\`${process.env.BOT_PREFIX} certif\`. Envoie un message décrivant la manière de trouver son certificat de scolarité sur l'ent.`
       )
       .catch(console.error);
