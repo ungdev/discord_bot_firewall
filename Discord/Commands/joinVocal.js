@@ -144,7 +144,7 @@ module.exports = async function joinVocal(
                   `:loudspeaker: Etudiants de <@&${
                     msg.mentions.roles.first().id
                   }>, votre enseignant ${
-                    msg.member.nickname ? msg.member.nickname : msg.author.tag
+                    msg.member.nickname ? msg.member.nickname : msg.author.username
                   } vient de créer un amphi !`
                 )
                 .catch(console.error);
@@ -159,7 +159,7 @@ module.exports = async function joinVocal(
                   `:school: <@&${
                     msg.mentions.roles.first().id
                   }> Votre enseignant ${
-                    msg.member.nickname ? msg.member.nickname : msg.author.tag
+                    msg.member.nickname ? msg.member.nickname : msg.author.username
                   } vient de créer un amphi <#${channel.id}>`
                 );
             }
@@ -174,7 +174,7 @@ module.exports = async function joinVocal(
       .catch(console.error);
     (await msg.guild.channels.resolve(process.env.CHANNEL_ADMIN_ID))
       .send(
-        ` :octagonal_sign: Alerte ! ${msg.author.tag} / ${msg.member.nickname} a tenté de lancer un vocal en n'étant ni enseignant ni étudiant.`
+        ` :octagonal_sign: Alerte ! ${discordUtils.getUsername(msg.author)} / ${msg.member.nickname} a tenté de lancer un vocal en n'étant ni enseignant ni étudiant.`
       )
       .catch(console.error);
   }

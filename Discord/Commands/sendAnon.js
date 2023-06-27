@@ -1,4 +1,5 @@
 const logFile = require("../../logFile");
+const { getUsername } = require("../discordUtils");
 
 module.exports = async function sendAnon(
   /** import("discord.js").Message */ msg,
@@ -23,7 +24,7 @@ module.exports = async function sendAnon(
       .send(`[ANONYME] ${parametres.slice(3, parametres.length).join(" ")}`)
       .then((msgAnon) => {
         logFile.logToFile(
-          `Le message ${msgAnon.id} a été envoyé par ${msg.author.tag} alias ${guildMember.displayName} sur le canal ${parametres[2]}.`
+          `Le message ${msgAnon.id} a été envoyé par ${getUsername(msg.author)} alias ${guildMember.displayName} sur le canal ${parametres[2]}.`
         );
         msg.react('✅').catch(console.error);
       });

@@ -1,4 +1,5 @@
 const { Permissions } = require("discord.js");
+const discordUtils = require("../discordUtils");
 
 module.exports = async function kickAll(
   /** import("discord.js").Message */ msg,
@@ -27,15 +28,14 @@ module.exports = async function kickAll(
           compteur += 1;
         } else
           msg.channel
-            .send(`L'utilisateur ${membre.user.tag} n'a pas pu être expulsé.`)
+            .send(`L'utilisateur ${discordUtils.getUsername(membre.user)} n'a pas pu être expulsé.`)
             .catch(console.error);
       });
       await msg
         .reply(
-          ` :white_check_mark: ${compteur} utilisateurs ont été expulsés. Il reste ${
-            (
-              await msg.guild.members.fetch()
-            ).size
+          ` :white_check_mark: ${compteur} utilisateurs ont été expulsés. Il reste ${(
+            await msg.guild.members.fetch()
+          ).size
           } membres`
         )
         .catch(console.error);
@@ -55,7 +55,7 @@ module.exports = async function kickAll(
       )
       .catch(console.error);
     (await msg.guild.channels.resolve(process.env.CHANNEL_ADMIN_ID)).send(
-      `@everyone L'utilisateur ${msg.member.nickname} / ${msg.author.tag} a été expulsé.`
+      `@everyone L'utilisateur ${msg.member.nickname} / ${discordUtils.getUsername(msg.author)} a été expulsé.`
     );
   }
 };
