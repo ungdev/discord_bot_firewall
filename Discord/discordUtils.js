@@ -35,7 +35,7 @@ module.exports.help = async function help(
       )
       .catch(console.error);
   }
-  if (msg.channel.type !== "DM") {
+  if (msg.channel.type !== ChannelType.DM) {
     msg.channel
       .send(
         `\n\`${process.env.BOT_PREFIX} export\`. Exporte tout le channel dans lequel la commande est tapée, dans un html lisible offline. **Seuls ceux ayant un rôle >= Enseignant** peuvent taper cette commande n'importe où.` +
@@ -152,8 +152,8 @@ module.exports.getUserFromGuild = async function getUserFromGuild(
   );
 };
 
-module.exports.getUsername = async function getUsername(
-  /** import("discord.js").User */ membreDiscord
+module.exports.getUsername = function getUsername(
+  /** import("discord.js").GuildMember */ membreDiscord
 ) {
   return membreDiscord.user.username + (membreDiscord.user.discriminator !== '0' ? `#${membreDiscord.user.discriminator}` : '')
 };
