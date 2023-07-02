@@ -28,7 +28,7 @@ module.exports = async function kickAll(
           compteur += 1;
         } else
           msg.channel
-            .send(`L'utilisateur ${discordUtils.getUsername(membre.user)} n'a pas pu être expulsé.`)
+            .send(`L'utilisateur ${discordUtils.getUsername(membre)} n'a pas pu être expulsé.`)
             .catch(console.error);
       });
       await msg
