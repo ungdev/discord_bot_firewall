@@ -1,3 +1,4 @@
+const { ChannelType } = require("discord.js");
 const discordUtils = require("../discordUtils");
 
 module.exports = async function addUE(
@@ -30,8 +31,7 @@ module.exports = async function addUE(
           channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
           channel.permissionOverwrites.edit(msg.mentions.roles.first().id, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
           channel.send(
-            `Bonjour <@&${
-              msg.mentions.roles.first().id
+            `Bonjour <@&${msg.mentions.roles.first().id
             }>, votre channel texte vient d'être créé !`
           );
         })
@@ -45,12 +45,12 @@ module.exports = async function addUE(
       msg.guild.channels
         .create(`${msg.mentions.roles.first().name.toLowerCase()} - vocal`, {
           parent: parametres[3],
-          type: "GUILD_VOICE",
+          type: ChannelType.GuildVoice,
           userLimit: 99
         }).then((channel => {
-        channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
-        channel.permissionOverwrites.edit(msg.mentions.roles.first().id, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
-      }))
+          channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
+          channel.permissionOverwrites.edit(msg.mentions.roles.first().id, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
+        }))
         .catch(console.error);
     }
     msg.react('✅').catch(console.error);
