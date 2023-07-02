@@ -26,7 +26,7 @@ const sendAnon = require("../Commands/sendAnon");
 const addUes = require("../Commands/addUEs");
 const { getUserFromGuild, getUsername } = require("../discordUtils");
 
-const { Permissions } = require("discord.js");
+const { Permissions, ChannelType } = require("discord.js");
 
 const commandesAdmin = [
   "delue",
@@ -122,7 +122,7 @@ module.exports = async function message(
           break;
       }
     }
-    if (msg.channel.type !== "DM") {
+    if (msg.channel.type !== ChannelType.DM) {
       switch (parametres[1].toLowerCase()) {
         case "export":
           await exportChannel(msg);
@@ -150,7 +150,7 @@ module.exports = async function message(
           break;
       }
     }
-    if (msg.channel.type === "DM") {
+    if (msg.channel.type === ChannelType.DM) {
       const anonymousChannels = {};
       const currentUserAnonymousChannels = {};
       let guildMember;

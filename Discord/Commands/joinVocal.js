@@ -1,5 +1,6 @@
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
+const { ChannelType } = require("discord.js");
 const discordUtils = require("../discordUtils");
 
 module.exports = async function joinVocal(
@@ -44,7 +45,7 @@ module.exports = async function joinVocal(
       msg.guild.channels
         .create(`${msg.channel.name.toLowerCase()} - etudes`, {
           parent: msg.channel.parentId,
-          type: "GUILD_VOICE",
+          type: ChannelType.GuildVoice,
           userLimit: 99
         })
         .then(async (channel) => {
@@ -92,7 +93,7 @@ module.exports = async function joinVocal(
     msg.guild.channels
       .create(`${nomChannel} - vocal`, {
         parent: process.env.CATEGORY_AMPHI,
-        type: "GUILD_VOICE",
+        type: ChannelType.GuildVoice,
         userLimit: 99
       })
       .then((channel) => {
@@ -127,39 +128,35 @@ module.exports = async function joinVocal(
         (await msg.guild.channels.resolve(channel.id))
           .send(
             `:speaking_head: <@${msg.member.id}> Votre amphi vient d'être créé. Vous disposez d'un canal textuel (celui que vous regardez, visible à gauche et qui commence par #), et d'un canal vocal où vous pouvez parler jusqu'à 100 personnes, et 50 maximum si vous partagez votre écran.` +
-              `\n:wastebasket: **Les canaux voix et texte seront effacés dès que plus personne ne sera dans le canal vocal.**` +
-              `\n\n:writing_hand: Si vous souhaitez conserver le tchat, pensez à taper la commande \`/ UE export\`, **sans l'espace entre / et UE**. Seul un enseignant ou un modérateur/administrateur peut utiliser cette commande qui génére un fichier zip contenant tout la conversation du tchat textuel utilisable dans un navigateur web, même hors ligne.` +
-              `\n\n:tools: Vous pouvez renommer vos salons sur la gauche qui portent votre nom pour leur donner le nom de l'UE par exemple (clic-droit sur le salon à gauche, modifier le salon puis enregistrer les changements)` +
-              `\n\n:toolbox: En bas à gauche, à côté de voix connectée, vous disposez de 5 boutons.` +
-              `\nLes deux boutons au dessus permettent de diffuser votre écran (bouton flèche dans l'écran) ou de mettre fin à la communication (bouton téléphone avec la croix).` +
-              `\nLes trois boutons du bas permettent de couper votre micro (ne plus parler), ou votre casque (ne plus entendre), et d'accéder aux paramètres de Discord grâce à la roue crantée.` +
-              `\n\n:grey_question: Tapez \`/UE\` pour voir la liste des commandes. N'hésitez pas à envoyer un message à la modération (tapez \`@ Modération\` sans espace) ou l'administration (\`@ Administrateur\`, sans espace) du serveur en cas de souci.` +
-              `\n\n:school: Bon cours !\n\n`
+            `\n:wastebasket: **Les canaux voix et texte seront effacés dès que plus personne ne sera dans le canal vocal.**` +
+            `\n\n:writing_hand: Si vous souhaitez conserver le tchat, pensez à taper la commande \`/ UE export\`, **sans l'espace entre / et UE**. Seul un enseignant ou un modérateur/administrateur peut utiliser cette commande qui génére un fichier zip contenant tout la conversation du tchat textuel utilisable dans un navigateur web, même hors ligne.` +
+            `\n\n:tools: Vous pouvez renommer vos salons sur la gauche qui portent votre nom pour leur donner le nom de l'UE par exemple (clic-droit sur le salon à gauche, modifier le salon puis enregistrer les changements)` +
+            `\n\n:toolbox: En bas à gauche, à côté de voix connectée, vous disposez de 5 boutons.` +
+            `\nLes deux boutons au dessus permettent de diffuser votre écran (bouton flèche dans l'écran) ou de mettre fin à la communication (bouton téléphone avec la croix).` +
+            `\nLes trois boutons du bas permettent de couper votre micro (ne plus parler), ou votre casque (ne plus entendre), et d'accéder aux paramètres de Discord grâce à la roue crantée.` +
+            `\n\n:grey_question: Tapez \`/UE\` pour voir la liste des commandes. N'hésitez pas à envoyer un message à la modération (tapez \`@ Modération\` sans espace) ou l'administration (\`@ Administrateur\`, sans espace) du serveur en cas de souci.` +
+            `\n\n:school: Bon cours !\n\n`
           )
           .then(async (message) => {
             message.pin().catch(console.error);
             if (msg.mentions.roles.first()) {
               channel
                 .send(
-                  `:loudspeaker: Etudiants de <@&${
-                    msg.mentions.roles.first().id
-                  }>, votre enseignant ${
-                    msg.member.nickname ? msg.member.nickname : msg.author.username
+                  `:loudspeaker: Etudiants de <@&${msg.mentions.roles.first().id
+                  }>, votre enseignant ${msg.member.nickname ? msg.member.nickname : msg.author.username
                   } vient de créer un amphi !`
                 )
                 .catch(console.error);
               const channelEtudiants = msg.guild.channels.cache.find(
                 (chan) =>
-                  chan.type === "GUILD_TEXT" &&
+                  chan.type === ChannelType.GuildText &&
                   chan.name.toLowerCase() ===
-                    msg.mentions.roles.first().name.toLowerCase()
+                  msg.mentions.roles.first().name.toLowerCase()
               );
               if (channelEtudiants)
                 channelEtudiants.send(
-                  `:school: <@&${
-                    msg.mentions.roles.first().id
-                  }> Votre enseignant ${
-                    msg.member.nickname ? msg.member.nickname : msg.author.username
+                  `:school: <@&${msg.mentions.roles.first().id
+                  }> Votre enseignant ${msg.member.nickname ? msg.member.nickname : msg.author.username
                   } vient de créer un amphi <#${channel.id}>`
                 );
             }

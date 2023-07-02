@@ -1,10 +1,12 @@
+const { ActivityType } = require("discord.js");
+
 module.exports = async function ready(
   /** 'import("discord.js").Client */ client
 ) {
   /** On dit qu'il est en train de jouer à "gérer le serveur" sur l'url du BOT */
   client.user
     .setActivity(process.env.BOT_PREFIX, {
-      type: "LISTENING",
+      type: ActivityType.Listening,
       url: process.env.BOT_URL,
     });
   /** On alerte sur le chan dédié au bot du démarrage */

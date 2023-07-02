@@ -1,3 +1,5 @@
+const { ChannelType } = require("discord.js");
+
 module.exports.help = async function help(
   /** import("discord.js").Message */ msg
 ) {
@@ -64,54 +66,54 @@ module.exports.toutesPermissionsOverwrite = function toutesPermissionsOverwrite(
   ouiOuNonOuNull
 ) {
   return {
-    "CREATE_INSTANT_INVITE": ouiOuNonOuNull,
-    "KICK_MEMBERS": ouiOuNonOuNull,
-    "BAN_MEMBERS": ouiOuNonOuNull,
-    "STREAM": ouiOuNonOuNull,
-    "MANAGE_CHANNELS": ouiOuNonOuNull,
-    "MANAGE_GUILD": ouiOuNonOuNull,
-    "ADD_REACTIONS": ouiOuNonOuNull,
-    "VIEW_AUDIT_LOG": ouiOuNonOuNull,
-    "PRIORITY_SPEAKER": ouiOuNonOuNull,
-    "VIEW_CHANNEL": ouiOuNonOuNull,
-    "SEND_MESSAGES": ouiOuNonOuNull,
-    "SEND_TTS_MESSAGES": ouiOuNonOuNull,
-    "MANAGE_MESSAGES": ouiOuNonOuNull,
-    "EMBED_LINKS": ouiOuNonOuNull,
-    "ATTACH_FILES": ouiOuNonOuNull,
-    "READ_MESSAGE_HISTORY": ouiOuNonOuNull,
-    "MENTION_EVERYONE": ouiOuNonOuNull,
-    "USE_EXTERNAL_EMOJIS": ouiOuNonOuNull,
-    "CONNECT": ouiOuNonOuNull,
-    "SPEAK": ouiOuNonOuNull,
-    "MUTE_MEMBERS": ouiOuNonOuNull,
-    "DEAFEN_MEMBERS": ouiOuNonOuNull,
-    "MOVE_MEMBERS": ouiOuNonOuNull,
-    "USE_VAD": ouiOuNonOuNull,
-    "CHANGE_NICKNAME": ouiOuNonOuNull,
-    "MANAGE_NICKNAMES": ouiOuNonOuNull,
-    "MANAGE_ROLES": ouiOuNonOuNull,
-    "MANAGE_WEBHOOKS": ouiOuNonOuNull,
-    "MANAGE_EMOJIS_AND_STICKERS": ouiOuNonOuNull,
-    "VIEW_GUILD_INSIGHTS": ouiOuNonOuNull
+    "CreateInstantInvite": ouiOuNonOuNull,
+    "KickMembers": ouiOuNonOuNull,
+    "BanMembers": ouiOuNonOuNull,
+    "Stream": ouiOuNonOuNull,
+    "ManageChannels": ouiOuNonOuNull,
+    "ManageGuild": ouiOuNonOuNull,
+    "AddReactions": ouiOuNonOuNull,
+    "ViewAuditLog": ouiOuNonOuNull,
+    "PrioritySpeaker": ouiOuNonOuNull,
+    "ViewChannel": ouiOuNonOuNull,
+    "SendMessages": ouiOuNonOuNull,
+    "SendTTSMessages": ouiOuNonOuNull,
+    "ManageMessages": ouiOuNonOuNull,
+    "EmbedLinks": ouiOuNonOuNull,
+    "AttachFiles": ouiOuNonOuNull,
+    "ReadMessageHistory": ouiOuNonOuNull,
+    "MentionEveryone": ouiOuNonOuNull,
+    "UseExternalEmojis": ouiOuNonOuNull,
+    "Connect": ouiOuNonOuNull,
+    "Speak": ouiOuNonOuNull,
+    "MuteMembers": ouiOuNonOuNull,
+    "DeafenMembers": ouiOuNonOuNull,
+    "MoveMembers": ouiOuNonOuNull,
+    "UseVAD": ouiOuNonOuNull,
+    "ChangeNickname": ouiOuNonOuNull,
+    "ManageNicknames": ouiOuNonOuNull,
+    "ManageRoles": ouiOuNonOuNull,
+    "ManageWebhooks": ouiOuNonOuNull,
+    "ManageEmojisAndStickers": ouiOuNonOuNull,
+    "ViewGuildInsights": ouiOuNonOuNull
   }
 };
 
 module.exports.permissionsLireEcrireBasiquesOverwrite =
   function permissionsLireEcrireBasiquesOverwrite(ouiOuNonOuNull) {
     return {
-      "ADD_REACTIONS": ouiOuNonOuNull,
-      "STREAM": ouiOuNonOuNull,
-      "VIEW_CHANNEL": ouiOuNonOuNull,
-      "SEND_MESSAGES": ouiOuNonOuNull,
-      "SEND_TTS_MESSAGES": ouiOuNonOuNull,
-      "EMBED_LINKS": ouiOuNonOuNull,
-      "ATTACH_FILES": ouiOuNonOuNull,
-      "READ_MESSAGE_HISTORY": ouiOuNonOuNull,
-      "MENTION_EVERYONE": ouiOuNonOuNull,
-      "CONNECT": ouiOuNonOuNull,
-      "SPEAK": ouiOuNonOuNull,
-      "USE_VAD": ouiOuNonOuNull
+      "AddReactions": ouiOuNonOuNull,
+      "Stream": ouiOuNonOuNull,
+      "ViewChannel": ouiOuNonOuNull,
+      "SendMessages": ouiOuNonOuNull,
+      "SendTTSMessages": ouiOuNonOuNull,
+      "EmbedLinks": ouiOuNonOuNull,
+      "AttachFiles": ouiOuNonOuNull,
+      "ReadMessageHistory": ouiOuNonOuNull,
+      "MentionEveryone": ouiOuNonOuNull,
+      "Connect": ouiOuNonOuNull,
+      "Speak": ouiOuNonOuNull,
+      "UseVAD": ouiOuNonOuNull
     }
 
   };
@@ -119,20 +121,20 @@ module.exports.permissionsLireEcrireBasiquesOverwrite =
 module.exports.permissionsLireEcrireProfOverwrite =
   function permissionsLireEcrireProfOverwrite(ouiOuNonOuNull) {
     return {
-      "ADD_REACTIONS": ouiOuNonOuNull,
-      "PRIORITY_SPEAKER": ouiOuNonOuNull,
-      "STREAM": ouiOuNonOuNull,
-      "VIEW_CHANNEL": ouiOuNonOuNull,
-      "SEND_MESSAGES": ouiOuNonOuNull,
-      "SEND_TTS_MESSAGES": ouiOuNonOuNull,
-      "MANAGE_MESSAGES": ouiOuNonOuNull,
-      "EMBED_LINKS": ouiOuNonOuNull,
-      "ATTACH_FILES": ouiOuNonOuNull,
-      "READ_MESSAGE_HISTORY": ouiOuNonOuNull,
-      "MENTION_EVERYONE": ouiOuNonOuNull,
-      "CONNECT": ouiOuNonOuNull,
-      "SPEAK": ouiOuNonOuNull,
-      "USE_VAD": ouiOuNonOuNull
+      "AddReactions": ouiOuNonOuNull,
+      "PrioritySpeaker": ouiOuNonOuNull,
+      "Stream": ouiOuNonOuNull,
+      "ViewChannel": ouiOuNonOuNull,
+      "SendMessages": ouiOuNonOuNull,
+      "SendTTSMessages": ouiOuNonOuNull,
+      "ManageMessages": ouiOuNonOuNull,
+      "EmbedLinks": ouiOuNonOuNull,
+      "AttachFiles": ouiOuNonOuNull,
+      "ReadMessageHistory": ouiOuNonOuNull,
+      "MentionEveryone": ouiOuNonOuNull,
+      "Connect": ouiOuNonOuNull,
+      "Speak": ouiOuNonOuNull,
+      "UseVAD": ouiOuNonOuNull
     }
 
   };
@@ -206,7 +208,7 @@ module.exports.delUE = async function delUE(
             channel.name
               .toLowerCase()
               .includes(`${channelToDelete.name.toLowerCase()} `)) &&
-          channel.type === "GUILD_VOICE"
+          channel.type === ChannelType.GuildVoice
       )
       .delete(`Demandé par ${module.exports.getUsername(msg.author)}`)
       .catch(console.error);

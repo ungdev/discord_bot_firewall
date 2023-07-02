@@ -1,3 +1,4 @@
+const { ChannelType } = require("discord.js");
 const discordUtils = require("../discordUtils");
 
 module.exports = async function addUEs(
@@ -56,14 +57,14 @@ module.exports = async function addUEs(
             roleToTest.name.toUpperCase() ===
             ue.toUpperCase()
         );
-        if(!ueRole) {
+        if (!ueRole) {
           msg.channel.send(` :grey_question: Pas de rôle pour ${ue}`);
         }
         else {
           while (channelsCounts[i] + parametres[3].toLowerCase() === "lesdeux" ? 2 : 1 > maxChannelsPerCategory && i < currentCategories.length) {
             i = i + 1;
           }
-          if(i >= currentCategories.length) {
+          if (i >= currentCategories.length) {
             msg.reply(` :bangbang: Limite de canaux par catégories atteinte (maximum ${maxChannelsPerCategory}) pour toutes les catégories spécifiées. Arrêt de la création de canaux.`).catch(console.error);
             return;
           }
@@ -71,7 +72,7 @@ module.exports = async function addUEs(
             parametres[3].toLowerCase() === "texte" ||
             parametres[3].toLowerCase() === "lesdeux"
           ) {
-            if(!msg.guild.channels.cache.find(channel => channel.name.toLowerCase() === ue.toLowerCase())) {
+            if (!msg.guild.channels.cache.find(channel => channel.name.toLowerCase() === ue.toLowerCase())) {
               msg.guild.channels
                 .create(ue.toLowerCase(), {
                   parent: currentCategories[i]
@@ -84,8 +85,7 @@ module.exports = async function addUEs(
                     channel.permissionOverwrites.edit(currentElectedRole, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
                   }
                   channel.send(
-                    `Bonjour <@&${
-                      ueRole.id
+                    `Bonjour <@&${ueRole.id
                     }>, votre channel texte vient d'être créé !`
                   );
                   msg.channel.send(` :white_check_mark: Canal texte ${ue.toLowerCase()} créé`).catch(console.error);
@@ -101,11 +101,11 @@ module.exports = async function addUEs(
             parametres[3].toLowerCase() === "vocal" ||
             parametres[3].toLowerCase() === "lesdeux"
           ) {
-            if(!msg.guild.channels.cache.find(channel => channel.name.toLowerCase() === ue.toLowerCase() + " - vocal")) {
+            if (!msg.guild.channels.cache.find(channel => channel.name.toLowerCase() === ue.toLowerCase() + " - vocal")) {
               msg.guild.channels
                 .create(`${ue.toLowerCase()} - vocal`, {
                   parent: currentCategories[i],
-                  type: "GUILD_VOICE",
+                  type: ChannelType.GuildVoice,
                   userLimit: 99
                 }).then((channel => {
                   channelsCounts[i] += 1;
@@ -128,11 +128,11 @@ module.exports = async function addUEs(
                       ` :white_check_mark: Canal vocal ${ue.toLowerCase()} - vocal créé`
                     )
                     .catch(console.error);
-              }))
+                }))
                 .catch(console.error);
             }
             else {
-              msg.channel.send(` :zzz: Le canal vocal ${ue.toLowerCase()  } - vocal existe déjà.`)
+              msg.channel.send(` :zzz: Le canal vocal ${ue.toLowerCase()} - vocal existe déjà.`)
             }
           }
         }

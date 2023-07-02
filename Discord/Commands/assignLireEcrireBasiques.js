@@ -1,3 +1,4 @@
+const { ChannelType } = require("discord.js");
 const discordUtils = require("../discordUtils");
 
 module.exports = async function assignLireEcrireBasique(
@@ -26,7 +27,7 @@ module.exports = async function assignLireEcrireBasique(
       )
       .catch(console.error);
     const channel = msg.guild.channels.resolve(parametres[2]);
-    if (channel.type === "GUILD_CATEGORY")
+    if (channel.type === ChannelType.GuildCategory)
       channel.children.forEach((chan) =>
         discordUtils.assignPerm(chan, msg.mentions.roles.first(), parametres[4])
       );
