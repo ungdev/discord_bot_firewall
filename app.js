@@ -97,7 +97,8 @@ const intents = [
   GatewayIntentBits.GuildPresences,
   GatewayIntentBits.GuildMessages,
   GatewayIntentBits.DirectMessages,
-  GatewayIntentBits.Guilds
+  GatewayIntentBits.Guilds,
+  GatewayIntentBits.MessageContent
 ];
 const client = new Client({ intents: intents, partials: [Partials.Channel] });
 
