@@ -96,12 +96,12 @@ module.exports = async function addUEs(
                 })
                 .then((channel) => {
                   channelsCounts[i] += 1;
-                  console.log("Everyone permissions: " + typeof msg.guild.roles.everyone + " " + msg.guild.roles.everyone);
+                  //console.log("Everyone permissions: " + typeof msg.guild.roles.everyone + " " + msg.guild.roles.everyone);
                   channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
-                  console.log("UE role: " + typeof ueRole + " " + ueRole)
+                  //console.log("UE role: " + typeof ueRole + " " + ueRole)
                   channel.permissionOverwrites.edit(ueRole, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
                   for (const currentElectedRole of currentElectedRoles) {
-                    console.log("Elected roles: " + typeof currentElectedRole + " " + currentElectedRole);
+                    //console.log("Elected roles: " + typeof currentElectedRole + " " + currentElectedRole);
                     channel.permissionOverwrites.edit(currentElectedRole, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
                   }
                   channel.send(
@@ -165,6 +165,7 @@ module.exports = async function addUEs(
           }
         }
       }
+      msg.channel.send('✅ La commande est terminée !').catch(console.error);
     }
   }
 };

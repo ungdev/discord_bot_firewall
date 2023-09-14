@@ -18,9 +18,11 @@ module.exports = async function delUEs(
       )
       .catch(console.error);
   } else {
-    msg.guild.channels.cache
-      .get(parametres[2])
-      .children.forEach((channel) => utils.delUE(channel, msg, parametres[3]));
+    //iterate on each channels of the guild
+    for (const channel of msg.guild.channels.cache) {
+      if (channel[1].parent && channel[1].parent.id === parametres[2])
+        await utils.delUE(channel[1], msg, parametres[3])
+    }
     msg.react('✅').catch(console.error);
   }
 };
