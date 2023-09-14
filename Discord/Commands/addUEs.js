@@ -1,4 +1,4 @@
-const { ChannelType } = require("discord.js");
+const { ChannelType, Role} = require("discord.js");
 const discordUtils = require("../discordUtils");
 
 module.exports = async function addUEs(
@@ -35,7 +35,14 @@ module.exports = async function addUEs(
     for (const currentBranchCategoriesAndElectedRole of branchCategoriesAndElectedRole.split(";")) {
       if (currentBranchCategoriesAndElectedRole.split(":")[0].toUpperCase() === parametres[2].toUpperCase()) {
         currentCategories = currentBranchCategoriesAndElectedRole.split(":")[1].split(",");
-        currentElectedRoles = currentBranchCategoriesAndElectedRole.split(":")[2].split(",");
+        currentElectedRolesTemp = currentBranchCategoriesAndElectedRole.split(":")[2].split(",");
+        //get all of those roles
+        currentElectedRoles = [];
+        for (const currentElectedRoleTemp of currentElectedRolesTemp) {
+            let role = await msg.guild.roles.fetch(currentElectedRoleTemp);
+            if (role)
+              currentElectedRoles.push(role);
+        }
       }
     }
 
@@ -46,7 +53,16 @@ module.exports = async function addUEs(
       const roles = (await msg.guild.roles.fetch());
       const channelsCounts = [];
       for (const category in currentCategories) {
-        channelsCounts[category] = msg.guild.channels.cache.get(currentCategories[category]).children.size;
+        // get the number of channels in the category
+        //channelsCounts[category] = msg.guild.channels.cache.get(currentCategories[category]).children.size;
+        let i = 0;
+        //iterate on each channels of the guild
+        for (const channel of msg.guild.channels.cache) {
+          if (channel[1].parent && channel[1].parent.id === currentCategories[category])
+            i++
+        }
+
+        channelsCounts[category] = i;
       }
 
       let i = 0;
@@ -74,14 +90,18 @@ module.exports = async function addUEs(
           ) {
             if (!msg.guild.channels.cache.find(channel => channel.name.toLowerCase() === ue.toLowerCase())) {
               msg.guild.channels
-                .create(ue.toLowerCase(), {
+              .create({
+                    name: ue.toLowerCase(),
                   parent: currentCategories[i]
                 })
                 .then((channel) => {
                   channelsCounts[i] += 1;
+                  console.log("Everyone permissions: " + typeof msg.guild.roles.everyone + " " + msg.guild.roles.everyone);
                   channel.permissionOverwrites.edit(msg.guild.roles.everyone, discordUtils.toutesPermissionsOverwrite(false));
+                  console.log("UE role: " + typeof ueRole + " " + ueRole)
                   channel.permissionOverwrites.edit(ueRole, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
                   for (const currentElectedRole of currentElectedRoles) {
+                    console.log("Elected roles: " + typeof currentElectedRole + " " + currentElectedRole);
                     channel.permissionOverwrites.edit(currentElectedRole, discordUtils.permissionsLireEcrireBasiquesOverwrite(true));
                   }
                   channel.send(
@@ -91,6 +111,7 @@ module.exports = async function addUEs(
                   msg.channel.send(` :white_check_mark: Canal texte ${ue.toLowerCase()} créé`).catch(console.error);
                 })
                 .catch(console.error);
+
             } else {
               msg.channel.send(` :zzz: Le canal texte ${ue.toLowerCase()} existe déjà !`);
             }
@@ -103,11 +124,18 @@ module.exports = async function addUEs(
           ) {
             if (!msg.guild.channels.cache.find(channel => channel.name.toLowerCase() === ue.toLowerCase() + " - vocal")) {
               msg.guild.channels
-                .create(`${ue.toLowerCase()} - vocal`, {
-                  parent: currentCategories[i],
-                  type: ChannelType.GuildVoice,
-                  userLimit: 99
-                }).then((channel => {
+                //.create(`${ue.toLowerCase()} - vocal`, {
+                //  parent: currentCategories[i],
+                //  type: ChannelType.GuildVoice,
+                //  userLimit: 99
+                //})
+                .create({
+                    name: `${ue.toLowerCase()} - vocal`,
+                    parent: currentCategories[i],
+                    type: ChannelType.GuildVoice,
+                    userLimit: 99
+                })
+                .then((channel => {
                   channelsCounts[i] += 1;
                   channel.permissionOverwrites.edit(
                     msg.guild.roles.everyone,
