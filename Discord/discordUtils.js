@@ -155,7 +155,7 @@ module.exports.getUserFromGuild = async function getUserFromGuild(
 module.exports.getUsername = function getUsername(
   /** import("discord.js").GuildMember */ membreDiscord
 ) {
-  return membreDiscord.tag
+  return membreDiscord.username + (membreDiscord.discriminator !== '0' ? `#${membreDiscord.discriminator}` : '')
 };
 
 module.exports.assignPerm = function assignPerm(
