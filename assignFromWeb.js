@@ -68,7 +68,7 @@ module.exports.etuToDiscord = async function etuToDiscord(
               await guild.channels
                 .resolve(process.env.CHANNEL_ADMIN_ID)
                 .send(
-                  `Le rôle ${chaine} va être créé pour l'utilisateur ${discordUtils.getUsername(membreDiscord)} ${pseudo}`
+                  `Le rôle ${chaine} va être créé pour l'utilisateur ${discordUsername} ${pseudo}`
                 );
               await guild.roles
                 .create(
@@ -92,7 +92,7 @@ module.exports.etuToDiscord = async function etuToDiscord(
       guild.channels
         .resolve(process.env.CHANNEL_ADMIN_ID)
         .send(
-          ` :warning: Le pseudo ${pseudo} de l'utilisateur ${discordUtils.getUsername(membreDiscord)} est trop long. Vérifiez son pseudo.`
+          ` :warning: Le pseudo ${pseudo} de l'utilisateur ${discordUsername} est trop long. Vérifiez son pseudo.`
         );
       pseudo = pseudo.slice(0, 32);
     }
