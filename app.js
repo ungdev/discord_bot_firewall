@@ -5,7 +5,7 @@ const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const serveIndex = require("serve-index");
-const Discord = require("discord.js");
+const { Client, GatewayIntentBits, Partials } = require("discord.js");
 const rateLimit = require("./Discord/DiscordEvents/rateLimit");
 const ready = require("./Discord/DiscordEvents/ready");
 const guildMemberAdd = require("./Discord/DiscordEvents/guildMemberAdd");
@@ -92,14 +92,15 @@ if (process.env.BANNED_LOGIN_USERS) {
  * */
 
 const intents = [
-  Discord.Intents.FLAGS.GUILD_MEMBERS,
-  Discord.Intents.FLAGS.GUILD_VOICE_STATES,
-  Discord.Intents.FLAGS.GUILD_PRESENCES,
-  Discord.Intents.FLAGS.GUILD_MESSAGES,
-  Discord.Intents.FLAGS.DIRECT_MESSAGES,
-  Discord.Intents.FLAGS.GUILDS
+  GatewayIntentBits.GuildMembers,
+  GatewayIntentBits.GuildVoiceStates,
+  GatewayIntentBits.GuildPresences,
+  GatewayIntentBits.GuildMessages,
+  GatewayIntentBits.DirectMessages,
+  GatewayIntentBits.Guilds,
+  GatewayIntentBits.MessageContent
 ];
-const client = new Discord.Client({ intents: intents, partials: ["CHANNEL"] });
+const client = new Client({ intents: intents, partials: [Partials.Channel] });
 
 if (process.env.WATCH_RATE_LIMIT) {
   client.on("rateLimit", (rateLimitInfo) => rateLimit(rateLimitInfo));

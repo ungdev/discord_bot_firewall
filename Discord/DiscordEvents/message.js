@@ -25,9 +25,9 @@ const listAnon = require("../Commands/listAnon");
 const sendAnon = require("../Commands/sendAnon");
 const addUes = require("../Commands/addUEs");
 const certif = require("../Commands/certif");
-const { getUserFromGuild } = require("../discordUtils");
+const { getUserFromGuild, getUsername } = require("../discordUtils");
 
-const { Permissions } = require("discord.js");
+const { Permissions, ChannelType } = require("discord.js");
 
 const commandesAdmin = [
   "delue",
@@ -123,7 +123,7 @@ module.exports = async function message(
           break;
       }
     }
-    if (msg.channel.type !== "DM") {
+    if (msg.channel.type !== ChannelType.DM) {
       switch (parametres[1].toLowerCase()) {
         case "export":
           await exportChannel(msg);
@@ -154,20 +154,20 @@ module.exports = async function message(
           break;
       }
     }
-    if (msg.channel.type === "DM") {
+    if (msg.channel.type === ChannelType.DM) {
       const anonymousChannels = {};
       const currentUserAnonymousChannels = {};
       let guildMember;
       if (process.env.ANONYMOUS_CHANNELS) {
         const /** import("discord.js").Guild */ guild =
-            await msg.client.guilds.resolve(process.env.SERVER_ID);
-        guildMember = await getUserFromGuild(msg.author.tag, guild);
+          await msg.client.guilds.resolve(process.env.SERVER_ID);
+        guildMember = await getUserFromGuild(getUsername(msg.author), guild);
         /* eslint-disable no-restricted-syntax, no-await-in-loop */
         for await (const chan of process.env.ANONYMOUS_CHANNELS.split(",")) {
           const tableau = chan.split(":");
           anonymousChannels[tableau[0]] = tableau[1];
           const /** import("discord.js").Channel */ channel =
-              await guild.channels.resolve(tableau[1]);
+            await guild.channels.resolve(tableau[1]);
           if (tableau.length === 2) {
             if (
               await channel.permissionsFor(guildMember).has(Permissions.FLAGS.SEND_MESSAGES)
