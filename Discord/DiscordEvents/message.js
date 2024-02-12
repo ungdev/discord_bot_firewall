@@ -24,6 +24,7 @@ const delSameRoles = require("../Commands/delSameRoles");
 const listAnon = require("../Commands/listAnon");
 const sendAnon = require("../Commands/sendAnon");
 const addUes = require("../Commands/addUEs");
+const certif = require("../Commands/certif");
 const { getUserFromGuild, getUsername } = require("../discordUtils");
 
 const { Permissions, ChannelType } = require("discord.js");
@@ -142,6 +143,9 @@ module.exports = async function message(
           break;
         case "author":
           msg.channel.send(utils.author).catch(console.error);
+          break;
+        case "certif":
+          await certif(msg);
           break;
         default:
           if (!commandesAdmin.includes(parametres[1].toLowerCase())) {
