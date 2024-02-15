@@ -7,11 +7,12 @@
  */
 module.exports = async function certif(msg) {
   await msg.reply(
-    "Comment trouver son certificat de scolarité : \n" +
-      "1. Aller sur https://ent.utt.fr/ ;\n" +
-      "2. Se connecter avec ses identifiants UTT ;\n" +
-      '3. Suivre le chemin suivant : onglet "Formation" --> sous-onglet "Dossier des étudiants" ;\n' +
-      '4. Aller dans le menu "Mes documents administratifs" ;\n' +
-      "5. Récupérer le document souhaité."
+    "Comment trouver son certificat de scolarité :\n" +
+      "1. Aller sur https://ent.utt.fr/\n" +
+      "2. Se connecter avec ses identifiants UTT\n" +
+      '3. Suivre le chemin suivant : onglet "Formation" \u{2192} sous-onglet "Dossier des étudiants"\n' +
+      '4. Aller dans le menu "Mes documents administratifs"\n' +
+      "5. Récupérer le document souhaité\n" +
+      'PS : accessible uniquement sur ordinateur ou en mode paysage sur téléphone, sinon le bouton "Mes documents administratifs" n\'est pas visible.'
   );
 };
