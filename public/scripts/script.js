@@ -4,7 +4,7 @@ if (input) {
   const maskedInputController = vanillaTextMask.maskInput({
     inputElement: input,
     guide: false,
-    mask: function(value, params) {
+    mask: function (value, params) {
       const index = value.indexOf("#");
 
       let result = new Array(index !== -1 ? index : value.length).fill(/[^#]/);
@@ -20,7 +20,7 @@ if (input) {
       }
 
       return result;
-    }
+    },
   });
 }
 
@@ -38,7 +38,7 @@ if (rgpdCheckbox && submitButton) {
     }
   };
 
-  rgpdCheckbox.addEventListener('change', handleUpdate, false);
+  rgpdCheckbox.addEventListener("change", handleUpdate, false);
 
   handleUpdate();
 }

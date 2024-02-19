@@ -16,7 +16,7 @@ module.exports = async function pin(
         .catch(console.error);
     else {
       message.pin().catch(console.error);
-      msg.react('✅').catch(console.error);
+      msg.react("✅").catch(console.error);
     }
   }
 };

@@ -1,10 +1,10 @@
 module.exports = async function delSameRoles(
   /** import("discord.js").Message */ msg
 ) {
-  const roles = (await msg.guild.roles.fetch());
+  const roles = await msg.guild.roles.fetch();
   let deletedRoles = [];
   roles.forEach(async (roleEnCours) => {
-    const rolesActualises = await (await msg.guild.roles.fetch());
+    const rolesActualises = await await msg.guild.roles.fetch();
     const found = rolesActualises.find(
       (role) =>
         roleEnCours.name.toUpperCase() === role.name.toUpperCase() &&
@@ -22,5 +22,5 @@ module.exports = async function delSameRoles(
     }
   });
 
-  msg.react('✅').catch(console.error);
+  msg.react("✅").catch(console.error);
 };

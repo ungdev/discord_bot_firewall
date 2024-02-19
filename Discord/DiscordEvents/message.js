@@ -177,7 +177,9 @@ module.exports = async function message(
               await guild.channels.resolve(tableau[1]);
           if (tableau.length === 2) {
             if (
-              channel.permissionsFor(guildMember).has(Permissions.FLAGS.SEND_MESSAGES)
+              channel
+                .permissionsFor(guildMember)
+                .has(Permissions.FLAGS.SEND_MESSAGES)
             ) {
               currentUserAnonymousChannels[tableau[0]] = tableau[1];
             }

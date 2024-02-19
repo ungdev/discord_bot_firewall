@@ -37,6 +37,6 @@ module.exports = async function assignLireEcrireBasique(
         msg.mentions.roles.first(),
         parametres[4]
       );
-    msg.react('✅').catch(console.error);
+    msg.react("✅").catch(console.error);
   }
 };
