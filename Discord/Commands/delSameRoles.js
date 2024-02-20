@@ -4,7 +4,7 @@ module.exports = async function delSameRoles(
   const roles = await msg.guild.roles.fetch();
   let deletedRoles = [];
   roles.forEach(async (roleEnCours) => {
-    const rolesActualises = await await msg.guild.roles.fetch();
+    const rolesActualises = await msg.guild.roles.fetch();
     const found = rolesActualises.find(
       (role) =>
         roleEnCours.name.toUpperCase() === role.name.toUpperCase() &&
