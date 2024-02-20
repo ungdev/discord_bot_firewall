@@ -98,7 +98,7 @@ const intents = [
   GatewayIntentBits.GuildMessages,
   GatewayIntentBits.DirectMessages,
   GatewayIntentBits.Guilds,
-  GatewayIntentBits.MessageContent
+  GatewayIntentBits.MessageContent,
 ];
 const client = new Client({ intents: intents, partials: [Partials.Channel] });
 
@@ -106,7 +106,7 @@ if (process.env.WATCH_RATE_LIMIT) {
   client.on("rateLimit", (rateLimitInfo) => rateLimit(rateLimitInfo));
 }
 
-const additionalRoles = {}
+const additionalRoles = {};
 
 if (process.env.DISCORD_LISTEN === "1") {
   /** Un tableau[channelTexte] = channelVocal associé */
@@ -124,17 +124,23 @@ if (process.env.DISCORD_LISTEN === "1") {
   /**
    * Quand un utilisateur rejoint le serveur, on lui envoie un message de bienvenue pour lui dire de se connecter au site etu
    */
-  client.on("guildMemberAdd", (/** import("discord.js").GuildMember */ member) => {
-    guildMemberAdd(member);
-  });
+  client.on(
+    "guildMemberAdd",
+    (/** import("discord.js").GuildMember */ member) => {
+      guildMemberAdd(member);
+    }
+  );
   /** Si le bot reçoit un message en privé, ou sur l'un des channels qu'il peut voir */
-  client.on("messageCreate", async (/** import("discord.js").Message */ msg) => {
-    await message(
-      msg,
-      tableauChannelTexteAChannelVocal,
-      tableauChannelsVocauxEnCours
-    );
-  });
+  client.on(
+    "messageCreate",
+    async (/** import("discord.js").Message */ msg) => {
+      await message(
+        msg,
+        tableauChannelTexteAChannelVocal,
+        tableauChannelsVocauxEnCours
+      );
+    }
+  );
 
   if (process.env.WATCHED_MEMBERS) {
     const watchedMembers = process.env.WATCHED_MEMBERS.split(",");

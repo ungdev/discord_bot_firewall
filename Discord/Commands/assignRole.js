@@ -4,7 +4,9 @@ module.exports = async function assignRole(
   /** import("discord.js").Message */ msg,
   /** Array<String> */ parametres
 ) {
-  if ((await msg.member.fetch()).permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+  if (
+    (await msg.member.fetch()).permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+  ) {
     if (
       !msg.mentions.members.first() ||
       !msg.mentions.roles.first() ||
@@ -25,7 +27,7 @@ module.exports = async function assignRole(
           .first()
           .roles.remove(msg.mentions.roles.first())
           .catch(console.error);
-      msg.react('✅').catch(console.error);
+      msg.react("✅").catch(console.error);
     }
   } else {
     msg

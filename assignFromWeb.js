@@ -18,11 +18,13 @@ module.exports.etuToDiscord = async function etuToDiscord(
   );
   /** Si on l'a trouvé */
   if (membreDiscord) {
-    const roles = (await guild.roles.fetch());
+    const roles = await guild.roles.fetch();
     /** Liste des id de rôles à attribuer */
     /** On définit son pseudo */
     let pseudo = "";
-    console.log(`Traitement de ${discordUsername} - ${membreSiteEtu.firstName} ${membreSiteEtu.lastName}`)
+    console.log(
+      `Traitement de ${discordUsername} - ${membreSiteEtu.firstName} ${membreSiteEtu.lastName}`
+    );
     if (Object.keys(nameOverride).includes(discordUsername)) {
       pseudo = nameOverride[discordUsername];
     } else {
@@ -45,7 +47,9 @@ module.exports.etuToDiscord = async function etuToDiscord(
         let formations = [];
         for (let nombre in membreSiteEtu.branch_list) {
           tableauChainesToRoles.push(membreSiteEtu.branch_list[nombre]);
-          formations.push(`${membreSiteEtu.branch_list[nombre]}${membreSiteEtu.level_list[nombre]}`);
+          formations.push(
+            `${membreSiteEtu.branch_list[nombre]}${membreSiteEtu.level_list[nombre]}`
+          );
         }
         pseudo += ` - ${formations.join("/")}`;
         /** On définit la liste des noms de rôles à attribuer (nom uvs + nom de branche) */
@@ -53,14 +57,20 @@ module.exports.etuToDiscord = async function etuToDiscord(
 
         tableauChainesToRoles.forEach(async (chaine) => {
           chaine = chaine.toUpperCase();
-          if (await utils.roleValide(chaine) && !rolesDone.includes(await utils.renameRole(chaine))) {
+          if (
+            (await utils.roleValide(chaine)) &&
+            !rolesDone.includes(await utils.renameRole(chaine))
+          ) {
             chaine = await utils.renameRole(chaine.toUpperCase());
             let role = await roles.find(
               (roleToTest) =>
-                roleToTest.name.toUpperCase() ===
-                chaine.toUpperCase()
+                roleToTest.name.toUpperCase() === chaine.toUpperCase()
             );
-            if (!role && Object.keys(additionalRoles).includes(chaine.toUpperCase())) role = additionalRoles[chaine.toUpperCase()];
+            if (
+              !role &&
+              Object.keys(additionalRoles).includes(chaine.toUpperCase())
+            )
+              role = additionalRoles[chaine.toUpperCase()];
             if (role) {
               await membreDiscord.roles.add(role).catch(console.error);
             } else {
@@ -71,9 +81,7 @@ module.exports.etuToDiscord = async function etuToDiscord(
                   `Le rôle ${chaine} va être créé pour l'utilisateur ${discordUsername} ${pseudo}`
                 );
               await guild.roles
-                .create(
-                  { name: chaine.toUpperCase() },
-                )
+                .create({ name: chaine.toUpperCase() })
                 .then(async (createdRole) => {
                   membreDiscord.roles.add(createdRole).catch(console.error);
                   await guild.roles.fetch(createdRole.id);

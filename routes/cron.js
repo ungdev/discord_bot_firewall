@@ -56,7 +56,13 @@ module.exports = function cron(
         for (const etuUser of response.data.data) {
           if (etuUser.discordTag && !bannedLoginUsers.includes(etuUser.login)) {
             assignFromWeb
-              .etuToDiscord(etuUser, etuUser.discordTag, guild, nameOverride, additionalRoles)
+              .etuToDiscord(
+                etuUser,
+                etuUser.discordTag,
+                guild,
+                nameOverride,
+                additionalRoles
+              )
               .catch(console.error);
             compteur += 1;
             console.log(compteur);
