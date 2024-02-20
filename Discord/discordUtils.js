@@ -60,7 +60,7 @@ module.exports.help = async function help(
     .catch(console.error);
 };
 
-/** Ci après des liste de permissions utilisées lors de la création de channels */
+/** Ci-après des listes de permissions utilisées lors de la création de channels */
 /** https://discord.js.org/#/docs/main/stable/class/Permissions?scrollTo=s-FLAGS */
 
 module.exports.toutesPermissionsOverwrite = function toutesPermissionsOverwrite(
