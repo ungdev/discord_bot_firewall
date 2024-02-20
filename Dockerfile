@@ -18,7 +18,7 @@ WORKDIR /var/exports
 RUN python3 -m http.server &
 WORKDIR /usr/src/app
 COPY . .
-RUN ln -snf /usr/share/zoneinfo/$timezone /etc/localtime && echo $timezone > /etc/timezone && chmod 777 public/exports && npm install
+RUN ln -snf /usr/share/zoneinfo/$timezone /etc/localtime && echo $timezone > /etc/timezone && chmod 777 public/exports && npm ci
 EXPOSE 3000
 USER 1001
 CMD cd /var/exports/ && python3 -m http.server & node bin/www
