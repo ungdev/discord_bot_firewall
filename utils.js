@@ -66,6 +66,8 @@ module.exports.sleep = async function sleep(ms) {
 };
 
 module.exports.renameRole = async function renameRole(/** string */ roleName) {
+  if (roleName.startsWith("AP1")) return "AP1";
+
   if (roleName.endsWith("A")) return roleName.substring(0, roleName.length - 1);
 
   for (const starting of ["LS", "LE", "IT", "LG", "LC", "KO", "LF"])
