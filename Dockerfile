@@ -14,14 +14,17 @@ RUN apt-get update && apt-get install -y apt-transport-https zip && \
     chown root:root /usr/share/keyrings/microsoft-prod.gpg && \
     chown root:root /etc/apt/sources.list.d/microsoft-prod.list && \
     apt-get update && apt-get install -y dotnet-runtime-6.0 && \
-    apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 WORKDIR /usr/src
-RUN wget https://github.com/Tyrrrz/DiscordChatExporter/releases/download/${DISCORD_CHAT_EXPORTER_VERSION}/DiscordChatExporter.CLI.zip && unzip DiscordChatExporter.CLI.zip -d DiscordChatExporter.CLI && chmod -R 777 DiscordChatExporter.CLI && mkdir -p /var/exports && chmod -R 777 /var/exports
+RUN wget https://github.com/Tyrrrz/DiscordChatExporter/releases/download/${DISCORD_CHAT_EXPORTER_VERSION}/DiscordChatExporter.CLI.zip && \
+    unzip DiscordChatExporter.CLI.zip -d DiscordChatExporter.CLI && \
+    chmod -R 777 DiscordChatExporter.CLI && mkdir -p /var/exports && chmod -R 777 /var/exports
 WORKDIR /var/exports
 RUN python3 -m http.server &
 WORKDIR /usr/src/app
 COPY . .
-RUN ln -snf /usr/share/zoneinfo/$timezone /etc/localtime && echo $timezone > /etc/timezone && chmod 777 public/exports && npm ci
+RUN ln -snf /usr/share/zoneinfo/$timezone /etc/localtime && echo $timezone > /etc/timezone && chmod 777 public/exports && \
+    npm ci && npm cache clean --force
 EXPOSE 3000
 USER 1001
 CMD cd /var/exports/ && python3 -m http.server & node bin/www
