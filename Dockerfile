@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y apt-transport-https zip && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 WORKDIR /usr/src
 RUN wget https://github.com/Tyrrrz/DiscordChatExporter/releases/download/${DISCORD_CHAT_EXPORTER_VERSION}/DiscordChatExporter.CLI.zip && \
-    unzip DiscordChatExporter.CLI.zip -d DiscordChatExporter.CLI && \
+    unzip DiscordChatExporter.CLI.zip -d DiscordChatExporter.CLI && rm DiscordChatExporter.CLI.zip && \
     chmod -R 777 DiscordChatExporter.CLI && mkdir -p /var/exports && chmod -R 777 /var/exports
 WORKDIR /var/exports
 RUN python3 -m http.server &
