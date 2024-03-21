@@ -26,13 +26,9 @@ const home = require("./routes/home");
  *
  * */
 const Sentry = require("@sentry/node");
-const SentryTracing = require("@sentry/tracing");
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
 
-  // We recommend adjusting this value in production, or using tracesSampler
-  // for finer control
-  tracesSampleRate: 1.0,
+Sentry.init({
+  enableTracing: true,
 });
 
 /**
@@ -100,7 +96,7 @@ const intents = [
   GatewayIntentBits.Guilds,
   GatewayIntentBits.MessageContent,
 ];
-const client = new Client({ intents: intents, partials: [Partials.Channel] });
+const client = new Client({ intents, partials: [Partials.Channel] });
 
 if (process.env.WATCH_RATE_LIMIT) {
   client.on("rateLimit", (rateLimitInfo) => rateLimit(rateLimitInfo));
@@ -128,7 +124,7 @@ if (process.env.DISCORD_LISTEN === "1") {
     "guildMemberAdd",
     (/** import("discord.js").GuildMember */ member) => {
       guildMemberAdd(member);
-    }
+    },
   );
   /** Si le bot reçoit un message en privé, ou sur l'un des channels qu'il peut voir */
   client.on(
@@ -137,9 +133,9 @@ if (process.env.DISCORD_LISTEN === "1") {
       await message(
         msg,
         tableauChannelTexteAChannelVocal,
-        tableauChannelsVocauxEnCours
+        tableauChannelsVocauxEnCours,
       );
-    }
+    },
   );
 
   if (process.env.WATCHED_MEMBERS) {
@@ -148,10 +144,10 @@ if (process.env.DISCORD_LISTEN === "1") {
       "presenceUpdate",
       async (
         /** 'import("discord.js").Presence */ oldPresence,
-        /** 'import("discord.js").Presence */ newPresence
+        /** 'import("discord.js").Presence */ newPresence,
       ) => {
         await presenceUpdate(oldPresence, newPresence, watchedMembers);
-      }
+      },
     );
   }
 
@@ -159,15 +155,15 @@ if (process.env.DISCORD_LISTEN === "1") {
     "voiceStateUpdate",
     async (
       /** import("discord.js").VoiceState */ oldState,
-      /** import("discord.js").VoiceState */ newState
+      /** import("discord.js").VoiceState */ newState,
     ) => {
       await voiceStateUpdate(
         oldState,
         newState,
         tableauChannelTexteAChannelVocal,
-        tableauChannelsVocauxEnCours
+        tableauChannelsVocauxEnCours,
       );
-    }
+    },
   );
 }
 
@@ -195,17 +191,17 @@ if (process.env.WEB_LISTEN === "1") {
     app.use("/connexion", connexion);
     app.use(
       "/attribuerrole",
-      attribuerRole(client, nameOverride, bannedLoginUsers, additionalRoles)
+      attribuerRole(client, nameOverride, bannedLoginUsers, additionalRoles),
     );
     app.use(
       `/cron/${process.env.CRON_SECRET}`,
-      cron(client, nameOverride, bannedLoginUsers, additionalRoles)
+      cron(client, nameOverride, bannedLoginUsers, additionalRoles),
     );
     app.use("/", home);
   } else {
     app.get("/", (req, res) => {
       res.send(
-        "La connexion avec le site etu n'est pas possible en raison d'une mauvaise configuration du bot, ou alors <a href='https://etu.utt.fr'>le site etu</a> n'est pas accessible. Ressayez plus tard."
+        "La connexion avec le site etu n'est pas possible en raison d'une mauvaise configuration du bot, ou alors <a href='https://etu.utt.fr'>le site etu</a> n'est pas accessible. Ressayez plus tard.",
       );
     });
   }
@@ -217,7 +213,7 @@ if (process.env.WEB_LISTEN === "1") {
     app.use(
       "/exports",
       express.static("public/exports"),
-      serveIndex("public/exports", { icons: true })
+      serveIndex("public/exports", { icons: true }),
     );
   }
 }
