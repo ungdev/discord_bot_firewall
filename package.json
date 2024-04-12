@@ -25,7 +25,7 @@
     "debug": "^4.3.4",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
-    "express": "^4.19.1",
+    "express": "^4.19.2",
     "http-build-query": "^0.7.0",
     "http-errors": "^2.0.0",
     "morgan": "^1.10.0",
