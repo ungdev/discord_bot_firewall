@@ -18,7 +18,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "@sentry/node": "^8.2.1",
+    "@sentry/node": "^8.9.2",
     "axios": "^0.28.1",
     "capitalize": "^2.0.4",
     "cookie-parser": "^1.4.6",
