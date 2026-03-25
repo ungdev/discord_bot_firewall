@@ -1,5 +1,8 @@
 # Bot discord
 
+> [!NOTE]
+> Ce bot n'est plus maintenu car il a été remplacé par [un nouveau bot en Python](https://github.com/ungdev/EtuUTT-Discord-Bot).
+
 ## But
 Lors du Coronavirus 2019, création d'un Bot discord rassemblant les 3 000 étudiants de mon [université / école d'ingé publique](https://utt.fr).
 Nécessité de gérer les rôles des membres sur le discord, via une connexion extérieure. Ce bot dispose d'une interface web où les étudiants et profs se connectent via OAuth2 et se voient affectés les droits de lecture et d'écriture correspondant.
