@@ -31,7 +31,7 @@
     "morgan": "^1.10.0",
     "serve-index": "^1.9.1",
     "shelljs": "^0.8.5",
-    "twig": "^1.17.1",
+    "twig": "^3.0.0",
     "uniqid": "^5.4.0"
   },
   "devDependencies": {
